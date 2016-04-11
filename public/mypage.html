@@ -1,0 +1,23 @@
+<html>
+<head>
+<title>Basic Mustache & NodeJS Demo</title>
+</head>
+<body>
+<h1> Mustache </h1>
+{{#records}}
+
+<ul>
+<li>Company: {{company}}</li>
+<li>Due in charge: {{name}}</li>
+<li>
+<ul>
+{{#systems}}
+<li>{{os}}</li>
+{{/systems}}
+</ul>
+</li>
+</ul>
+{{/records}}
+
+</body>
+</html>

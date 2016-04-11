@@ -1,0 +1,112 @@
+<!DOCTYPE>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html;" />
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<link rel="stylesheet" href="/css/w3.css">
+<!--<script src="/js/bootstrap.js" type="text/javascript"></script> -->
+<title>JASAN</title>
+</head>
+<body>
+<script>
+function myAccFunc(id) {
+    var x = document.getElementById(id);
+    if (x.className.indexOf("w3-show") == -1) {
+        x.className += " w3-show";
+        x.previousElementSibling.className += " w3-dark-grey";
+    } else { 
+        x.className = x.className.replace(" w3-show", "");
+        x.previousElementSibling.className = 
+        x.previousElementSibling.className.replace(" w3-dark-grey", "");
+    }
+}
+</script>
+<div class="w3-container w3-dark-grey w3-center w3-row s6">
+  <h1>Welcome to JASAN</h1>
+<h2> .... </h2>
+
+</div>
+
+<div class="w3-container w3-grey w3-center">
+<hr>
+<div class="w3-container w3-blue-grey  w3-section w3-third w3-border w3-row s6"  > 
+  <h3 class="w3-yellow"> Upload your data files <h3>
+  <hr>
+  <h4 class="w3-accordion"> <button onclick="myAccFunc('Demo1')" class="w3-blue-grey w3-hover-dark-grey w3-left-align"> Supported Formats : CSV TXT XLS... </button> 
+  <div id="Demo1" class="w3-accordion-content">
+    <div class="w3-container">
+      <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+    </div>
+  </div>
+ 
+  </h4>
+  <hr>
+  <h4>
+<form id        =  "uploadForm"
+     enctype   =  "multipart/form-data"
+     action    =  "/fileUpload"
+     method    =  "post"
+>
+<input type="file" name="userfile" class="w3-yellow w3-input" style="padding:5%;" />
+<input type="submit" value="Upload" class="w3-yellow w3-input"  name="submit"/>
+</form>
+</h4>
+</div>
+
+<div class="w3-container w3-section w3-blue-grey w3-third w3-border w3-row s6" > 
+  <h3 class="w3-yellow w3-row s6"> Visualize and explore <h3>
+  <hr>
+ <h4 class="w3-accordion w3-row s6"> <button onclick="myAccFunc('Demo2')" class="w3-blue-grey w3-hover-dark-grey w3-left-align"> Data Visualization on Click </button> 
+  <div id="Demo2" class="w3-accordion-content">
+    <div class="w3-container">
+      <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+    </div>
+  </div>
+<hr>
+ <h4 class="w3-accordion w3-row s6"> <button onclick="myAccFunc('Demo3')" class="w3-blue-grey w3-hover-dark-grey w3-left-align"> Try our Anomaly detection </button> 
+  <div id="Demo3" class="w3-accordion-content">
+    <div class="w3-container">
+      <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+    </div>
+  </div>
+<hr> 
+ <h4 class="w3-accordion w3-row s6"> <button onclick="myAccFunc('Demo4')" class="w3-blue-grey w3-hover-dark-grey w3-left-align"> Run your R code </button> 
+  <div id="Demo4" class="w3-accordion-content">
+    <div class="w3-container">
+      <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+    </div>
+  </div>
+  </h4>
+  <hr>
+  <h4>
+  <form id        =  "RcodeForm"
+     enctype   =  "multipart/form-data"
+     action    =  "/RCodeUpload"
+     method    =  "post"
+>
+<input type="file" name="userRcode" class="w3-yellow w3-input" style="padding:5% ;" />
+<input type="submit" value="Upload" class="w3-yellow w3-input"  name="submit"/>
+</form>
+ </h4>
+ </div>
+
+<div class="w3-container w3-center w3-blue-grey w3-third w3-border w3-section w3-row s6"> 
+  <h3 class="w3-yellow"> Articulate and Get your Results <h3>
+  <hr>
+ <h4 class="w3-accordion w3-row s6"> <button onclick="myAccFunc('Demo5')" class="w3-padding-8 w3-blue-grey w3-hover-dark-grey w3-left-align"> Reports, Plots, Tables, Text, Html, Pdf </button> 
+  <div id="Demo5" class="w3-accordion-content">
+    <div class="w3-container">
+      <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+    </div>
+  </div>
+	<hr>
+
+<input type="button" value="Download" class="w3-yellow w3-input"  name="download" onclick="download()"/>
+</div>
+</div>
+<div class="w3-container w3-yellow w3-center">
+</div>
+
+</body>
+</html>
