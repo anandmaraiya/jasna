@@ -90,7 +90,7 @@ app.post('/fileUpload', upload1.single('userfile'),function (req, res) {
 		
 	fs.createReadStream(wd+'/uploads/UserData/'+fnameB).pipe(fs.createWriteStream(wd+'/uploads/UserData/'+DefFile));
 		var child_process = require('child_process');
-		var workerProcess = child_process.exec( wd+'R-3.0.2/bin/Rscript.exe   --vanilla '+wd+'/uploads/UserRcode/'+DefRcode);
+		var workerProcess = child_process.exec( wd+'/R-3.0.2/bin/Rscript.exe   --vanilla '+wd+'/uploads/UserRcode/'+DefRcode);
    workerProcess.stdout.on('data', function (data,err) {
       if(err) console.log('error');
 	  console.log('stdout: ' + data);
@@ -128,7 +128,7 @@ app.post('/RCodeUpload', upload2.single('userRcode'),function (req, res) {
 	console.log('UploadRcode Renamed back to ' + fnameB );
 		
 		var child_process = require('child_process');
-		var workerProcess = child_process.exec( wd+'R-3.0.2/bin/Rscript.exe   --vanilla '+ wd+'/uploads/UserRcode/'+fnameB );
+		var workerProcess = child_process.exec( wd+'/R-3.0.2/bin/Rscript.exe   --vanilla '+ wd+'/uploads/UserRcode/'+fnameB );
 
 		   workerProcess.stdout.on('data', function (data,err) {
 			  if(err) console.log('error');
