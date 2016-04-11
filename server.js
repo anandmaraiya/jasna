@@ -2,7 +2,8 @@
 //  OpenShift sample Node application
 var express = require('express');
 var app = express();
-var fs      = require('fs');;
+var fs      = require('fs');
+var http = require('http');
 var bodyParser = require('body-parser');
 var output = 0;
 var absorb = require('absorb');
@@ -293,7 +294,7 @@ var SampleApp = function() {
      *  the handlers.
      */
     self.initializeServer = function() {
-        self.app = app();
+        self.app = http.createServer(app);
 
     };
 
