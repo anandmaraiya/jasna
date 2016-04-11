@@ -7,16 +7,16 @@ var bodyParser = require('body-parser');
 var output = 0;
 var absorb = require('absorb');
 //var fs = require('fs');
-var wd = proces.cwd + '/public';
+var wd = __dirname + '/public';
 var multer = require('multer');
-var upload1 = multer({ dest : wd+'/uploads/UserData/'});
-var upload2 = multer({ dest : wd+'/uploads/UserRcode/'});
 var body1 = bodyParser.urlencoded( {extended : true});
 var body2 = bodyParser.json();
 var mustache = require('mustache'); // bring in mustache template engine
 
 app.use(express.static(wd));
 	//app.use());
+var upload1 = multer({ dest : wd+'/uploads/UserData/'});
+var upload2 = multer({ dest : wd+'/uploads/UserRcode/'});
 
 
 app.get('/index', function (req, res) {
