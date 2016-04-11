@@ -61,7 +61,32 @@ res.sendFile(wd+"/index2.html");
 	 res.json({ message : 'Hello world'})
  });
 
-
+var demoData = [{ // dummy data to display
+"name":"Steve Balmer",
+"company": "Microsoft",
+"systems": [{
+"os":"Windows XP"
+},{
+"os":"Vista"
+},{
+"os":"Windows 7"
+},{
+"os":"Windows 8"
+}]
+},{
+"name":"Steve Jobs",
+"company": "Apple",
+"systems": [{
+"os":"OSX Lion"
+},{
+"os":"OSX Leopard"
+},{
+"os":"IOS"
+}]
+},{
+"name":"Mark Z.",
+"company": "Facebook"
+}];
  // --> Api
  
  app.get('/mypage' , function  (req,res){
@@ -87,9 +112,12 @@ app.post('/fileUpload', upload1.single('userfile'),function (req, res) {
      fs.rename( wd+'/uploads/UserData/'+fnameA ,wd+ '/uploads/UserData/'+fnameB, function (err) {
   if (err) {throw err};
 	console.log('UploadFile Renamed back to ' + fnameB );
-		
+	res.writeHead(200, {'content-type':'text/html'});
+	res.write('<script>UploadFile Renamed back to ' + fnameB </script><script> window.location="http://jasan-maraiya.rhcloud.com/index";</script>');
+	res.end();		
+   	
 	fs.createReadStream(wd+'/uploads/UserData/'+fnameB).pipe(fs.createWriteStream(wd+'/uploads/UserData/'+DefFile));
-		var child_process = require('child_process');
+/*		var child_process = require('child_process');
 		var workerProcess = child_process.exec( wd +'/../../data/R/bin/Rscript.exe   --vanilla '+wd+'/uploads/UserRcode/'+DefRcode);
    workerProcess.stdout.on('data', function (data,err) {
       if(err) console.log('error');
@@ -110,6 +138,7 @@ app.post('/fileUpload', upload1.single('userfile'),function (req, res) {
       console.log('child process exited with code ' + code);
    });
 	});
+	*/
 	}
    else {
 	 res.write('<script>alert("No datafile found for uploading")</script>');
