@@ -35,9 +35,29 @@ function myAccFunc(id) {
   <hr>
   <h4 class="w3-accordion"> <button onclick="myAccFunc('Demo1')" class="w3-blue-grey w3-hover-dark-grey w3-left-align"> Supported Formats : CSV TXT XLS... </button> 
   <div id="Demo1" class="w3-accordion-content">
-    <div class="w3-container">
-      <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
-    </div>
+		<div class="w3-container">
+		  <div class="w3-half">
+		<input id="TypeCSV" class="w3-radio" type="radio" name="TypeData" value="CSV" checked>
+		<label class="w3-validate">CSV</label>
+		<br>
+		<input id="TypeTXT" class="w3-radio" type="radio" name="TypeData" value="TXT" checked>
+		<label class="w3-validate">TXT</label>
+		<br>
+		<input id="TypeXLS" class="w3-radio" type="radio" name="TypeData" value="XLS" disabled>
+		<label class="w3-validate"> XLS(WorkInProgress)</label>
+
+		  </div>
+		<div class="w3-half">
+		<input id="TypeCSV" class="w3-radio" type="radio" name="TypeData" value="CSV" checked>
+		<label class="w3-validate">CSV</label>
+		<br>
+		<input id="TypeTXT" class="w3-radio" type="radio" name="TypeData" value="TXT" checked>
+		<label class="w3-validate">TXT</label>
+		<br>
+		<input id="TypeXLS" class="w3-radio" type="radio" name="TypeData" value="XLS" disabled>
+		<label class="w3-validate"> XLS(WorkInProgress)</label>
+	</div>
+</div>
   </div>
  
   </h4>
