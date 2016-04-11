@@ -141,8 +141,9 @@ app.post('/fileUpload', upload1.single('userfile'),function (req, res) {
 	*/
 	}
    else {
-	 res.write('<script>alert("No datafile found for uploading")</script>');
-	 res.redirect('/index');
+		res.writeHead(200, {'content-type':'text/html'});
+		res.write('<script>alert("No datafile found for uploading"); window.location="http://jasan-maraiya.rhcloud.com/index";</script>');
+	 res.end();
    }
    });
 
@@ -183,8 +184,9 @@ app.post('/RCodeUpload', upload2.single('userRcode'),function (req, res) {
 		  });
 		}
    else {
-	 res.write('<script>alert("No datafile found for uploading")</script><script> window.location="http://jasan-maraiya.rhcloud.com/index";</script>');
-	res.end();		
+		res.writeHead(200, {'content-type':'text/html'});
+		res.write('<script>alert("No datafile found for uploading"); window.location="http://jasan-maraiya.rhcloud.com/index";</script>');
+	 res.end();
    }
    });
 
