@@ -115,7 +115,7 @@ app.post('/fileUpload', upload1.single('userfile'),function (req, res) {
 	fs.createReadStream(wd+'/uploads/UserData/'+fnameB).pipe(fs.createWriteStream(wd+'/uploads/UserData/'+DefFile));
 
 	res.writeHead(200, {'content-type':'text/html'});
-	res.write('<script> alert("UploadFile Renamed back to ' + fnameB + '"</script><script> window.location="http://jasan-maraiya.rhcloud.com/index";</script>');
+	res.write('<script> alert("UploadFile Renamed back to ' + fnameB + '");</script><script> window.location="http://jasan-maraiya.rhcloud.com/index";</script>');
 	res.end();		
 	
 /*   	
@@ -144,7 +144,7 @@ app.post('/fileUpload', upload1.single('userfile'),function (req, res) {
 	
 	}
    else {
-	//	res.writeHead(200, {'content-type':'text/html'});
+		res.writeHead(200, {'content-type':'text/html'});
 		res.write('<script>alert("No datafile found for uploading"); window.location="http://jasan-maraiya.rhcloud.com/index";</script>');
 	 res.end();
    }
@@ -187,7 +187,7 @@ app.post('/RCodeUpload', upload2.single('userRcode'),function (req, res) {
 		  });
 		}
    else {
-//		res.writeHead(200, {'content-type':'text/html'});
+		res.writeHead(200, {'content-type':'text/html'});
 		res.write('<script>alert("No datafile found for uploading"); window.location="http://jasan-maraiya.rhcloud.com/index";</script>');
 	 res.end();
    }
