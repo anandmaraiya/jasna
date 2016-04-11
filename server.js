@@ -1,9 +1,186 @@
 #!/bin/env node
 //  OpenShift sample Node application
 var express = require('express');
+var app = express();
 var fs      = require('fs');
+var http = require('http').createServer(app);
+var bodyParser = require('body-parser');
+var output = 0;
+var absorb = require('absorb');
+//var fs = require('fs');
+var wd = __dirname + '/public';
+var multer = require('multer');
+var upload1 = multer({ dest : wd+'/uploads/UserData/'});
+var upload2 = multer({ dest : wd+'/uploads/UserRcode/'});
+var body1 = bodyParser.urlencoded( {extended : true});
+var body2 = bodyParser.json();
+var mustache = require('mustache'); // bring in mustache template engine
+
+app.use(express.static(wd));
+	//app.use());
 
 
+app.get('/index', function (req, res) {
+res.sendFile(wd+"/index.html");   
+ });
+
+app.get('/index2', function (req, res) {
+res.sendFile(wd+"/index2.html");   
+ });
+ 
+ // <!-- Api
+ 
+ app.get('/api' , function(req,res){
+	 res.json({ message : 'Hello world'})
+ });
+
+ app.get('/api/:id'  , function(req,res){
+	 // use req.params
+	 console.log(req.params.id);
+		var id = 'world';
+		id = req.params.id;
+	res.json({ message : id });
+ });
+ 
+ app.post('/api' , function(req,res){
+	 // use req.query
+	 console.log(req.query);
+	 var sendJson = { message : 'Hello'};
+		console.log(sendJson);
+	if(req.query.id) { sendJson = absorb(sendJson,{ id : req.query.id} );}
+
+	if(req.query.name) {  sendJson = absorb(sendJson,{ name : req.query.name});}
+	res.json(sendJson);
+ });
+
+
+ app.put('/api' , function(req,res){
+	 res.json({ message : 'Hello world'})
+ });
+
+ app.delete('/api' , function(req,res){
+	 res.json({ message : 'Hello world'})
+ });
+
+
+ // --> Api
+ 
+ app.get('/mypage' , function  (req,res){
+	
+	var rData = {records : demoData};
+	 var page = fs.readFileSync(wd+'/mypage.html','utf8' );
+	 console.log(page);
+	 var html = mustache.to_html(page,rData);
+	
+	 res.send(html);
+	 res.end();
+	console.log('/mypage  loaded')	
+ });
+	
+	var fnameA ='' ; var fnameB = '';
+	var DefFile = 'default.csv' ; var DefRcode = 'default.R';
+	
+app.post('/fileUpload', upload1.single('userfile'),function (req, res) {
+	if(req.file){
+   fnameB = req.file.originalname;
+   fnameA = req.file.filename;
+	console.log('File with name '+ fnameB + ' uploaded with new name ' + fnameA);
+     fs.rename( wd+'/uploads/UserData/'+fnameA ,wd+ '/uploads/UserData/'+fnameB, function (err) {
+  if (err) {throw err};
+	console.log('UploadFile Renamed back to ' + fnameB );
+		
+	fs.createReadStream(wd+'/uploads/UserData/'+fnameB).pipe(fs.createWriteStream(wd+'/uploads/UserData/'+DefFile));
+		var child_process = require('child_process');
+		var workerProcess = child_process.exec( 'C:/R/bin/Rscript.exe   --vanilla '+wd+'/uploads/UserRcode/'+DefRcode);
+   workerProcess.stdout.on('data', function (data,err) {
+      if(err) console.log('error');
+	  console.log('stdout: ' + data);
+	  output = data;
+	res.writeHead(200, {'content-type':'text/html'});
+	res.write('upload successful');
+	res.write('<img src="/current.png"/> <br>');
+	res.end();	
+	  });
+   workerProcess.stderr.on('data', function (data) {
+      console.log('stderr: ' + data);
+	res.writeHead(200, {'content-type':'text/html'});
+	res.write('<script>alert("Error while running R")</script><script> window.location="http://www.localhost:9000/index";</script>');
+	res.end();		
+   });
+   workerProcess.on('close', function (code) {
+      console.log('child process exited with code ' + code);
+   });
+	});
+	}
+   else {
+	 res.write('<script>alert("No datafile found for uploading")</script><script> window.location="http://www.localhost:9000/index";</script>');
+	res.end();		
+   }
+   });
+
+app.post('/RCodeUpload', upload2.single('userRcode'),function (req, res) {
+	
+	if(req.file){
+   fnameB = req.file.originalname;
+   fnameA = req.file.filename;
+	console.log('Rcode with name '+ fnameB + ' uploaded with new name ' + fnameA);
+     fs.rename( wd+'/uploads/UserRcode/'+fnameA ,wd+ '/uploads/UserRcode/'+fnameB, function (err) {
+	 
+	console.log('UploadRcode Renamed back to ' + fnameB );
+		
+		var child_process = require('child_process');
+		var workerProcess = child_process.exec( 'C:/R/bin/Rscript.exe   --vanilla '+ wd+'/uploads/UserRcode/'+fnameB );
+
+		   workerProcess.stdout.on('data', function (data,err) {
+			  if(err) console.log('error');
+			  console.log('stdout: ' + data);
+			  output = data;
+			res.writeHead(200, {'content-type':'text/html'});
+			res.write('upload successful');
+			res.write('<img src="/current.png"/> <br>');
+			res.end();	
+
+			  });
+
+		   workerProcess.stderr.on('data', function (data) {
+			  console.log('stderr: ' + data);
+			res.writeHead(200, {'content-type':'text/html'});
+			res.write('<script>alert("Error while running R");</script><script> window.location="http://www.localhost:9000/index";</script>');
+			res.end();		
+		   });
+
+		   workerProcess.on('close', function (code) {
+			  console.log('child process exited with code ' + code);
+		   });
+		  });
+		}
+   else {
+	 res.write('<script>alert("No datafile found for uploading")</script><script> window.location="http://www.localhost:9000/index";</script>');
+	res.end();		
+   }
+   });
+
+   
+/*  var newPath = wd + "/uploads/"+req.files.userfile.name;
+  fs.writeFile(newPath, data, function (err) {
+    console.log('Upload Successful');
+	res.redirect('/index');
+  });
+  */
+
+
+	
+app.get("/*", function(req, res) {
+        res.redirect('/index');
+
+		});
+
+//http.listen(port,function(){console.log("App Started")});
+
+
+	
+	
+	
 /**
  *  Define the sample application.
  */
@@ -91,7 +268,7 @@ var SampleApp = function() {
 
     /**
      *  Create the routing table entries + handlers for the application.
-     */
+    
     self.createRoutes = function() {
         self.routes = { };
 
@@ -110,20 +287,15 @@ var SampleApp = function() {
             res.send(self.cache_get('index.html') );
         };
     };
-
+ */
 
     /**
      *  Initialize the server (express) and create the routes and register
      *  the handlers.
      */
     self.initializeServer = function() {
-        self.createRoutes();
-        self.app = express.createServer();
+        self.app = app;
 
-        //  Add handlers for the app (from the routes).
-        for (var r in self.routes) {
-            self.app.get(r, self.routes[r]);
-        }
     };
 
 
