@@ -7,7 +7,7 @@ var bodyParser = require('body-parser');
 var output = 0;
 var absorb = require('absorb');
 //var fs = require('fs');
-var wd = __dirname + '/public';
+var wd = proces.cwd + '/public';
 var multer = require('multer');
 var upload1 = multer({ dest : wd+'/uploads/UserData/'});
 var upload2 = multer({ dest : wd+'/uploads/UserRcode/'});
@@ -112,8 +112,8 @@ app.post('/fileUpload', upload1.single('userfile'),function (req, res) {
 	});
 	}
    else {
-	 res.write('<script>alert("No datafile found for uploading")</script><script> window.location="http://www.localhost:9000/index";</script>');
-	res.end();		
+	 res.write('<script>alert("No datafile found for uploading")</script>');
+	 res.redirect('/index');
    }
    });
 
