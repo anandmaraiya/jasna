@@ -112,12 +112,14 @@ app.post('/fileUpload', upload1.single('userfile'),function (req, res) {
      fs.rename( wd+'/uploads/UserData/'+fnameA ,wd+ '/uploads/UserData/'+fnameB, function (err) {
   if (err) {throw err};
 	console.log('UploadFile Renamed back to ' + fnameB );
+	fs.createReadStream(wd+'/uploads/UserData/'+fnameB).pipe(fs.createWriteStream(wd+'/uploads/UserData/'+DefFile));
+
 	res.writeHead(200, {'content-type':'text/html'});
 	res.write('<script> alert("UploadFile Renamed back to ' + fnameB + '"</script><script> window.location="http://jasan-maraiya.rhcloud.com/index";</script>');
 	res.end();		
-   	
-	fs.createReadStream(wd+'/uploads/UserData/'+fnameB).pipe(fs.createWriteStream(wd+'/uploads/UserData/'+DefFile));
-/*		var child_process = require('child_process');
+	
+/*   	
+			var child_process = require('child_process');
 		var workerProcess = child_process.exec( wd +'/../../data/R/bin/Rscript.exe   --vanilla '+wd+'/uploads/UserRcode/'+DefRcode);
    workerProcess.stdout.on('data', function (data,err) {
       if(err) console.log('error');
@@ -137,8 +139,9 @@ app.post('/fileUpload', upload1.single('userfile'),function (req, res) {
    workerProcess.on('close', function (code) {
       console.log('child process exited with code ' + code);
    });
-	});
 	*/
+	});
+	
 	}
    else {
 	//	res.writeHead(200, {'content-type':'text/html'});
