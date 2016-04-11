@@ -3,7 +3,6 @@
 var express = require('express');
 var app = express();
 var fs      = require('fs');
-var http = require('http');
 var bodyParser = require('body-parser');
 var output = 0;
 var absorb = require('absorb');
@@ -213,15 +212,16 @@ var SampleApp = function() {
 
     /**
      *  Populate the cache.
-     */
+    */ 
     self.populateCache = function() {
         if (typeof self.zcache === "undefined") {
             self.zcache = { 'index.html': '' };
         }
 
         //  Local cache for static content.
-        self.zcache['index.html'] = fs.readFileSync('./index.html');
+        self.zcache['index.html'] = fs.readFileSync('./public/index.html');
     };
+	
 
 
     /**
@@ -294,8 +294,7 @@ var SampleApp = function() {
      *  the handlers.
      */
     self.initializeServer = function() {
-        self.app = http.createServer(app);
-
+        self.napp = app;
     };
 
 
@@ -317,7 +316,7 @@ var SampleApp = function() {
      */
     self.start = function() {
         //  Start the app on the specific interface (and port).
-        self.app.listen(self.port, self.ipaddress, function() {
+        self.napp.listen(self.port, self.ipaddress, function() {
             console.log('%s: Node server started on %s:%d ...',
                         Date(Date.now() ), self.ipaddress, self.port);
         });
