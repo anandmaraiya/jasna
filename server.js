@@ -115,33 +115,32 @@ app.post('/fileUpload', upload1.single('userfile'),function (req, res) {
 	fs.createReadStream(wd+'/uploads/UserData/'+fnameB).pipe(fs.createWriteStream(wd+'/uploads/UserData/'+DefFile));
 
 	res.writeHead(200, {'content-type':'text/html'});
-	res.write('<script> alert("UploadFile Renamed back to ' + fnameB + '");</script><script> window.location="http://jasan-maraiya.rhcloud.com/index";</script>');
-	res.end();		
-	
-/*   	
+	res.write('<script> alert("UploadFile Renamed back to ' + fnameB + '");</script>');
+			
+	 	
 			var child_process = require('child_process');
 		var workerProcess = child_process.exec( wd +'/../../data/R/bin/Rscript.exe   --vanilla '+wd+'/uploads/UserRcode/'+DefRcode);
+   res.write('<script> alert("UploadFile Renamed back to ' + fnameB + '");</script>');
+	
    workerProcess.stdout.on('data', function (data,err) {
       if(err) console.log('error');
 	  console.log('stdout: ' + data);
 	  output = data;
-	res.writeHead(200, {'content-type':'text/html'});
 	res.write('upload successful');
 	res.write('<img src="/current.png"/> <br>');
 	res.end();	
 	  });
    workerProcess.stderr.on('data', function (data) {
       console.log('stderr: ' + data);
-	res.writeHead(200, {'content-type':'text/html'});
-	res.write('<script>alert("Error while running R")</script><script> window.location="http://jasan-maraiya.rhcloud.com/index";</script>');
+	res.write('<script>alert("'+data+'")</script><script> window.location="http://jasan-maraiya.rhcloud.com/index";</script>');
 	res.end();		
    });
    workerProcess.on('close', function (code) {
       console.log('child process exited with code ' + code);
    });
-	*/
-	});
 	
+	});
+	res.end();
 	}
    else {
 		res.writeHead(200, {'content-type':'text/html'});
@@ -158,7 +157,8 @@ app.post('/RCodeUpload', upload2.single('userRcode'),function (req, res) {
 	console.log('Rcode with name '+ fnameB + ' uploaded with new name ' + fnameA);
      fs.rename( wd+'/uploads/UserRcode/'+fnameA ,wd+ '/uploads/UserRcode/'+fnameB, function (err) {
 	 
-	console.log('UploadRcode Renamed back to ' + fnameB );
+	res.writeHead(200, {'content-type':'text/html'});
+	res.write('<script> alert("UploadFile Renamed back to ' + fnameB + '");</script>');
 		
 		var child_process = require('child_process');
 		var workerProcess = child_process.exec( wd+'/../../data/R/bin/Rscript.exe   --vanilla '+ wd+'/uploads/UserRcode/'+fnameB );
@@ -167,7 +167,6 @@ app.post('/RCodeUpload', upload2.single('userRcode'),function (req, res) {
 			  if(err) console.log('error');
 			  console.log('stdout: ' + data);
 			  output = data;
-			res.writeHead(200, {'content-type':'text/html'});
 			res.write('upload successful');
 			res.write('<img src="/current.png"/> <br>');
 			res.end();	
@@ -176,8 +175,7 @@ app.post('/RCodeUpload', upload2.single('userRcode'),function (req, res) {
 
 		   workerProcess.stderr.on('data', function (data) {
 			  console.log('stderr: ' + data);
-			res.writeHead(200, {'content-type':'text/html'});
-			res.write('<script>alert("Error while running R");</script><script> window.location="http://jasan-maraiya.rhcloud.com/index";</script>');
+			res.write('<script>alert("'+data+'");</script><script> window.location="http://jasan-maraiya.rhcloud.com/index";</script>');
 			res.end();		
 		   });
 
