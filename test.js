@@ -118,13 +118,12 @@ var demoData = [{ // dummy data to display
 app.post('/fileUpload',function (req, res) {
 	
 	if(req.file){
-	res.writeHead(200, {'content-type':'text/html'});
-
+	
 	fnameB = req.file.originalname;
 	fnameA = req.file.filename;
 	//ftype = req.body.TypeData;
-	
-	res.write('<script>alert("File uploaded : '+fnameB+' of '+ftype + 'format")</script>');
+	res.writeHead(200, {'content-type':'text/html'});
+	res.write('<script>alert("File uploaded : '+fnameB+' of '+ftype + 'format");</script>');
 	res.end();
 	
     /*
