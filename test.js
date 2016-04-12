@@ -25,12 +25,10 @@ app.use(express.static(wd));
 var upload1 = multer({ dest : wd+'/uploads/UserData'});
 var upload2 = multer({ dest : wd+'/uploads/UserRcode'});
 
-
 app.get('/index', function (req, res) {
 res.sendFile(wd+"/index.html");   
  });
 
- 
  // <!-- Api
  
  app.get('/api' , function(req,res){
@@ -72,6 +70,101 @@ res.sendFile(wd+"/index.html");
 		});
 
 
+var demoData = [{ // dummy data to display
+"name":"Steve Balmer",
+"company": "Microsoft",
+"systems": [{
+"os":"Windows XP"
+},{
+"os":"Vista"
+},{
+"os":"Windows 7"
+},{
+"os":"Windows 8"
+}]
+},{
+"name":"Steve Jobs",
+"company": "Apple",
+"systems": [{
+"os":"OSX Lion"
+},{
+"os":"OSX Leopard"
+},{
+"os":"IOS"
+}]
+},{
+"name":"Mark Z.",
+"company": "Facebook"
+}];
+
+ app.get('/mypage' , function  (req,res){
+	
+	var rData = {records : demoData};
+	 var page = fs.readFileSync(wd+'/mypage.html','utf8' );
+	 console.log(page);
+	 var html = mustache.to_html(page,rData);
+	
+	 res.send(html);
+	 res.end();
+	console.log('/mypage  loaded')	
+ });
+ 
+ 
+ var fnameA ='' ; var fnameB = '';
+	var DefFile = 'default.csv' ; var DefRcode = 'default.R';
+	var ftype = 'CSV';
+
+	app.post('/fileUpload', upload1.single('userfile'),function (req, res) {
+	
+	if(req.file){
+	res.writeHead(200, {'content-type':'text/html'});
+
+	fnameB = req.file.originalname;
+	fnameA = req.file.filename;
+	ftype = req.body.TypeData;
+    
+	fs.rename( wd+'/uploads/UserData/'+fnameA ,wd+ '/uploads/UserData/'+fnameB, function (err) 
+		{
+		if (err) {res.end('<script>alert("Error while uploading file")</script>'}; 
+		fs.createReadStream(wd+'/uploads/UserData/'+fnameB).pipe(fs.createWriteStream(wd+'/uploads/UserData/'+fnameB));
+		res.write('<script>alert("Error while uploading file")</script>');
+		var child_process = require('child_process');
+		var fileTransfer = child_process.spawn( 'cp '+wd+ '/uploads/UserData/'+fnameB+' '+Rloc+'/'+fnameB,function (err) { 		res.write('<script>alert("Error while uploading file")</script>'); });;
+		
+		var workerProcess = child_process.exec( 'sh '+Rloc+'/R --vanilla  < '+wd+'/uploads/UserRcode/'		+	DefRcode);
+   workerProcess.stdout.on('data', function (data,err) {
+      if(err) console.log('error');
+	  console.log('stdout: ' + data);
+	  output = data;
+	  res.write('<script>alert("Upload successful")</script>');
+		res.write('<img src="'+Rloc+'/current.png"/> <br>');
+		res.end();	
+	  });
+	  
+   workerProcess.stderr.on('data', function (data) {
+      console.log('stderr: ' + data);
+	res.write('<script>alert("Error while running R")</script>');
+	res.end('<script> window.location="http://jasan-maraiya.rhcloud.com/index;</script>');		
+   });
+
+   workerProcess.on('close', function (code) {
+	  console.log('child process exited with code ' + code);
+	  res.write('<script>alert("Upload successful")</script>');	  
+		res.end('<script> window.location="http://jasan-maraiya.rhcloud.com/index;</script>');
+			});
+		});
+	}
+   else {
+	res.writeHead(200, {'content-type':'text/html'});
+   res.write('<script>alert("No datafile found for uploading")</script><script> window.location="http://jasan-maraiya.rhcloud.com/index";</script>');
+	res.end();		
+   }
+   });
+
+
+
+
+		
 	
 /**
  *  Define the sample application.
