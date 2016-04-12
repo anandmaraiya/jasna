@@ -5,7 +5,7 @@
   "author": "Anand <anand.maraiya@gmail.com>",
   "main": "server.js",
   "scripts": {
-    "start": "node server.js"
+    "start": "node test.js"
   },
   "dependencies": {
     "express": "^4.13.4",

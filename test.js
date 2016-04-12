@@ -1,3 +1,8 @@
+/* Main Application code 
+Created by Anand Kr Maraiya 
+*/
+
+
 #!/bin/env node
 //  OpenShift sample Node application
 var express = require('express');
@@ -25,9 +30,6 @@ app.get('/index', function (req, res) {
 res.sendFile(wd+"/index.html");   
  });
 
-app.get('/index2', function (req, res) {
-res.sendFile(wd+"/index2.html");   
- });
  
  // <!-- Api
  
@@ -63,158 +65,13 @@ res.sendFile(wd+"/index2.html");
 	 res.json({ message : 'Hello world'})
  });
 
-var demoData = [{ // dummy data to display
-"name":"Steve Balmer",
-"company": "Microsoft",
-"systems": [{
-"os":"Windows XP"
-},{
-"os":"Vista"
-},{
-"os":"Windows 7"
-},{
-"os":"Windows 8"
-}]
-},{
-"name":"Steve Jobs",
-"company": "Apple",
-"systems": [{
-"os":"OSX Lion"
-},{
-"os":"OSX Leopard"
-},{
-"os":"IOS"
-}]
-},{
-"name":"Mark Z.",
-"company": "Facebook"
-}];
- // --> Api
- 
- app.get('/mypage' , function  (req,res){
-	
-	var rData = {records : demoData};
-	 var page = fs.readFileSync(wd+'/mypage.html','utf8' );
-	 console.log(page);
-	 var html = mustache.to_html(page,rData);
-	
-	 res.send(html);
-	 res.end();
-	console.log('/mypage  loaded')	
- });
-	
-	var fnameA ='' ; var fnameB = '';
-	var DefFile = 'default.csv' ; var DefRcode = 'default.R';
-	var ftype = 'CSV';
-
-	app.post('/fileUpload', upload1.single('userfile'),function (req, res) {
-	if(req.file){
-	res.writeHead(200, {'content-type':'text/html'});
-
-	fnameB = req.file.originalname;
-   fnameA = req.file.filename;
-  // console.log(ftype);
-  // ftype = req.body.TypeData;
-  // console.log(req.body.TypeData);
-//	console.log('File with name '+ fnameB + ' uploaded with new name ' + fnameA);
-     fs.rename( wd+'/uploads/UserData/'+fnameA ,wd+ '/uploads/UserData/'+fnameB, function (err) {
-  if (err) {throw err};
-	//console.log('UploadFile Renamed back to ' + fnameB );
-		
-	fs.createReadStream(wd+'/uploads/UserData/'+fnameB).pipe(fs.createWriteStream(wd+'/uploads/UserData/'+fnameB));
-		var child_process = require('child_process');
-		var fileTransfer = child_process.spawn( 'cp '+wd+ '/uploads/UserData/'+fnameB+' '+Rloc+'/'+fnameB);
-		var workerProcess = child_process.spawn( 'sh '+Rloc+'/R --vanilla  < '+wd+'/uploads/UserRcode/'+DefRcode);
-   workerProcess.stdout.on('data', function (data,err) {
-      if(err) console.log('error');
-	  console.log('stdout: ' + data);
-	  output = data;
-	res.write('upload successful');
-	res.write('<img src="'+Rloc+'/current.png"/> <br>');
-	res.end();	
-	  });
-   workerProcess.stderr.on('data', function (data) {
-      console.log('stderr: ' + data);
-	res.write('<script>alert("Error while running R")</script><script> window.location="http://jasan-maraiya.rhcloud.com/index;</script>');
-	res.end();		
-   });
-   workerProcess.on('close', function (code) {
-      console.log('child process exited with code ' + code);
-   });
-	});
-	}
-   else {
-	res.writeHead(200, {'content-type':'text/html'});
-   res.write('<script>alert("No datafile found for uploading")</script><script> window.location="http://jasan-maraiya.rhcloud.com/index";</script>');
-	res.end();		
-   }
-   });
-   
-app.post('/RCodeUpload', upload2.single('userRcode'),function (req, res) {
-	
-	if(req.file){
-   fnameB = req.file.originalname;
-   fnameA = req.file.filename;
-	console.log('Rcode with name '+ fnameB + ' uploaded with new name ' + fnameA);
-     fs.rename( wd+'/uploads/UserRcode/'+fnameA ,wd+ '/uploads/UserRcode/'+fnameB, function (err) {
-	 
-	res.writeHead(200, {'content-type':'text/html'});
-	//res.write('<script> alert("UploadFile Renamed back to ' + fnameB + '");</script>');
-		
-		var child_process = require('child_process');
-		var fileTransfer = child_process.exec( 'cp '+wd+ '/uploads/UserRcode/'+fnameB+' '+Rloc+'/'+fnameB);
-		var workerProcess = child_process.exec(  'sh '+Rloc+'/R --vanilla  < '+wd+'/uploads/UserRcode/'+fnameB );
-
-		   workerProcess.stdout.on('data', function (data,err) {
-			  if(err) console.log('error');
-			  console.log('stdout: ' + data);
-			  output = data;
-			res.write('upload successful');
-			res.write('<img src="'+Rloc+'/current.png"/> <br>');
-			res.end();	
-
-			  });
-
-		   workerProcess.stderr.on('data', function (data) {
-			  console.log('stderr: ' + data);
-			res.write('<script>alert("'+data+'");</script><script> window.location="http://jasan-maraiya.rhcloud.com/index";</script>');
-			res.end();		
-		   });
-
-		   workerProcess.on('close', function (code) {
-			  console.log('child process exited with code ' + code);
-		   });
-		  });
-		}
-   else {
-		res.writeHead(200, {'content-type':'text/html'});
-		res.write('<script>alert("No datafile found for uploading"); window.location="http://jasan-maraiya.rhcloud.com/index";</script>');
-	 res.end();
-   }
-   });
-
-   
-/*  var newPath = wd + "/uploads/"+req.files.userfile.name;
-  fs.writeFile(newPath, data, function (err) {
-    console.log('Upload Successful');
-	res.redirect('/index');
-  });
-  */
-
-
-	
-app.get("/*", function(req, res) {
+ app.get("/*", function(req, res) {
 		res.writeHead(200, {'content-type':'text/html'});        
 		res.redirect('/index');
 	 res.end();
-
 		});
 
-//http.listen(port,function(){console.log("App Started")});
 
-
-	
-	
 	
 /**
  *  Define the sample application.
