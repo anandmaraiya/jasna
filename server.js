@@ -8,7 +8,8 @@ var output = 0;
 var absorb = require('absorb');
 //var fs = require('fs');
 var wd = __dirname + '/public';
-var Rloc = $OPENSHIFT_DATA_DIR +'/R/bin';
+var Rloc = '~/app-root/data/R/bin';
+
 var multer = require('multer');
 var body1 = bodyParser.urlencoded( {extended : true});
 var body2 = bodyParser.json();
@@ -16,8 +17,8 @@ var mustache = require('mustache'); // bring in mustache template engine
 
 app.use(express.static(wd));
 	//app.use());
-var upload1 = multer({ dest : wd+'/uploads/UserData/'});
-var upload2 = multer({ dest : wd+'/uploads/UserRcode/'});
+var upload1 = multer({ dest : wd+'/uploads/UserData'});
+var upload2 = multer({ dest : wd+'/uploads/UserRcode'});
 
 
 app.get('/index', function (req, res) {
@@ -120,10 +121,10 @@ var demoData = [{ // dummy data to display
   if (err) {throw err};
 	//console.log('UploadFile Renamed back to ' + fnameB );
 		
-	fs.createReadStream(wd+'/uploads/UserData/'+fnameB).pipe(fs.createWriteStream(wd+'/uploads/UserData/'+DefFile));
+	fs.createReadStream(wd+'/uploads/UserData/'+fnameB).pipe(fs.createWriteStream(wd+'/uploads/UserData/'+fnameB));
 		var child_process = require('child_process');
-		var fileTransfer = child_process.exec( 'cp '+wd+ '/uploads/UserData/'+fnameB+' '+Rloc+'/'+fnameB);
-		var workerProcess = child_process.exec( 'sh '+Rloc+'/R --vanilla  < '+wd+'/uploads/UserRcode/'+DefRcode);
+		var fileTransfer = child_process.spawn( 'cp '+wd+ '/uploads/UserData/'+fnameB+' '+Rloc+'/'+fnameB);
+		var workerProcess = child_process.spawn( 'sh '+Rloc+'/R --vanilla  < '+wd+'/uploads/UserRcode/'+DefRcode);
    workerProcess.stdout.on('data', function (data,err) {
       if(err) console.log('error');
 	  console.log('stdout: ' + data);
@@ -158,7 +159,7 @@ app.post('/RCodeUpload', upload2.single('userRcode'),function (req, res) {
      fs.rename( wd+'/uploads/UserRcode/'+fnameA ,wd+ '/uploads/UserRcode/'+fnameB, function (err) {
 	 
 	res.writeHead(200, {'content-type':'text/html'});
-	res.write('<script> alert("UploadFile Renamed back to ' + fnameB + '");</script>');
+	//res.write('<script> alert("UploadFile Renamed back to ' + fnameB + '");</script>');
 		
 		var child_process = require('child_process');
 		var fileTransfer = child_process.exec( 'cp '+wd+ '/uploads/UserRcode/'+fnameB+' '+Rloc+'/'+fnameB);
