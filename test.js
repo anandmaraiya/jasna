@@ -119,11 +119,11 @@ app.post('/fileUpload',function (req, res) {
 	
 	if(req.file){
 	
-	fnameB = req.file.originalname;
-	fnameA = req.file.filename;
+	//fnameB = req.file.originalname;
+	//fnameA = req.file.filename;
 	//ftype = req.body.TypeData;
 	res.writeHead(200, {'content-type':'text/html'});
-	res.write('<script>alert("File uploaded : '+fnameB+' of '+ftype + 'format");</script>');
+	res.write('<script>alert("Hi");</script>');
 	res.end();
 	
     /*
