@@ -25,15 +25,19 @@ function myAccFunc(id) {
 function MatchFileType( fileName, MatchType ) {
 if (!fileName) {
 				alert("No files for uploading!");
-				return; };
+				return false; };
 
 dots = fileName.split(".")
 //get the part AFTER the LAST period.
-fileType = "." + dots[dots.length-1];
+fileType = dots[dots.length-1];
 
-return (MatchType.indexOf(fileType) != -1) ?
+var r =  (MatchType.indexOf(fileType.toUpperCase()) != -1) ?
 true : 
-alert("Please only upload files that end in types: \n\n" + (fileTypes.join(" .")) + "\n\nPlease select a new file and try again.");
+false;
+if(r) { alert("Matched");}
+if(!r) { alert ("Not-matched");}
+return r;
+
 }
 // -->
 </script>
@@ -87,8 +91,8 @@ alert("Please only upload files that end in types: \n\n" + (fileTypes.join(" .")
   </h4>
   <hr>
   <h4>
-<input type="file" name="userfile" class="w3-yellow w3-input" style="padding:5%;" onchange="return MatchFileType(this.form['uploadForm'].userfile.value, this.form['uploadForm'].elements('TypeData').value )" />
-<input type="submit" value="Upload" class="w3-yellow w3-input"  name="submit" />
+<input type="file" name="userfile" class="w3-yellow w3-input" style="padding:5%;"  />
+<input type="submit" value="Upload" class="w3-yellow w3-input"  name="submit"  onclick="return  MatchFileType(this.forms['uploadForm'].elements('userfile').value, this.forms['uploadForm'].elements('TypeData').value )"/>
 </form>
 </h4>
 </div>
