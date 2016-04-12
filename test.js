@@ -115,7 +115,28 @@ var demoData = [{ // dummy data to display
 	var DefFile = 'default.csv' ; var DefRcode = 'default.R';
 	var ftype = 'CSV';
 
-app.post('/fileUpload',function (req, res) {
+app.post('/RCodeUpload', function (req, res) {
+	
+	if(req.file){
+	
+	//fnameB = req.file.originalname;
+	//fnameA = req.file.filename;
+	//ftype = req.body.TypeData;
+	res.writeHead(200, {'content-type':'text/html'});
+	res.write('<script>alert("Hi");</script>');
+	res.end();
+		}
+	
+   else {
+	res.writeHead(200, {'content-type':'text/html'});
+   res.write('<script>alert("No datafile found for uploading")</script><script> window.location="http://jasan-maraiya.rhcloud.com/index";</script>');
+	res.end();		
+   }
+   });
+
+
+	
+	app.post('/fileUpload',function (req, res) {
 	
 	if(req.file){
 	
