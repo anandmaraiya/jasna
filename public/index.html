@@ -21,6 +21,22 @@ function myAccFunc(id) {
         x.previousElementSibling.className.replace(" w3-dark-grey", "");
     }
 }
+
+function MatchFileType( fileName, MatchType ) {
+if (!fileName) {
+				alert("No files for uploading!");
+				return; };
+
+dots = fileName.split(".")
+//get the part AFTER the LAST period.
+fileType = "." + dots[dots.length-1];
+
+return (MatchType.indexOf(fileType) != -1) ?
+true : 
+alert("Please only upload files that end in types: \n\n" + (fileTypes.join(" .")) + "\n\nPlease select a new file and try again.");
+}
+// -->
+</script>
 </script>
 <div class="w3-container w3-dark-grey w3-center w3-row s6">
   <h1>Welcome to JASAN</h1>
@@ -35,27 +51,35 @@ function myAccFunc(id) {
   <hr>
   <h4 class="w3-accordion"> <button onclick="myAccFunc('Demo1')" class="w3-blue-grey w3-hover-dark-grey w3-left-align"> Supported Formats : CSV TXT XLS... </button> 
   <div id="Demo1" class="w3-accordion-content">
-		<div class="w3-container">
-		  <div class="w3-half">
-		<input id="TypeCSV" class="w3-radio w3-white" type="radio" name="TypeData" value="CSV" checked>
+	<br>
+<form id        =  "uploadForm"
+     enctype   =  "multipart/form-data"
+     action    =  "/fileUpload"
+     method    =  "post"
+>
+
+	<div class="w3-container w3-white w3-card-8">
+		  <div class="w3-half w3-darkgrey">
+		<input id="TypeCSV" class="w3-radio" type="radio" name="TypeData" value="CSV" checked>
 		<label class="w3-validate">CSV</label>
 		<br>
-		<input id="TypeTXT" class="w3-radio w3-darkgrey" type="radio" name="TypeData" value="TXT" checked>
+		<input id="TypeTSV" class="w3-radio" type="radio" name="TypeData" value="TSV">
 		<label class="w3-validate">TSV</label>
 		<br>
-		<input id="TypeXLS" class="w3-radio" type="radio" name="TypeData" value="XLS" checked>
+		<input id="TypeXLS" class="w3-radio" type="radio" name="TypeData" value="XLS">
 		<label class="w3-validate"> XLS</label>
-
+		<br>
 		  </div>
 		<div class="w3-half">
-		<input id="TypeCSV" class="w3-radio" type="radio" name="TypeData" value="CSV" checked>
+		<input id="TypeSQL" class="w3-radio" type="radio" name="TypeData" value="SQL">
 		<label class="w3-validate">SQL</label>
 		<br>
-		<input id="TypeTXT" class="w3-radio" type="radio" name="TypeData" value="TXT" checked>
+		<input id="TypeTXT" class="w3-radio" type="radio" name="TypeData" value="TXT">
 		<label class="w3-validate">TXT</label>
 		<br>
-		<input id="TypeXLS" class="w3-radio" type="radio" name="TypeData" value="XLS" disabled>
+		<input id="TypeMongoDb" class="w3-radio" type="radio" name="TypeData" value="MongoDB" disabled>
 		<label class="w3-validate"> MongoDB</label>
+		<br>
 	</div>
 </div>
   </div>
@@ -63,13 +87,8 @@ function myAccFunc(id) {
   </h4>
   <hr>
   <h4>
-<form id        =  "uploadForm"
-     enctype   =  "multipart/form-data"
-     action    =  "/fileUpload"
-     method    =  "post"
->
-<input type="file" name="userfile" class="w3-yellow w3-input" style="padding:5%;" />
-<input type="submit" value="Upload" class="w3-yellow w3-input"  name="submit"/>
+<input type="file" name="userfile" class="w3-yellow w3-input" style="padding:5%;" onchange="return MatchFileType(this.form['uploadForm'].userfile.value, this.form['uploadForm'].elements('TypeData').value )" />
+<input type="submit" value="Upload" class="w3-yellow w3-input"  name="submit" />
 </form>
 </h4>
 </div>

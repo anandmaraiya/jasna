@@ -8,12 +8,11 @@ var output = 0;
 var absorb = require('absorb');
 //var fs = require('fs');
 var wd = __dirname + '/public';
+var Rloc = $OPENSHIFT_DATA_DIR +'/R/bin';
 var multer = require('multer');
 var body1 = bodyParser.urlencoded( {extended : true});
 var body2 = bodyParser.json();
 var mustache = require('mustache'); // bring in mustache template engine
-var rstats = require('rstats');
-var R = new rstats.session();
 
 app.use(express.static(wd));
 	//app.use());
@@ -105,52 +104,51 @@ var demoData = [{ // dummy data to display
 	
 	var fnameA ='' ; var fnameB = '';
 	var DefFile = 'default.csv' ; var DefRcode = 'default.R';
-	
-app.post('/fileUpload', upload1.single('userfile'),function (req, res) {
+	var ftype = 'CSV';
+
+	app.post('/fileUpload', upload1.single('userfile'),function (req, res) {
 	if(req.file){
-   fnameB = req.file.originalname;
+	res.writeHead(200, {'content-type':'text/html'});
+
+	fnameB = req.file.originalname;
    fnameA = req.file.filename;
-	console.log('File with name '+ fnameB + ' uploaded with new name ' + fnameA);
+  // console.log(ftype);
+  // ftype = req.body.TypeData;
+  // console.log(req.body.TypeData);
+//	console.log('File with name '+ fnameB + ' uploaded with new name ' + fnameA);
      fs.rename( wd+'/uploads/UserData/'+fnameA ,wd+ '/uploads/UserData/'+fnameB, function (err) {
   if (err) {throw err};
-	console.log('UploadFile Renamed back to ' + fnameB );
+	//console.log('UploadFile Renamed back to ' + fnameB );
+		
 	fs.createReadStream(wd+'/uploads/UserData/'+fnameB).pipe(fs.createWriteStream(wd+'/uploads/UserData/'+DefFile));
-
-	res.writeHead(200, {'content-type':'text/html'});
-	res.write('<script> alert("UploadFile Renamed back to ' + fnameB + '");</script>');
-			
-	 	
-			var child_process = require('child_process');
-		var workerProcess = child_process.exec( wd +'/../../data/R/bin/Rscript.exe   --vanilla '+wd+'/uploads/UserRcode/'+DefRcode);
-   res.write('<script> alert("UploadFile Renamed back to ' + fnameB + '");</script>');
-	
+		var child_process = require('child_process');
+		var fileTransfer = child_process.exec( 'cp '+wd+ '/uploads/UserData/'+fnameB+' '+Rloc+'/'+fnameB);
+		var workerProcess = child_process.exec( 'sh '+Rloc+'/R --vanilla  < '+wd+'/uploads/UserRcode/'+DefRcode);
    workerProcess.stdout.on('data', function (data,err) {
       if(err) console.log('error');
 	  console.log('stdout: ' + data);
 	  output = data;
 	res.write('upload successful');
-	res.write('<img src="/current.png"/> <br>');
+	res.write('<img src="'+Rloc+'/current.png"/> <br>');
 	res.end();	
 	  });
    workerProcess.stderr.on('data', function (data) {
       console.log('stderr: ' + data);
-	res.write('<script>alert("'+data+'")</script><script> window.location="http://jasan-maraiya.rhcloud.com/index";</script>');
+	res.write('<script>alert("Error while running R")</script><script> window.location="http://jasan-maraiya.rhcloud.com/index;</script>');
 	res.end();		
    });
    workerProcess.on('close', function (code) {
       console.log('child process exited with code ' + code);
    });
-	
 	});
-	res.end();
 	}
    else {
-		res.writeHead(200, {'content-type':'text/html'});
-		res.write('<script>alert("No datafile found for uploading"); window.location="http://jasan-maraiya.rhcloud.com/index";</script>');
-	 res.end();
+	res.writeHead(200, {'content-type':'text/html'});
+   res.write('<script>alert("No datafile found for uploading")</script><script> window.location="http://jasan-maraiya.rhcloud.com/index";</script>');
+	res.end();		
    }
    });
-
+   
 app.post('/RCodeUpload', upload2.single('userRcode'),function (req, res) {
 	
 	if(req.file){
@@ -163,14 +161,15 @@ app.post('/RCodeUpload', upload2.single('userRcode'),function (req, res) {
 	res.write('<script> alert("UploadFile Renamed back to ' + fnameB + '");</script>');
 		
 		var child_process = require('child_process');
-		var workerProcess = child_process.exec( wd+'/../../data/R/bin/Rscript.exe   --vanilla '+ wd+'/uploads/UserRcode/'+fnameB );
+		var fileTransfer = child_process.exec( 'cp '+wd+ '/uploads/UserRcode/'+fnameB+' '+Rloc+'/'+fnameB);
+		var workerProcess = child_process.exec(  'sh '+Rloc+'/R --vanilla  < '+wd+'/uploads/UserRcode/'+fnameB );
 
 		   workerProcess.stdout.on('data', function (data,err) {
 			  if(err) console.log('error');
 			  console.log('stdout: ' + data);
 			  output = data;
 			res.write('upload successful');
-			res.write('<img src="/current.png"/> <br>');
+			res.write('<img src="'+Rloc+'/current.png"/> <br>');
 			res.end();	
 
 			  });
