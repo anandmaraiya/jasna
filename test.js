@@ -13,7 +13,8 @@ var output = 0;
 var absorb = require('absorb');
 //var fs = require('fs');
 var wd = __dirname + '/public';
-var Rloc = '~/app-root/data/R/bin';
+var datadir = process.env.OPENSHIFT_DATA_DIR;
+var Rloc = datadir +'/R/bin';
 
 var multer = require('multer');
 var body1 = bodyParser.urlencoded( {extended : true});
@@ -22,8 +23,8 @@ var mustache = require('mustache'); // bring in mustache template engine
 
 app.use(express.static(wd));
 	//app.use());
-var upload1 = multer({ dest : wd+'/uploads/UserData'});
-var upload2 = multer({ dest : wd+'/uploads/UserRcode'});
+var upload1 = multer({ dest : datadir+'/uploads/UserData'});
+var upload2 = multer({ dest : datadir+'/uploads/UserRcode'});
 
 app.get('/index', function (req, res) {
 res.sendFile(wd+"/index.html");   
@@ -110,11 +111,11 @@ var demoData = [{ // dummy data to display
  });
  
  
- var fnameA ='' ; var fnameB = '';
+    var fnameA ='' ; var fnameB = '';
 	var DefFile = 'default.csv' ; var DefRcode = 'default.R';
 	var ftype = 'CSV';
 
-	app.post('/fileUpload', upload1.single('userfile'),function (req, res) {
+app.post('/fileUpload', upload1.single('userfile'),function (req, res) {
 	
 	if(req.file){
 	res.writeHead(200, {'content-type':'text/html'});
@@ -124,7 +125,7 @@ var demoData = [{ // dummy data to display
 	ftype = req.body.TypeData;
 	
 	res.write('<script>alert("File uploaded : '+fnameB+' of '+ftype + 'format")</script>');
-	res.end('<script> window.location="http://jasan-maraiya.rhcloud.com/index;</script>');
+	res.end();
 	
     /*
 	fs.rename( wd+'/uploads/UserData/'+fnameA ,wd+ '/uploads/UserData/'+fnameB, function (err) 
