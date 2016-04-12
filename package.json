@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "JASAN on Node.js",
   "author": "Anand <anand.maraiya@gmail.com>",
-  "main": "server.js",
+  "main": "test.js",
   "scripts": {
     "start": "node test.js"
   },

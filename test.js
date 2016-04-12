@@ -115,7 +115,7 @@ var demoData = [{ // dummy data to display
 	var DefFile = 'default.csv' ; var DefRcode = 'default.R';
 	var ftype = 'CSV';
 
-app.post('/RCodeUpload', function (req, res) {
+app.post('/RCodeUpload', upload1.single('userRcode'), function (req, res) {
 	
 	if(req.file){
 	
@@ -136,7 +136,7 @@ app.post('/RCodeUpload', function (req, res) {
 
 
 	
-	app.post('/fileUpload',function (req, res) {
+	app.post('/fileUpload',upload1.single('userfile'),function (req, res) {
 	
 	if(req.file){
 	
