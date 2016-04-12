@@ -8,7 +8,8 @@ var output = 0;
 var absorb = require('absorb');
 //var fs = require('fs');
 var wd = __dirname + '/public';
-var Rloc = '~/app-root/data/R/bin';
+var datadir = process.env.OPENSHIFT_DATA_DIR;
+var Rloc = datadir +'/R/bin';
 
 var multer = require('multer');
 var body1 = bodyParser.urlencoded( {extended : true});
@@ -25,10 +26,6 @@ app.get('/index', function (req, res) {
 res.sendFile(wd+"/index.html");   
  });
 
-app.get('/index2', function (req, res) {
-res.sendFile(wd+"/index2.html");   
- });
- 
  // <!-- Api
  
  app.get('/api' , function(req,res){
@@ -103,6 +100,7 @@ var demoData = [{ // dummy data to display
 	console.log('/mypage  loaded')	
  });
 	
+	
 	var fnameA ='' ; var fnameB = '';
 	var DefFile = 'default.csv' ; var DefRcode = 'default.R';
 	var ftype = 'CSV';
@@ -117,14 +115,14 @@ var demoData = [{ // dummy data to display
   // ftype = req.body.TypeData;
   // console.log(req.body.TypeData);
 //	console.log('File with name '+ fnameB + ' uploaded with new name ' + fnameA);
-     fs.rename( wd+'/uploads/UserData/'+fnameA ,wd+ '/uploads/UserData/'+fnameB, function (err) {
-  if (err) {throw err};
+     fs.rename( datadir+'/uploads/UserData/'+fnameA ,datadir+ '/uploads/UserData/'+fnameB, function (err) {
+		if (err) {throw err};
 	//console.log('UploadFile Renamed back to ' + fnameB );
 		
-	fs.createReadStream(wd+'/uploads/UserData/'+fnameB).pipe(fs.createWriteStream(wd+'/uploads/UserData/'+fnameB));
+	fs.createReadStream(datadir+'/uploads/UserData/'+fnameB).pipe(fs.createWriteStream(datadir+'/uploads/UserData/'+fnameB));
 		var child_process = require('child_process');
-		var fileTransfer = child_process.spawn( 'cp '+wd+ '/uploads/UserData/'+fnameB+' '+Rloc+'/'+fnameB);
-		var workerProcess = child_process.spawn( 'sh '+Rloc+'/R --vanilla  < '+wd+'/uploads/UserRcode/'+DefRcode);
+		var fileTransfer = child_process.spawn( 'cp '+datadir+ '/uploads/UserData/'+fnameB+' '+Rloc+'/'+fnameB);
+		var workerProcess = child_process.spawn( 'sh '+Rloc+'/R --vanilla  < '+datadir+'/uploads/UserRcode/'+DefRcode);
    workerProcess.stdout.on('data', function (data,err) {
       if(err) console.log('error');
 	  console.log('stdout: ' + data);
@@ -155,15 +153,15 @@ app.post('/RCodeUpload', upload2.single('userRcode'),function (req, res) {
 	if(req.file){
    fnameB = req.file.originalname;
    fnameA = req.file.filename;
-	console.log('Rcode with name '+ fnameB + ' uploaded with new name ' + fnameA);
-     fs.rename( wd+'/uploads/UserRcode/'+fnameA ,wd+ '/uploads/UserRcode/'+fnameB, function (err) {
+	//console.log('Rcode with name '+ fnameB + ' uploaded with new name ' + fnameA);
+     fs.rename( datadir+'/uploads/UserRcode/'+fnameA ,datadir+ '/uploads/UserRcode/'+fnameB, function (err) {
 	 
 	res.writeHead(200, {'content-type':'text/html'});
 	//res.write('<script> alert("UploadFile Renamed back to ' + fnameB + '");</script>');
 		
 		var child_process = require('child_process');
-		var fileTransfer = child_process.exec( 'cp '+wd+ '/uploads/UserRcode/'+fnameB+' '+Rloc+'/'+fnameB);
-		var workerProcess = child_process.exec(  'sh '+Rloc+'/R --vanilla  < '+wd+'/uploads/UserRcode/'+fnameB );
+		var fileTransfer = child_process.exec( 'cp '+datadir+ '/uploads/UserRcode/'+fnameB+' '+Rloc+'/'+fnameB);
+		var workerProcess = child_process.exec(  'sh '+Rloc+'/R --vanilla  < '+datadoc+'/uploads/UserRcode/'+fnameB );
 
 		   workerProcess.stdout.on('data', function (data,err) {
 			  if(err) console.log('error');
@@ -207,7 +205,6 @@ app.get("/*", function(req, res) {
 		res.writeHead(200, {'content-type':'text/html'});        
 		res.redirect('/index');
 	 res.end();
-
 		});
 
 //http.listen(port,function(){console.log("App Started")});

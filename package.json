@@ -3,9 +3,9 @@
   "version": "1.0.0",
   "description": "JASAN on Node.js",
   "author": "Anand <anand.maraiya@gmail.com>",
-  "main": "test.js",
+  "main": "server.js",
   "scripts": {
-    "start": "node test.js"
+    "start": "node server.js"
   },
   "dependencies": {
     "express": "^4.13.4",
