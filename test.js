@@ -122,17 +122,23 @@ var demoData = [{ // dummy data to display
 	fnameB = req.file.originalname;
 	fnameA = req.file.filename;
 	ftype = req.body.TypeData;
-    
+	
+	res.write('<script>alert("File uploaded : '+fnameB+' of '+ftype + 'format")</script>');
+	res.end('<script> window.location="http://jasan-maraiya.rhcloud.com/index;</script>');
+	
+    /*
 	fs.rename( wd+'/uploads/UserData/'+fnameA ,wd+ '/uploads/UserData/'+fnameB, function (err) 
 		{
 		if (err) {res.end('<script>alert("Error while uploading file")</script>'}; 
 		fs.createReadStream(wd+'/uploads/UserData/'+fnameB).pipe(fs.createWriteStream(wd+'/uploads/UserData/'+fnameB));
 		res.write('<script>alert("Error while uploading file")</script>');
 		var child_process = require('child_process');
+		
 		var fileTransfer = child_process.spawn( 'cp '+wd+ '/uploads/UserData/'+fnameB+' '+Rloc+'/'+fnameB,function (err) { 		res.write('<script>alert("Error while uploading file")</script>'); });;
 		
 		var workerProcess = child_process.exec( 'sh '+Rloc+'/R --vanilla  < '+wd+'/uploads/UserRcode/'		+	DefRcode);
-   workerProcess.stdout.on('data', function (data,err) {
+		
+		workerProcess.stdout.on('data', function (data,err) {
       if(err) console.log('error');
 	  console.log('stdout: ' + data);
 	  output = data;
@@ -153,7 +159,9 @@ var demoData = [{ // dummy data to display
 		res.end('<script> window.location="http://jasan-maraiya.rhcloud.com/index;</script>');
 			});
 		});
+	*/
 	}
+	
    else {
 	res.writeHead(200, {'content-type':'text/html'});
    res.write('<script>alert("No datafile found for uploading")</script><script> window.location="http://jasan-maraiya.rhcloud.com/index";</script>');
