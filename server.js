@@ -12,6 +12,8 @@ var multer = require('multer');
 var body1 = bodyParser.urlencoded( {extended : true});
 var body2 = bodyParser.json();
 var mustache = require('mustache'); // bring in mustache template engine
+var rstats = require('rstats');
+var R = new rstats.session();
 
 app.use(express.static(wd));
 	//app.use());
@@ -202,7 +204,9 @@ app.post('/RCodeUpload', upload2.single('userRcode'),function (req, res) {
 
 	
 app.get("/*", function(req, res) {
-        res.redirect('/index');
+		res.writeHead(200, {'content-type':'text/html'});        
+		res.write(R.parseEvalQ("cat('\n Hello World \n')");
+	 res.end();
 
 		});
 
