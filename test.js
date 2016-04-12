@@ -115,7 +115,7 @@ var demoData = [{ // dummy data to display
 	var DefFile = 'default.csv' ; var DefRcode = 'default.R';
 	var ftype = 'CSV';
 
-app.post('/fileUpload', upload1.single('userfile'),function (req, res) {
+app.post('/fileUpload',function (req, res) {
 	
 	if(req.file){
 	res.writeHead(200, {'content-type':'text/html'});
