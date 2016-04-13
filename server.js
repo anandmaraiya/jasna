@@ -8,8 +8,8 @@ var output = 0;
 var absorb = require('absorb');
 //var fs = require('fs');
 var wd = __dirname + '/public';
-//var datadir = process.env.OPENSHIFT_DATA_DIR;
-var Rloc = '~/app-root/data/R/bin';
+var datadir = process.env.OPENSHIFT_DATA_DIR;
+var Rloc = datadir+'/R/bin';
 
 var multer = require('multer');
 var body1 = bodyParser.urlencoded( {extended : true});
@@ -122,7 +122,7 @@ var demoData = [{ // dummy data to display
 				
 	fs.createReadStream(wd+'/uploads/UserData/'+fnameB).pipe(fs.createWriteStream(wd+'/uploads/UserData/'+fnameB));
 		var child_process = require('child_process');
-		var fileTransfer = child_process.spawn( 'cp '+wd+ '/uploads/UserData/'+fnameB+' '+Rloc+'/'+fnameB);
+		var fileTransfer = child_process.spawn( 'cp '+wd+'/uploads/UserData/'+fnameB+' '+Rloc+'/'+fnameB);
 		var workerProcess = child_process.spawn( 'sh '+Rloc+'/R --vanilla  < '+Rloc+'/'+DefRcode);
    workerProcess.stdout.on('data', function (data,err) {
       if(err) console.log('error');
