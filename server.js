@@ -20,7 +20,7 @@ var upload2 = multer({ dest : wd+'/uploads/UserRcode'});
 //local places
 var wd = __dirname + '/public';
 var datadir = process.env.OPENSHIFT_DATA_DIR;
-var Rloc = datadir+'/R/bin';
+var Rloc = datadir+'R/bin';
 
 
 app.use(express.static(wd));
