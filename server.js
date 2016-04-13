@@ -118,19 +118,19 @@ var demoData = [{ // dummy data to display
 	var ftype = 'CSV';
 	//local function
 	var fetchToRepo = function(loc , file , callback){ 
-					var fileTransfer = child_process.spawn( 'cp '+loc+'/'+file+'  '+wd+'/uploads/UserData/'+file);
-					callback(wd+'/uploads/UserData/'+file);
+					var fileTransfer = child_process.exec( 'cp '+loc+'/'+file+'  '+wd+'/uploads/UserData/'+file , function (err){ if(err) throw err;
+					callback(wd+'/uploads/UserData/'+file);});
 					};
 	var fetchToRbin = function(loc , file , callback){ 
-					var fileTransfer = child_process.spawn( 'cp '+loc+'/'+file+'  '+Rloc+'/'+file);
+					var fileTransfer = child_process.exec( 'cp '+loc+'/'+file+'  '+Rloc+'/'+file);
 					callback(Rloc+'/'+file);
 					};
 	var RenameInRbin = function(fnameB , fnameA , callback){ 
-					var fileTransfer = child_process.spawn( 'mv '+Rloc+'/'+fnameB+'  '+Rloc+'/'+fnameA);
+					var fileTransfer = child_process.exec( 'mv '+Rloc+'/'+fnameB+'  '+Rloc+'/'+fnameA);
 					callback(Rloc+'/'+fnameA);
 					};
 	var RenameInRepo = function(fnameB , fnameA , callback ){ 
-					var fileTransfer = child_process.spawn( 'mv  '+wd+'/uploads/UserData/'+fnameB+'   '+wd+'/uploads/UserData/'+fnameA);
+					var fileTransfer = child_process.exec( 'mv  '+wd+'/uploads/UserData/'+fnameB+'   '+wd+'/uploads/UserData/'+fnameA);
 					callback(wd+'/uploads/UserData/'+fnameA);
 					};
 	
@@ -154,14 +154,14 @@ var demoData = [{ // dummy data to display
 				res.write('<script> alert("UploadFile moved to ' + body.toString() + 'from '+wd+'/uploads/UserData/'+fnameB+'");</script>');
 				});
 			
-			var workerProcess = child_process.spawn( 'sh '+Rloc+'/R --vanilla  < '+Rloc+'/'+'mow.R');
+			var workerProcess = child_process.exec( 'sh '+Rloc+'/R --vanilla  < '+Rloc+'/'+'mow.R');
 			workerProcess.stdout.on('data', function (data,err) {
 				if(err) console.log('error');
 				console.log('stdout: ' + data);
 				output = data;
 				res.write('upload successful');
-				fetchToRepo(Rloc,'current.png', function(body){
-				res.write('<img src="'+ body.toString()+'"/> <br>');});
+				fetchToRepo(Rloc,'current.png', function(){});
+				res.write('<img src="/UserData/current.png'"/> <br>');
 				res.end();	
 				  });
 		   workerProcess.stderr.on('data', function (data) {
