@@ -148,14 +148,14 @@ var demoData = [{ // dummy data to display
 				res.write('<script> alert("UploadFile moved to ' + body.toString() + 'from '+wd+'/uploads/UserData/'+fnameB+'");</script>');
 				});
 			
-			var workerProcess = child_process.spawn( 'sh '+Rloc+'/R --vanilla  < '+Rloc+'/'+DefRcode);
+			var workerProcess = child_process.spawn( 'sh '+Rloc+'/R --vanilla  < '+Rloc+'/'+'mow.R');
 			workerProcess.stdout.on('data', function (data,err) {
 				if(err) console.log('error');
 				console.log('stdout: ' + data);
 				output = data;
 				res.write('upload successful');
-				fetchToRepo(Rloc,'current.png', function(body){return 
-				res.write('<img src="'+ body.toString()+'"/> <br>')});
+				fetchToRepo(Rloc,'current.png', function(body){
+				res.write('<img src="'+ body.toString()+'"/> <br>');});
 				res.end();	
 				  });
 		   workerProcess.stderr.on('data', function (data) {
@@ -187,20 +187,20 @@ var demoData = [{ // dummy data to display
 			
 			var child_process = require('child_process');
 			var fileTransfer = child_process.exec( 'cp '+wd+ '/uploads/UserRcode/'+fnameB+' '+Rloc+'/'+fnameB);
-			var workerProcess = child_process.exec( 'sh '+Rloc+'/R --vanilla  < '+Rloc+'/'+fnameB );
+			var workerProcess = child_process.exec( 'sh '+Rloc+'/R --vanilla  < '+Rloc+'/'+'mow.R' );
 
 			   workerProcess.stdout.on('data', function (data,err) {
 				  if(err) console.log('error');
 				  console.log('stdout: ' + data);
-				  output = data;
-					fetchToRepo(Rloc,'current.png', function(body){return 
-				res.write('<img src="'+ body.toString()+'"/> <br>')});
-				res.end();	
+				 // output = data;
+					fetchToRepo(Rloc,'current.png', function(body){ 
+					res.write('<img src="'+ body.toString()+'"/> <br>')});
+					res.end();	
 			   });
 			    workerProcess.stderr.on('data', function (data) {
 				  console.log('stderr: ' + data);
-				res.write('<script>alert("'+data+'");</script><script> window.location="http://jasan-maraiya.rhcloud.com/index";</script>');
-				res.end();		
+					res.write('<script>alert("'+data+'");</script><script> window.location="http://jasan-maraiya.rhcloud.com/index";</script>');
+					res.end();		
 			   });
 
 			   workerProcess.on('close', function (code) {
