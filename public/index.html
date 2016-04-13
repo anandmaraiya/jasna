@@ -56,11 +56,6 @@ return r;
   <h4 class="w3-accordion"> <button onclick="myAccFunc('Demo1')" class="w3-blue-grey w3-hover-dark-grey w3-left-align"> Supported Formats : CSV TXT XLS... </button> 
   <div id="Demo1" class="w3-accordion-content">
 	<br>
-<form id        =  "uploadForm"
-     enctype   =  "multipart/form-data"
-     action    =  "/fileUpload"
-     method    =  "post"
->
 
 	<div class="w3-container w3-white w3-card-8">
 		  <div class="w3-half w3-darkgrey">
@@ -91,7 +86,13 @@ return r;
   </h4>
   <hr>
   <h4>
-<input type="file" name="userfile" class="w3-yellow w3-input" style="padding:5%;"  />
+<form id        =  "uploadForm"
+     enctype   =  "multipart/form-data"
+     action    =  "/fileUpload"
+     method    =  "post"
+>
+
+  <input type="file" name="userfile" class="w3-yellow w3-input" style="padding:5%;"  />
 <input type="submit" value="Upload" class="w3-yellow w3-input"  name="submit"  />
 </form>
 </h4>

@@ -168,7 +168,6 @@ app.post('/RCodeUpload', upload2.single('userRcode'),function (req, res) {
 			  if(err) console.log('error');
 			  console.log('stdout: ' + data);
 			  output = data;
-			  res.write(data);
 			res.write('upload successful');
 			res.write('<img src="'+Rloc+'/current.png"/> <br>');
 			res.end();	
