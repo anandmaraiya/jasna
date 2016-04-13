@@ -20,7 +20,7 @@ var upload2 = multer({ dest : wd+'/uploads/UserRcode'});
 //local places
 var wd = __dirname + '/public';
 var datadir = process.env.OPENSHIFT_DATA_DIR;
-var Rloc = datadir+'R/bin';
+var Rloc = datadir+'/R/bin';
 
 
 app.use(express.static(wd));
@@ -145,7 +145,7 @@ var demoData = [{ // dummy data to display
 				res.write('<script> alert("UploadFile Renamed back to ' + body.toString() + '");</script>');
 				});
 			fetchToRbin(wd+'/uploads/UserData',fnameB , function (body) {
-				res.write('<script> alert("UploadFile moved to ' + body.toString() + 'from '+wd+'/uploads/UserData'+fnameB+'");</script>');
+				res.write('<script> alert("UploadFile moved to ' + body.toString() + 'from '+wd+'/uploads/UserData/'+fnameB+'");</script>');
 				});
 			
 			var workerProcess = child_process.spawn( 'sh '+Rloc+'/R --vanilla  < '+Rloc+'/'+DefRcode);
@@ -154,7 +154,8 @@ var demoData = [{ // dummy data to display
 				console.log('stdout: ' + data);
 				output = data;
 				res.write('upload successful');
-				res.write('<img src="'+fetchToRepo(Rloc,'current.png', function(body){return body.toString();})+'"/> <br>');
+				fetchToRepo(Rloc,'current.png', function(body){return 
+				res.write('<img src="'+ body.toString()+'"/> <br>')});
 				res.end();	
 				  });
 		   workerProcess.stderr.on('data', function (data) {
@@ -192,12 +193,10 @@ var demoData = [{ // dummy data to display
 				  if(err) console.log('error');
 				  console.log('stdout: ' + data);
 				  output = data;
-				var currentPng = fetchToRepo(Rloc,'current.png', function(body){return body.toString();});
-				res.write('upload successful');
-				res.write('<img src="'+currentPng+'"/> <br>');
+					fetchToRepo(Rloc,'current.png', function(body){return 
+				res.write('<img src="'+ body.toString()+'"/> <br>')});
 				res.end();	
-				  });
-
+			   });
 			    workerProcess.stderr.on('data', function (data) {
 				  console.log('stderr: ' + data);
 				res.write('<script>alert("'+data+'");</script><script> window.location="http://jasan-maraiya.rhcloud.com/index";</script>');
