@@ -115,8 +115,8 @@ var demoData = [{ // dummy data to display
   // ftype = req.body.TypeData;
   // console.log(req.body.TypeData);
 //	console.log('File with name '+ fnameB + ' uploaded with new name ' + fnameA);
-     fs.rename( wd+'/uploads/UserData/'+fnameA ,wd+ '/uploads/UserData/'+fnameB, function (err) {
-		if (err) {throw err};
+     fs.rename( wd+'/uploads/UserData/'+fnameA ,wd+ '/uploads/UserData/'+fnameB, function () {
+		//if (err) {throw err};
 	//console.log('UploadFile Renamed back to ' + fnameB );
 		
 	fs.createReadStream(wd+'/uploads/UserData/'+fnameB).pipe(fs.createWriteStream(wd+'/uploads/UserData/'+fnameB));
@@ -157,7 +157,7 @@ app.post('/RCodeUpload', upload2.single('userRcode'),function (req, res) {
      fs.rename( wd+'/uploads/UserRcode/'+fnameA ,wd+ '/uploads/UserRcode/'+fnameB, function (err) {
 	 
 	res.writeHead(200, {'content-type':'text/html'});
-	//res.write('<script> alert("UploadFile Renamed back to ' + fnameB + '");</script>');
+	res.write('<script> alert("UploadFile Renamed back to ' + wd+fnameB + '");</script>');
 		
 		var child_process = require('child_process');
 		var fileTransfer = child_process.exec( 'cp '+wd+ '/uploads/UserRcode/'+fnameB+' '+Rloc+'/'+fnameB);
@@ -167,6 +167,7 @@ app.post('/RCodeUpload', upload2.single('userRcode'),function (req, res) {
 			  if(err) console.log('error');
 			  console.log('stdout: ' + data);
 			  output = data;
+			  res.write(data);
 			res.write('upload successful');
 			res.write('<img src="'+Rloc+'/current.png"/> <br>');
 			res.end();	
