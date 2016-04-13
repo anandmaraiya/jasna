@@ -145,7 +145,7 @@ var demoData = [{ // dummy data to display
 				res.write('<script> alert("UploadFile Renamed back to ' + body.toString() + '");</script>');
 				});
 			fetchToRbin(wd+'/uploads/UserData',fnameB , function (body) {
-				res.write('<script> alert("UploadFile moved to ' + body.toString() + '");</script>');
+				res.write('<script> alert("UploadFile moved to ' + body.toString() + 'from '+wd+'/uploads/UserData'+fnameB+'");</script>');
 				});
 			
 			var workerProcess = child_process.spawn( 'sh '+Rloc+'/R --vanilla  < '+Rloc+'/'+DefRcode);
