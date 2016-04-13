@@ -120,21 +120,27 @@ var demoData = [{ // dummy data to display
 	var fetchToRepo = function(loc , file , callback){ 
 					var fileTransfer = child_process.spawn( 'cp '+loc+'/'+file+'  '+wd+'/uploads/UserData/'+file);
 					callback(wd+'/uploads/UserData/'+file);
-					}
+					};
 	var fetchToRbin = function(loc , file , callback){ 
 					var fileTransfer = child_process.spawn( 'cp '+loc+'/'+file+'  '+Rloc+'/'+file);
 					callback(Rloc+'/'+file);
-					}
+					};
 	var RenameInRbin = function(fnameB , fnameA , callback){ 
 					var fileTransfer = child_process.spawn( 'mv '+Rloc+'/'+fnameB+'  '+Rloc+'/'+fnameA);
 					callback(Rloc+'/'+fnameA);
-					}
+					};
 	var RenameInRepo = function(fnameB , fnameA , callback ){ 
 					var fileTransfer = child_process.spawn( 'mv  '+wd+'/uploads/UserData/'+fnameB+'   '+wd+'/uploads/UserData/'+fnameA);
 					callback(wd+'/uploads/UserData/'+fnameA);
-					}
+					};
 	
-					
+	app.get('/info' , function(req,res) {
+			res.writeHead(200, {'content-type':'text/html'});
+			res.write('<script> alert("' + Rloc + '");</script>');
+			res.write('<script> alert("' + wd + '");</script>');		
+			res.end();
+			});	
+	 	
 	//fileUpload
 	app.post('/fileUpload', upload1.single('userfile'),function (req, res) {
 		if(req.file){
@@ -160,7 +166,7 @@ var demoData = [{ // dummy data to display
 				  });
 		   workerProcess.stderr.on('data', function (data) {
 				console.log('stderr: ' + data);
-				res.write('<script>alert("Error while running R")</script><script> window.location="	http://jasan-maraiya.rhcloud.com/index;</script>');
+				res.write('<script>alert("Error while running R")</script><script> window.location="http://jasan-maraiya.rhcloud.com/index;</script>');
 				res.end();		
 				});
 		   workerProcess.on('close', function (code) {
