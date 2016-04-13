@@ -9,7 +9,7 @@ var absorb = require('absorb');
 //var fs = require('fs');
 var wd = __dirname + '/public';
 var datadir = process.env.OPENSHIFT_DATA_DIR;
-var Rloc = datadir+'/R/bin';
+var Rloc = datadir+'R/bin';
 
 var multer = require('multer');
 var body1 = bodyParser.urlencoded( {extended : true});
