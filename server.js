@@ -192,8 +192,9 @@ var demoData = [{ // dummy data to display
 				  if(err) console.log('error');
 				  console.log('stdout: ' + data);
 				  output = data;
+				var currentPng = fetchToRepo(Rloc,'current.png', function(body){return body;});
 				res.write('upload successful');
-				res.write('<img src="'+fetchToRepo(Rloc,'current.png', function(body){return body;})+'"/> <br>');
+				res.write('<img src="'+currentPng+'"/> <br>');
 				res.end();	
 				  });
 
