@@ -140,7 +140,7 @@ var demoData = [{ // dummy data to display
 			res.write('<script> alert("' + wd + '");</script>');		
 			res.end();
 			});	
-	 	
+	 	/*
 	//fileUpload
 	app.post('/fileUpload', upload1.single('userfile'),function (req, res) {
 		if(req.file){
