@@ -134,7 +134,7 @@ var demoData = [{ // dummy data to display
 					callback(wd+'/uploads/UserData/'+fnameA);
 					}
 	
-	/*				
+					
 	//fileUpload
 	app.post('/fileUpload', upload1.single('userfile'),function (req, res) {
 		if(req.file){
@@ -142,10 +142,10 @@ var demoData = [{ // dummy data to display
 			fnameB = req.file.originalname;
 			fnameA = req.file.filename;
 			RenameInRepo( fnameA , fnameB , function(body){
-				res.write('<script> alert("UploadFile Renamed back to ' + body + '");</script>');
+				res.write('<script> alert("UploadFile Renamed back to ' + body.toString() + '");</script>');
 				});
 			fetchToRbin(wd+'/uploads/UserData',fnameB , function (body) {
-				res.write('<script> alert("UploadFile moved to ' + body + '");</script>');
+				res.write('<script> alert("UploadFile moved to ' + body.toString() + '");</script>');
 				});
 			
 			var workerProcess = child_process.spawn( 'sh '+Rloc+'/R --vanilla  < '+Rloc+'/'+DefRcode);
@@ -154,7 +154,7 @@ var demoData = [{ // dummy data to display
 				console.log('stdout: ' + data);
 				output = data;
 				res.write('upload successful');
-				res.write('<img src="'+fetchToRepo(Rloc,'current.png', function(body){return body;})+'"/> <br>');
+				res.write('<img src="'+fetchToRepo(Rloc,'current.png', function(body){return body.toString();})+'"/> <br>');
 				res.end();	
 				  });
 		   workerProcess.stderr.on('data', function (data) {
@@ -173,7 +173,7 @@ var demoData = [{ // dummy data to display
 			}
 		});
 	
-	*/
+	
 	//RCodeUpload		
 	app.post('/RCodeUpload', upload2.single('userRcode'),function (req, res) {
 		if(req.file){
@@ -192,7 +192,7 @@ var demoData = [{ // dummy data to display
 				  if(err) console.log('error');
 				  console.log('stdout: ' + data);
 				  output = data;
-				var currentPng = fetchToRepo(Rloc,'current.png', function(body){return body;});
+				var currentPng = fetchToRepo(Rloc,'current.png', function(body){return body.toString();});
 				res.write('upload successful');
 				res.write('<img src="'+currentPng+'"/> <br>');
 				res.end();	
