@@ -1,27 +1,33 @@
 #!/bin/env node
 //  OpenShift sample Node application
+//external modules
 var express = require('express');
 var app = express();
 var fs      = require('fs');
 var bodyParser = require('body-parser');
-var output = 0;
 var absorb = require('absorb');
-//var fs = require('fs');
+var multer = require('multer');
+var mustache = require('mustache'); // bring in mustache template engine
+var child_process = require('child_process');  // not a module
+
+	
+//local variables
+var body1 = bodyParser.urlencoded( {extended : true});
+var body2 = bodyParser.json();
+var upload1 = multer({ dest : wd+'/uploads/UserData'});
+var upload2 = multer({ dest : wd+'/uploads/UserRcode'});
+
+//local places
 var wd = __dirname + '/public';
 var datadir = process.env.OPENSHIFT_DATA_DIR;
 var Rloc = datadir+'R/bin';
 
-var multer = require('multer');
-var body1 = bodyParser.urlencoded( {extended : true});
-var body2 = bodyParser.json();
-var mustache = require('mustache'); // bring in mustache template engine
 
 app.use(express.static(wd));
-	//app.use());
-var upload1 = multer({ dest : wd+'/uploads/UserData'});
-var upload2 = multer({ dest : wd+'/uploads/UserRcode'});
 
+//Routes
 
+// Index
 app.get('/index', function (req, res) {
 res.sendFile(wd+"/index.html");   
  });
@@ -60,6 +66,9 @@ res.sendFile(wd+"/index.html");
 	 res.json({ message : 'Hello world'})
  });
 
+ // --> Api
+ 
+ //mypage JSON data 
 var demoData = [{ // dummy data to display
 "name":"Steve Balmer",
 "company": "Microsoft",
@@ -86,8 +95,8 @@ var demoData = [{ // dummy data to display
 "name":"Mark Z.",
 "company": "Facebook"
 }];
- // --> Api
- 
+
+//mypage 
  app.get('/mypage' , function  (req,res){
 	
 	var rData = {records : demoData};
@@ -101,61 +110,75 @@ var demoData = [{ // dummy data to display
  });
 	
 	
+	
+
+	//local vars
 	var fnameA ='' ; var fnameB = '';
 	var DefFile = 'default.csv' ; var DefRcode = 'default.R';
 	var ftype = 'CSV';
-
-	app.post('/fileUpload', upload1.single('userfile'),function (req, res) {
-	if(req.file){
-	res.writeHead(200, {'content-type':'text/html'});
-
-	fnameB = req.file.originalname;
-   fnameA = req.file.filename;
-  // console.log(ftype);
-  // ftype = req.body.TypeData;
-  // console.log(req.body.TypeData);
-//	console.log('File with name '+ fnameB + ' uploaded with new name ' + fnameA);
-     fs.rename( wd+'/uploads/UserData/'+fnameA ,wd+ '/uploads/UserData/'+fnameB, function () {
-		//if (err) {throw err};
-	res.writeHead(200, {'content-type':'text/html'});
-	res.write('<script> alert("UploadFile Renamed back to ' + wd+'/uploads/UserData/'+fnameB + '");</script>');
-				
-	fs.createReadStream(wd+'/uploads/UserData/'+fnameB).pipe(fs.createWriteStream(wd+'/uploads/UserData/'+fnameB));
-		var child_process = require('child_process');
-		var fileTransfer = child_process.spawn( 'cp '+wd+'/uploads/UserData/'+fnameB+' '+Rloc+'/'+fnameB);
-		var workerProcess = child_process.spawn( 'sh '+Rloc+'/R --vanilla  < '+Rloc+'/'+DefRcode);
-   workerProcess.stdout.on('data', function (data,err) {
-      if(err) console.log('error');
-	  console.log('stdout: ' + data);
-	  output = data;
-	res.write('upload successful');
-	res.write('<img src="'+Rloc+'/current.png"/> <br>');
-	res.end();	
-	  });
-   workerProcess.stderr.on('data', function (data) {
-      console.log('stderr: ' + data);
-	res.write('<script>alert("Error while running R")</script><script> window.location="http://jasan-maraiya.rhcloud.com/index;</script>');
-	res.end();		
-   });
-   workerProcess.on('close', function (code) {
-      console.log('child process exited with code ' + code);
-   });
-	});
-	}
-   else {
-	res.writeHead(200, {'content-type':'text/html'});
-   res.write('<script>alert("No datafile found for uploading")</script><script> window.location="http://jasan-maraiya.rhcloud.com/index";</script>');
-	res.end();		
-   }
-   });
-   
-app.post('/RCodeUpload', upload2.single('userRcode'),function (req, res) {
+	//local function
+	var fetchToRepo = function(loc , file , callback){ 
+					var fileTransfer = child_process.spawn( 'cp '+loc+'/'+file+'  '+wd+'/uploads/UserData/'+file);
+					callback(wd+'/uploads/UserData/'+file);
+					}
+	var fetchToRbin = function(loc , file , callback){ 
+					var fileTransfer = child_process.spawn( 'cp '+loc+'/'+file+'  '+Rloc+'/'+file);
+					callback(Rloc+'/'+file);
+					}
+	var RenameInRbin = function(fnameB , fnameA , callback){ 
+					var fileTransfer = child_process.spawn( 'mv '+Rloc+'/'+fnameB+'  '+Rloc+'/'+fnameA);
+					callback(Rloc+'/'+fnameA);
+					}
+	var RenameInRepo = function(fnameB , fnameA , callback ){ 
+					var fileTransfer = child_process.spawn( 'mv  '+wd+'/uploads/UserData/'+fnameB+'   '+wd+'/uploads/UserData/'+fnameA);
+					callback(wd+'/uploads/UserData/'+fnameA);
+					}
 	
+					
+	//fileUpload
+	app.post('/fileUpload', upload1.single('userfile'),function (req, res) {
+		if(req.file){
+			res.writeHead(200, {'content-type':'text/html'});
+			fnameB = req.file.originalname;
+			fnameA = req.file.filename;
+			RenameInRepo( fnameA , fnameB , function(body){
+				res.write('<script> alert("UploadFile Renamed back to ' + body + '");</script>');
+				});
+			fetchToRbin(wd+'/uploads/UserData',fnameB , function (body) {
+				res.write('<script> alert("UploadFile moved to ' + body + '");</script>');
+				});
+			
+			var workerProcess = child_process.spawn( 'sh '+Rloc+'/R --vanilla  < '+Rloc+'/'+DefRcode);
+			workerProcess.stdout.on('data', function (data,err) {
+				if(err) console.log('error');
+				console.log('stdout: ' + data);
+				output = data;
+				res.write('upload successful');
+				res.write('<img src="'+fetchToRepo(Rloc,'current.png', function(body){res.write(body);})+'"/> <br>');
+				res.end();	
+				  });
+		   workerProcess.stderr.on('data', function (data) {
+				console.log('stderr: ' + data);
+				res.write('<script>alert("Error while running R")</script><script> window.location="	http://jasan-maraiya.rhcloud.com/index;</script>');
+				res.end();		
+				});
+		   workerProcess.on('close', function (code) {
+				console.log('child process exited with code ' + code);
+				});
+			}
+	   else {
+			res.writeHead(200, {'content-type':'text/html'});
+			res.write('<script>alert("No datafile found for uploading")</script><script> window.location="http://jasan-maraiya.rhcloud.com/index";</script>');
+			res.end();		
+			}
+		});
+		
+		
+app.post('/RCodeUpload', upload2.single('userRcode'),function (req, res) {
 	if(req.file){
-   fnameB = req.file.originalname;
-   fnameA = req.file.filename;
-	//console.log('Rcode with name '+ fnameB + ' uploaded with new name ' + fnameA);
-     fs.rename( wd+'/uploads/UserRcode/'+fnameA ,wd+ '/uploads/UserRcode/'+fnameB, function (err) {
+		fnameB = req.file.originalname;
+		fnameA = req.file.filename;
+		fs.rename( wd+'/uploads/UserRcode/'+fnameA ,wd+ '/uploads/UserRcode/'+fnameB, function (err) {
 	 
 	res.writeHead(200, {'content-type':'text/html'});
 	res.write('<script> alert("UploadFile Renamed back to ' + wd+'/uploads/UserRcode/'+fnameB + '");</script>');
@@ -169,7 +192,7 @@ app.post('/RCodeUpload', upload2.single('userRcode'),function (req, res) {
 			  console.log('stdout: ' + data);
 			  output = data;
 			res.write('upload successful');
-			res.write('<img src="'+Rloc+'/current.png"/> <br>');
+			res.write('<img src="'fetchToRepo(Rloc,'current.png', function(body){res.write(body);})+'"/> <br>');
 			res.end();	
 
 			  });
