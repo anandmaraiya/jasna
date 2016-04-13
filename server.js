@@ -117,12 +117,13 @@ var demoData = [{ // dummy data to display
 //	console.log('File with name '+ fnameB + ' uploaded with new name ' + fnameA);
      fs.rename( wd+'/uploads/UserData/'+fnameA ,wd+ '/uploads/UserData/'+fnameB, function () {
 		//if (err) {throw err};
-	//console.log('UploadFile Renamed back to ' + fnameB );
-		
+	res.writeHead(200, {'content-type':'text/html'});
+	res.write('<script> alert("UploadFile Renamed back to ' + wd+'/uploads/UserData/'+fnameB + '");</script>');
+				
 	fs.createReadStream(wd+'/uploads/UserData/'+fnameB).pipe(fs.createWriteStream(wd+'/uploads/UserData/'+fnameB));
 		var child_process = require('child_process');
 		var fileTransfer = child_process.spawn( 'cp '+wd+ '/uploads/UserData/'+fnameB+' '+Rloc+'/'+fnameB);
-		var workerProcess = child_process.spawn( 'sh '+Rloc+'/R --vanilla  < '+wd+'/uploads/UserRcode/'+DefRcode);
+		var workerProcess = child_process.spawn( 'sh '+Rloc+'/R --vanilla  < '+Rloc+'/'+DefRcode);
    workerProcess.stdout.on('data', function (data,err) {
       if(err) console.log('error');
 	  console.log('stdout: ' + data);
@@ -157,11 +158,11 @@ app.post('/RCodeUpload', upload2.single('userRcode'),function (req, res) {
      fs.rename( wd+'/uploads/UserRcode/'+fnameA ,wd+ '/uploads/UserRcode/'+fnameB, function (err) {
 	 
 	res.writeHead(200, {'content-type':'text/html'});
-	res.write('<script> alert("UploadFile Renamed back to ' + wd+fnameB + '");</script>');
+	res.write('<script> alert("UploadFile Renamed back to ' + wd+'/uploads/UserRcode/'+fnameB + '");</script>');
 		
 		var child_process = require('child_process');
 		var fileTransfer = child_process.exec( 'cp '+wd+ '/uploads/UserRcode/'+fnameB+' '+Rloc+'/'+fnameB);
-		var workerProcess = child_process.exec(  'sh '+Rloc+'/R --vanilla  < '+wd+'/uploads/UserRcode/'+fnameB );
+		var workerProcess = child_process.exec(  'sh '+Rloc+'/R --vanilla  < '+Rloc+'/'+fnameB );
 
 		   workerProcess.stdout.on('data', function (data,err) {
 			  if(err) console.log('error');
