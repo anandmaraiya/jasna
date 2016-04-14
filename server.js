@@ -182,7 +182,7 @@ var demoData = [{ // dummy data to display
 	//fileUpload
 	app.post('/fileUpload',upload1.array('userfile',5), function (req, res ) {
 			res.writeHead(200, {'content-type':'text/html'});
-			Alert(res,'HI', function(){ RProcess('mow.R' , function(res, body){ Alert(res,body);}) });
+			Alert(res,'HI', function(){ RProcess('mow.R' , res, function(res, body){ Alert(res,body);}) });
 			//Alert(res,req.file);
 			//Alert(res,req.files);
 			/*if(req.file){					
