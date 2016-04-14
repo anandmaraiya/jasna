@@ -14,20 +14,11 @@ var UserId = 1;
 var wd = __dirname + '/public/';
 var datadir = process.env.OPENSHIFT_DATA_DIR;
 var Rloc = datadir+'R/bin/';
-var storage = multer.diskStorage({
-		  destination: function (request, file, callback) {
-			callback(null, wd+'/uploads/'+UserId.toString()+'/Box');
-		  },
-		  filename: function (request, file, callback) {
-			console.log(file);
-			callback(null, file.originalname);
-		  }
-		});
 	
 //local variables
 var body1 = bodyParser.urlencoded( {extended : true});
 var body2 = bodyParser.json();
-var upload1 = multer({storage : storage}).array('userfile',5);
+var upload1 = multer({ dest : wd+UserId.toString()+'/uploads/'});
 
 
 app.use(express.static(wd));
@@ -185,9 +176,11 @@ var demoData = [{ // dummy data to display
 			});	
 	 	
 	//fileUpload
-	app.post('/fileUpload',upload1, function (req, res ) {
+	app.post('/fileUpload',upload1.array('userfile',5), function (req, res ) {
 			res.writeHead(200, {'content-type':'text/html'});
 			Alert(res,'HI');
+			Alert(res,req.file);
+			Alert(res,req.files);
 			if(req.file){					
 					upload1( req , res, function (err){
 						if (err) {
