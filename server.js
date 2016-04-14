@@ -177,20 +177,19 @@ var demoData = [{ // dummy data to display
 	 	
 	//fileUpload
 	app.post('/fileUpload', function (req, res) {
-			if(req.files){
-					
-				upload1( req , res, function (err){
-					if (err) {
-					res.writeHead(200,{'content-type' : 'text/html'});
-					res.write('<script>alert("'+req.files+'");</script>');
-					res.write('<script>alert("Error while uploading Files")</script><script> window.location="http://jasan-maraiya.rhcloud.com/index;</script>');
-					res.end();		
-					return;	
-					}
-					res.writeHead(200,{'content-type' : 'text/html'});
-					res.write('<script>alert("Files uploading Begin")</script>');
-					res.write('<script>alert("Files uploaded Successfully")</script>');
-				});
+			if(req.files){					
+					upload1( req , res, function (err){
+						if (err) {
+						res.writeHead(200,{'content-type' : 'text/html'});
+						res.write('<script>alert("'+req.files+'");</script>');
+						res.write('<script>alert("Error while uploading Files")</script><script> window.location="http://jasan-maraiya.rhcloud.com/index;</script>');
+						res.end();	
+						}
+						else{res.writeHead(200,{'content-type' : 'text/html'});
+						res.write('<script>alert("Files uploading Begin")</script>');
+						res.write('<script>alert("Files uploaded Successfully")</script>');
+						}
+					);
 			/*	fnameB = req.file.originalname;
 				fnameA = req.file.filename;
 //				res.writeHead(200,{'content-type' : 'text/html'});
@@ -212,7 +211,7 @@ var demoData = [{ // dummy data to display
 				res.write('<script> alert("No Upload File received");</script> <script> window.location="http://jasan-maraiya.rhcloud.com/index;"</script>');
 				//res.write('<script> alert("' + wd + '");</script>');		
 				res.end();
-			}
+				}
 		});
 		
 		
