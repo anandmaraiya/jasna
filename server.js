@@ -150,10 +150,11 @@ var demoData = [{ // dummy data to display
 				fnameB = req.file.originalname;
 				fnameA = req.file.filename;
 				res.writeHead(200,{'content-type' : 'text/html'});
-				res.write('<script> alert("' + req.file + '");</script>');
+				res.write('<script> alert("' + req.file.toString() + '");</script>');
 				res.write('<script> alert("' + wd + '");</script>');		
 				RenameInRepo(fnameA,fnameB , function (body){
 					res.write('<script> alert("' + body.toString() + '");</script>');
+					res.write('<img src="'+body+'"/> <br>');
 				});
 				res.end();
 			}
