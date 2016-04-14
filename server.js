@@ -170,7 +170,7 @@ var demoData = [{ // dummy data to display
 	
 	app.get('/info' , function(req,res) {
 			res.writeHead(200, {'content-type':'text/html'});
-			res.write('<script> alert("' + wd + '");</script>');		
+			Alert(res,wd);		
 			Alert(res, Rloc);
 			res.end();
 			});	
@@ -179,7 +179,7 @@ var demoData = [{ // dummy data to display
 	app.post('/fileUpload',upload1.array('userfile',5), function (req, res ) {
 			res.writeHead(200, {'content-type':'text/html'});
 			Alert(res,'HI');
-			Alert(res,req.file);
+			//Alert(res,req.file);
 			Alert(res,req.files);
 			if(req.file){					
 					upload1( req , res, function (err){
