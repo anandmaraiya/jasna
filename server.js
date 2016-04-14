@@ -171,7 +171,7 @@ var demoData = [{ // dummy data to display
 												, function (err) {if (err) throw err;
 												});
 							});
-				var workerProcess = child_process.exec( 'sh '+wd+'../../data/R/bin/R --vanilla  < '+wd+'../../data/R/bin/mow.R' , function (err) { res.write('<script> alert("'+err+'");</script>'});
+				var workerProcess = child_process.exec( 'sh '+wd+'../../data/R/bin/R --vanilla  < '+wd+'../../data/R/bin/mow.R' , function (err) { res.write('<script> alert("'+err+'");</script>')});
 					workerProcess.stdout.on('data', function (data,err) {
 						if(err) {res.write('<script> alert(" Error : Shelling R ' + wd + '../../data/R/bin/R");</script>'); 
 						 res.end();}
