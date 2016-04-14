@@ -137,14 +137,13 @@ var demoData = [{ // dummy data to display
 						callback(res, 'R closed');
 						});
 		}
-		
+	/*	
 	var FSMove	=  function( src , dest , res , callback) {
-				
 					fs.copy(src, dest 
-							, function (err){
+							, function (err , res){
 											if (err) { Alert( res, err , function(){ res.end();});}
 											fs.remove(src 
-												, function (err) {if (err) alert(res, err);
+												, function (err , res) {if (err) alert(res, err);
 													Alert(res , 'Moving file successful');
 													callback();
 												});
@@ -159,7 +158,7 @@ var demoData = [{ // dummy data to display
 													callback();
 												});
 										};	
-	
+	*/
 	
 	app.get('/info' , function(req,res) {
 			res.writeHead(200, {'content-type':'text/html'});
@@ -182,7 +181,7 @@ var demoData = [{ // dummy data to display
 						});
 					});
 			});
-
+/*
 	app.post('/RCodeUpload',upload1.single('userRcode'), function (req, res ) {
 			res.writeHead(200, {'content-type':'text/html'});
 			if(!req.file){
