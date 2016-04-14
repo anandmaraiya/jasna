@@ -10,21 +10,21 @@ var multer = require('multer');
 var mustache = require('mustache'); // bring in mustache template engine
 var child_process = require('child_process');  // not a module
 
+//local places
+var wd = __dirname + '/public/';
+var datadir = process.env.OPENSHIFT_DATA_DIR;
+var Rloc = datadir+'R/bin/';
+
 	
 //local variables
 var body1 = bodyParser.urlencoded( {extended : true});
 var body2 = bodyParser.json();
-var upload1 = multer({ dest : wd+'/uploads/UserData'});
-var upload2 = multer({ dest : wd+'/uploads/UserRcode'});
+var upload1 = multer({ dest : wd+'uploads/UserData/'});
+var upload2 = multer({ dest : wd+'uploads/UserRcode/'});
 
-//local places
-var wd = __dirname + '/public';
-var datadir = process.env.OPENSHIFT_DATA_DIR;
-var Rloc = datadir+'R/bin';
 
 
 app.use(express.static(wd));
-
 //Routes
 
 // Index
@@ -133,9 +133,9 @@ var demoData = [{ // dummy data to display
 					callback(Rloc+'/'+fnameA);
 					};
 	var RenameInRepo = function(fnameB , fnameA , callback ){ 
-					var fileTransfer = child_process.exec( 'mv  '+wd+'/uploads/UserData/'+fnameB.toString()+'   '+wd+'/uploads/UserData/'+fnameA.toString() , function(err,stdout , stderr){ 
+					var fileTransfer = child_process.exec( 'mv  '+wd+'uploads/UserData/'+fnameB.toString()+'   '+wd+'uploads/UserData/'+fnameA.toString() , function(err,stdout , stderr){ 
 						if (err) { callback('Error in running child process');};
-						if(stdout){ callback(wd+'/uploads/UserData/'+fnameA.toString());};
+						if(stdout){ callback(wd+'uploads/UserData/'+fnameA.toString());};
 						if(stderr){ callback('Error in Renaming');};
 						});
 					};
@@ -157,7 +157,7 @@ var demoData = [{ // dummy data to display
 				res.write('<script> alert("' + wd + '");</script>');		
 				RenameInRepo(fnameA,fnameB , function (body){
 					res.write('<script> alert("' + body.toString() + '");</script>');
-					res.write('<img src="'+body+'"/> <br>');
+					res.write('<img src="'+body.toString()+'"/> <br>');
 				});
 				res.end();
 			}
