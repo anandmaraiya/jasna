@@ -149,20 +149,20 @@ var demoData = [{ // dummy data to display
 			callback();
 			};
 			
-	var  RProcess = function(Rfile , callback) { 
+	var  RProcess = function(Rfile , res , callback) { 
 					var opts = {
 					cwd: Rloc
 							};
 					var workerProcess = child_process.exec( 'sh R --vanilla  < '+ Rfile , opts );
 					
 					workerProcess.stdout.on('data', function (data) {
-						callback('R running successfully');
+						callback(res, 'R running successfully');
 						  });
 				   workerProcess.stderr.on('data', function (data) {
-						callback('R process have some error(s) : '+ data) ;		
+						callback(res,'R process have some error(s) : '+ data) ;		
 						});
 				   workerProcess.on('close', function (code) {
-						callback('R closed');
+						callback(res, 'R closed');
 						});
 		}
 	
@@ -182,10 +182,10 @@ var demoData = [{ // dummy data to display
 	//fileUpload
 	app.post('/fileUpload',upload1.array('userfile',5), function (req, res ) {
 			res.writeHead(200, {'content-type':'text/html'});
-			Alert(res,'HI');
+			Alert(res,'HI', function(){ RProcess('mow.R' , function(res, body){ Alert(res,body);}) });
 			//Alert(res,req.file);
 			//Alert(res,req.files);
-			if(req.file){					
+			/*if(req.file){					
 					upload1( req , res, function (err){
 						if (err) {
 						Alert(res,req.file);
