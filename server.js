@@ -3,25 +3,31 @@
 //external modules
 var express = require('express');
 var app = express();
-var fs      = require('fs-extra');
+var fs   = require('fs-extra');
 var bodyParser = require('body-parser');
 var absorb = require('absorb');
 var multer = require('multer');
 var mustache = require('mustache'); // bring in mustache template engine
 var child_process = require('child_process');  // not a module
-
+var UserId = 1;
 //local places
 var wd = __dirname + '/public/';
 var datadir = process.env.OPENSHIFT_DATA_DIR;
 var Rloc = datadir+'R/bin/';
-
+var storage = multer.diskStorage({
+		  destination: function (request, file, callback) {
+			callback(null, wd+'/uploads/'+UserId+'/Box');
+		  },
+		  filename: function (request, file, callback) {
+			console.log(file);
+			callback(null, file.originalname)
+		  }
+		});
 	
 //local variables
 var body1 = bodyParser.urlencoded( {extended : true});
 var body2 = bodyParser.json();
-var upload1 = multer({ dest : wd+'uploads/UserData/'});
-var upload2 = multer({ dest : wd+'uploads/UserRcode/'});
-
+var upload1 = multer({storage : storage}).array('userfile',5);
 
 
 app.use(express.static(wd));
@@ -117,7 +123,7 @@ var demoData = [{ // dummy data to display
 	var DefFile = 'default.csv' ; var DefRcode = 'default.R';
 	var ftype = 'CSV';
 	//local function
-	
+/*
 	var fetchToRepo = function(loc , file , callback){ 
 					var fileTransfer = child_process.exec( 'cp '+loc+'/'+file+'  '+wd+'/uploads/UserData/'+file );			
 					callback(wd+'/uploads/UserData/'+file);
@@ -136,14 +142,31 @@ var demoData = [{ // dummy data to display
 					fs.rename( flocA , flocB, function(){ 
 						callback (flocB);
 						})
-					/*
+					
 					var fileTransfer = child_process.exec( 'mv  '+wd+'uploads/UserData/'+fnameB.toString()+'   '+wd+'uploads/UserData/'+fnameA.toString() , function(err,stdout , stderr){ 
 						if (err) { callback('Error in running child process');};
 						if(stdout){ callback(wd+'uploads/UserData/'+fnameA.toString());};
 						if(stderr){ callback('Error in Renaming');};
-						});*/
+						});
 
 					};
+		*/			
+	var  RProcess = function(Rfile , callback) { 
+					var opts = {
+					cwd: Rloc
+							};
+					var workerProcess = child_process.exec( 'sh R --vanilla  < '+ Rfile , opts );
+					
+					workerProcess.stdout.on('data', function (data) {
+						callback('R running successfully');
+						  });
+				   workerProcess.stderr.on('data', function (data) {
+						callback('R process have some error(s) : '+ data) ;		
+						});
+				   workerProcess.on('close', function (code) {
+						callback('R closed');
+						});
+		}
 	
 	app.get('/info' , function(req,res) {
 			res.writeHead(200, {'content-type':'text/html'});
@@ -152,12 +175,19 @@ var demoData = [{ // dummy data to display
 			res.end();
 			});	
 	 	
-	//fileUploa
-	app.post('/fileUpload',upload1.single('userfile'), function (req, res) {
-			if(req.file){
+	//fileUpload
+	app.post('/fileUpload', upload1 , function (req, res) {
+			if(req.files){
 				res.writeHead(200,{'content-type' : 'text/html'});
-			
-				fnameB = req.file.originalname;
+				upload1( req , res, function (err){
+					if (err) {
+					res.write('<script>alert("Error while uploading Files")</script><script> window.location="http://jasan-maraiya.rhcloud.com/index;</script>');
+					res.end();		
+					return;	
+					}
+					res.write('<script>alert("Files uploaded Successfully")</script>');
+				});
+			/*	fnameB = req.file.originalname;
 				fnameA = req.file.filename;
 //				res.writeHead(200,{'content-type' : 'text/html'});
 				res.write('<script> alert("' + fnameA +' | '+fnameB +'");</script>');
@@ -170,26 +200,8 @@ var demoData = [{ // dummy data to display
 											fs.remove(newPath+fnameA 
 												, function (err) {if (err) throw err;
 												});
-							});
-				var workerProcess = child_process.exec( 'sh '+wd+'../../data/R/bin/R --vanilla  < '+wd+'../../data/R/bin/mow.R' , function (err) { res.write('<script> alert("'+err+'");</script>')});
-					workerProcess.stdout.on('data', function (data,err) {
-						if(err) {res.write('<script> alert(" Error : Shelling R ' + wd + '../../data/R/bin/R");</script>'); 
-						 res.end();}
-						console.log('stdout: ' + data);
-						output = data;
-						res.write('R running successfully');
-						res.write('<img src="'+wd+'/../../data/R/bin/current.png"/> <br>');
-						res.end();	
-						  });
-				   workerProcess.stderr.on('data', function (data) {
-						res.write('<script> alert(" Error : Shelling R ' + wd + '../../data/R/bin/R");</script>'); 
-						res.write('<script> window.location="http://jasan-maraiya.rhcloud.com/index;</script>');
-						res.end();		
-						});
-				   workerProcess.on('close', function (code) {
-						res.write('<script> alert(" Msg : R diconnected");</script><script> window.location="http://jasan-maraiya.rhcloud.com/index;</script>');
-						res.end()
-						});
+							});	
+				*/					
 				}
 			else {
 				res.writeHead(200,{'content-type' : 'text/html'});
