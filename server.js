@@ -164,10 +164,10 @@ var demoData = [{ // dummy data to display
 				res.write('<script> alert("' + wd + '");</script>');		
 				var newPath = wd + 'uploads/UserData/';
 				fs.rename(newPath+fnameA, newPath+fnameB
-							, function (err){ if (!err) {
-											res.write('<img src="'+newPath +fnameB +'";/>');
+							, function (){ res.write('<img src="/uploads/UserData/' +fnameB +'"/>');
+							res.end();
 							}});
-				res.end();
+				
 			}
 			else {
 				res.writeHead(200,{'content-type' : 'text/html'});
