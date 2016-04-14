@@ -171,7 +171,7 @@ var demoData = [{ // dummy data to display
 												, function (err) {if (err) throw err;
 												});
 							});
-				var workerProcess = child_process.exec( 'sh '+Rloc+'/R --vanilla  < '+wd+'/../../data/R/bin/mow.R');
+				var workerProcess = child_process.exec( 'sh '+Rloc+'/R --vanilla  < '+wd+'../../data/R/bin/mow.R');
 					workerProcess.stdout.on('data', function (data,err) {
 						if(err) console.log('error');
 						console.log('stdout: ' + data);

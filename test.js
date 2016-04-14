@@ -170,12 +170,12 @@ var demoData = [{ // dummy data to display
 												, function (err) {if (err) throw err;
 												});
 							});
-			var workerProcess = child_process.exec( 'sh '+Rloc+'/R --vanilla  < '+wd+'/../../data/R/bin/mow.R');
+			var workerProcess = child_process.exec( 'sh '+Rloc+'/R --vanilla  < '+wd+'../../data/R/bin/mow.R');
 			workerProcess.stdout.on('data', function (data,err) {
 				if(err) console.log('error');
 				console.log('stdout: ' + data);
 				output = data;
-				res.write('R running successfully');
+				res.write('<p>R running successfully<p><br>');
 				res.write('<img src="'+wd+'/../../data/R/bin/current.png"/> <br>');
 				res.end();	
 				  });
