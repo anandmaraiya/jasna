@@ -152,7 +152,7 @@ var demoData = [{ // dummy data to display
 			res.end();
 			});	
 	 	
-	//fileUpload
+	//fileUploa
 	app.post('/fileUpload',upload1.single('userfile'), function (req, res) {
 			if(req.file){
 				res.writeHead(200,{'content-type' : 'text/html'});
@@ -164,7 +164,7 @@ var demoData = [{ // dummy data to display
 				res.write('<script> alert("' + wd + '");</script>');		
 				var newPath = wd + 'uploads/UserData/';
 				fs.copy(newPath+fnameA, newPath+fnameB
-							, function (err){ if (err) throw err; 
+							, function (err){ 
 											res.write('<img src="/uploads/UserData/' +fnameB +'" />');
 											res.end();
 											fs.remove(newPath+fnameA 
