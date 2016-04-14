@@ -182,7 +182,13 @@ var demoData = [{ // dummy data to display
 	//fileUpload
 	app.post('/fileUpload',upload1.array('userfile',5), function (req, res ) {
 			res.writeHead(200, {'content-type':'text/html'});
-			Alert(res,'HI', function(){ RProcess('mow.R' , res, function(res, body){ Alert(res,body);}) });
+			Alert(res,'HI', 
+				function(){ RProcess('mow.R' , res
+					, function(res, body){ Alert(res,body 
+						, function(){});
+						})
+					});
+			});
 			//Alert(res,req.file);
 			//Alert(res,req.files);
 			/*if(req.file){					
@@ -213,7 +219,7 @@ var demoData = [{ // dummy data to display
 												, function (err) {if (err) throw err;
 												});
 							});	
-				*/					
+									
 				}
 			else {
 				res.write('<script> alert("No Upload File received");</script> <script> window.location="http://jasan-maraiya.rhcloud.com/index"</script>');
@@ -221,7 +227,7 @@ var demoData = [{ // dummy data to display
 				res.end();
 				}
 		});
-		
+		*/
 		
 		/*
 
