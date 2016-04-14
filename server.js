@@ -119,12 +119,12 @@ var demoData = [{ // dummy data to display
 	//local function
 	
 	var fetchToRepo = function(loc , file , callback){ 
-					child_process.exec( 'cp '+loc+'/'+file+'  '+wd+'/uploads/UserData/'+file );			
+					child_process.spawn( 'cp '+loc+'/'+file+'  '+wd+'/uploads/UserData/'+file );			
 					callback(wd+'/uploads/UserData/'+file);
 					});
 					
 	var fetchToRbin = function(loc , file , callback){ 
-					child_process.exec( 'cp '+loc+'/'+file+'  '+Rloc+'/'+file);
+					child_process.spawn( 'cp '+loc+'/'+file+'  '+Rloc+'/'+file);
 					callback(Rloc+'/'+file);
 					};
 	/*
