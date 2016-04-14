@@ -20,7 +20,7 @@ var storage = multer.diskStorage({
 		  },
 		  filename: function (request, file, callback) {
 			console.log(file);
-			callback(null, file.originalname)
+			callback(null, file.originalname);
 		  }
 		});
 	
@@ -151,6 +151,10 @@ var demoData = [{ // dummy data to display
 
 					};
 		*/			
+	var Alert = function(Msg){
+			return '<script> alert("'+Msg+'");</script>';
+			};
+			
 	var  RProcess = function(Rfile , callback) { 
 					var opts = {
 					cwd: Rloc
@@ -168,21 +172,24 @@ var demoData = [{ // dummy data to display
 						});
 		}
 	
+	
+	
 	app.get('/info' , function(req,res) {
 			res.writeHead(200, {'content-type':'text/html'});
-			res.write('<script> alert("' + Rloc + '");</script>');
 			res.write('<script> alert("' + wd + '");</script>');		
+			res.write(Alert( Rloc));
 			res.end();
 			});	
 	 	
 	//fileUpload
-	app.post('/fileUpload', function (req, res) {
-			if(req.file){					
+	app.post('/fileUpload',upload1, function (req, res ) {
+			res.writeHead(200, {'content-type':'text/html'});
+			res.write(Alert('HI');
+			if(req.files){					
 					upload1( req , res, function (err){
 						if (err) {
-						res.writeHead(200,{'content-type' : 'text/html'});
-						res.write('<script>alert("'+req.file+'");</script>');
-						res.write('<script>alert("Error while uploading Files")</script><script> window.location="http://jasan-maraiya.rhcloud.com/index;</script>');
+						res.write(Alert(req.file));
+						res.write(Alert("Error while uploading Files")+ Alert('window.location="http://jasan-maraiya.rhcloud.com/index'));
 						res.end();	
 						}
 						else{res.writeHead(200,{'content-type' : 'text/html'});
@@ -208,8 +215,7 @@ var demoData = [{ // dummy data to display
 				*/					
 				}
 			else {
-				res.writeHead(200,{'content-type' : 'text/html'});
-				res.write('<script> alert("No Upload File received");</script> <script> window.location="http://jasan-maraiya.rhcloud.com/index;"</script>');
+				res.write('<script> alert("No Upload File received");</script> <script> window.location="http://jasan-maraiya.rhcloud.com/index"</script>');
 				//res.write('<script> alert("' + wd + '");</script>');		
 				res.end();
 				}
