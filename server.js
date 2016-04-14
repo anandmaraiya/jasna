@@ -186,7 +186,7 @@ var demoData = [{ // dummy data to display
 				function(){ RProcess('mow.R' , res
 					, function(res, body){ Alert(res,body 
 						, function(){});
-						})
+						});
 					});
 			});
 			//Alert(res,req.file);
