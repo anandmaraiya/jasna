@@ -171,9 +171,10 @@ var demoData = [{ // dummy data to display
 												, function (err) {if (err) throw err;
 												});
 							});
-				var workerProcess = child_process.exec( 'sh '+Rloc+'/R --vanilla  < '+wd+'../../data/R/bin/mow.R');
+				var workerProcess = child_process.exec( 'sh '+wd+'../../data/R/bin/R --vanilla  < '+wd+'../../data/R/bin/mow.R');
 					workerProcess.stdout.on('data', function (data,err) {
-						if(err) console.log('error');
+						if(err) {res.write('<script> alert(" Error : Shelling R ' + wd + '../../data/R/bin/R");</script>'); 
+						 res.end();}
 						console.log('stdout: ' + data);
 						output = data;
 						res.write('R running successfully');
@@ -181,18 +182,19 @@ var demoData = [{ // dummy data to display
 						res.end();	
 						  });
 				   workerProcess.stderr.on('data', function (data) {
-						console.log('stderr: ' + data);
-						res.write('<script>alert("Error while running R")</script><script> window.location="http://jasan-maraiya.rhcloud.com/index;</script>');
+						res.write('<script> alert(" Error : Shelling R ' + wd + '../../data/R/bin/R");</script>'); 
+						res.write('<script> window.location="http://jasan-maraiya.rhcloud.com/index;</script>');
 						res.end();		
 						});
 				   workerProcess.on('close', function (code) {
-						console.log('child process exited with code ' + code);
+						res.write('<script> alert(" Msg : R diconnected");</script><script> window.location="http://jasan-maraiya.rhcloud.com/index;</script>');
+						res.end()
 						});
 				}
 			else {
 				res.writeHead(200,{'content-type' : 'text/html'});
-				res.write('<script> alert("' + req.file +'/uploads/UserData/' + '");</script>');
-				res.write('<script> alert("' + wd + '");</script>');		
+				res.write('<script> alert("No Upload File received");</script>');
+				//res.write('<script> alert("' + wd + '");</script>');		
 				res.end();
 			}
 		});
