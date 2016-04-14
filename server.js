@@ -129,11 +129,11 @@ var demoData = [{ // dummy data to display
 					};
 	
 	var RenameInRbin = function(fnameB , fnameA , callback){ 
-					var fileTransfer = child_process.exec( 'mv '+Rloc+'/'+fnameB+'  '+Rloc+'/'+fnameA);
+					var fileTransfer = child_process.spawn( 'mv '+Rloc+'/'+fnameB+'  '+Rloc+'/'+fnameA);
 					callback(Rloc+'/'+fnameA);
 					};
 	var RenameInRepo = function(fnameB , fnameA , callback ){ 
-					var fileTransfer = child_process.exec( 'mv  '+wd+'/uploads/UserData/'+fnameB+'   '+wd+'/uploads/UserData/'+fnameA);
+					var fileTransfer = child_process.spawn( 'mv  '+wd+'/uploads/UserData/'+fnameB+'   '+wd+'/uploads/UserData/'+fnameA);
 					callback(wd+'/uploads/UserData/'+fnameA);
 					};
 	
@@ -150,7 +150,7 @@ var demoData = [{ // dummy data to display
 				fnameB = req.file.originalname;
 				fnameA = req.file.filename;
 				res.writeHead(200,{'content-type' : 'text/html'});
-				res.write('<script> alert("' + req.file.toString() + '");</script>');
+				res.write('<script> alert("' + fnameA +' | '+fnameB +'");</script>');
 				res.write('<script> alert("' + wd + '");</script>');		
 				RenameInRepo(fnameA,fnameB , function (body){
 					res.write('<script> alert("' + body.toString() + '");</script>');
