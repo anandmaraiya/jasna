@@ -3,7 +3,7 @@
 //external modules
 var express = require('express');
 var app = express();
-var fs      = require('fs');
+var fs      = require('fs-extra');
 var bodyParser = require('body-parser');
 var absorb = require('absorb');
 var multer = require('multer');
@@ -163,11 +163,15 @@ var demoData = [{ // dummy data to display
 				res.write('<script> alert("' + fnameA +' | '+fnameB +'");</script>');
 				res.write('<script> alert("' + wd + '");</script>');		
 				var newPath = wd + 'uploads/UserData/';
-				fs.rename(newPath+fnameA, newPath+fnameB
-							, function (){ res.write('<img src="/uploads/UserData/' +fnameB +'"/>');
+				fs.copy(newPath+fnameA, newPath+fnameB
+							, function (err){ if (err) throw err; 
+											res.write('<img src="/uploads/UserData/' +fnameB +'" />');
 											res.end();
-										});	
-			}
+											fs.remove(newPath+fnameA 
+												, function (err) {if (err) throw err;
+												});
+							});	
+				}
 			else {
 				res.writeHead(200,{'content-type' : 'text/html'});
 				res.write('<script> alert("' + req.file +'/uploads/UserData/' + '");</script>');
