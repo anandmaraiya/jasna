@@ -151,6 +151,7 @@ var demoData = [{ // dummy data to display
 
 					};
 		*/			
+		
 	var Alert = function(res , Msg, callback){
 			var scr = '<script> alert("'+Msg+'");</script>';
 			res.write(scr);
@@ -187,7 +188,7 @@ var demoData = [{ // dummy data to display
 	app.post('/fileUpload',upload1, function (req, res ) {
 			res.writeHead(200, {'content-type':'text/html'});
 			Alert(res,'HI');
-			if(req.files){					
+			if(req.file){					
 					upload1( req , res, function (err){
 						if (err) {
 						Alert(res,req.file);
