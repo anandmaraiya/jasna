@@ -133,8 +133,9 @@ var demoData = [{ // dummy data to display
 					callback(Rloc+'/'+fnameA);
 					};
 	var RenameInRepo = function(fnameB , fnameA , callback ){ 
-					var fileTransfer = child_process.exec( 'mv  '+wd+'/uploads/UserData/'+fnameB+'   '+wd+'/uploads/UserData/'+fnameA);
-					callback(wd+'/uploads/UserData/'+fnameA);
+					var fileTransfer = child_process.exec( 'mv  '+wd+'/uploads/UserData/'+fnameB+'   '+wd+'/uploads/UserData/'+fnameA, function(err,stdout , stderr){ 
+						callback(wd+'/uploads/UserData/'+fnameA);
+						});
 					};
 	
 	app.get('/info' , function(req,res) {
