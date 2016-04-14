@@ -132,12 +132,17 @@ var demoData = [{ // dummy data to display
 					var fileTransfer = child_process.exec( 'mv '+Rloc+'/'+fnameB+'  '+Rloc+'/'+fnameA);
 					callback(Rloc+'/'+fnameA);
 					};
-	var RenameInRepo = function(fnameB , fnameA , callback ){ 
+	var RenameInRepo = function(flocB , flocA , callback ){ 
+					fs.rename( flocA , flocB, function(){ 
+						callback (flocB);
+						})
+					/*
 					var fileTransfer = child_process.exec( 'mv  '+wd+'uploads/UserData/'+fnameB.toString()+'   '+wd+'uploads/UserData/'+fnameA.toString() , function(err,stdout , stderr){ 
 						if (err) { callback('Error in running child process');};
 						if(stdout){ callback(wd+'uploads/UserData/'+fnameA.toString());};
 						if(stderr){ callback('Error in Renaming');};
-						});
+						});*/
+
 					};
 	
 	app.get('/info' , function(req,res) {
@@ -148,17 +153,18 @@ var demoData = [{ // dummy data to display
 			});	
 	 	
 	//fileUpload
-	app.post('/fileUpload', upload1.single('userfile'),function (req, res) {
+	app.post('/fileUpload',upload1.single('userfile'), function (req, res) {
 			if(req.file){
 				fnameB = req.file.originalname;
 				fnameA = req.file.filename;
-				res.writeHead(200,{'content-type' : 'text/html'});
+//				res.writeHead(200,{'content-type' : 'text/html'});
 				res.write('<script> alert("' + fnameA +' | '+fnameB +'");</script>');
 				res.write('<script> alert("' + wd + '");</script>');		
-				RenameInRepo(fnameA,fnameB , function (body){
-					res.write('<script> alert("' + body.toString() + '");</script>');
-					res.write('<img src="'+body.toString()+'"/> <br>');
-				});
+				var newPath = wd + 'uploads/UserData/';
+				fs.rename(newPath+fnameA, newPath+fnameB
+							, function (err){ if (err) throw err;
+										console.log('Rename successful');
+								})
 				res.end();
 			}
 			else {
@@ -168,7 +174,35 @@ var demoData = [{ // dummy data to display
 				res.end();
 			}
 		});
+		
+		
 		/*
+
+	//local function
+	
+	var fetchToRepo = function(loc , file , callback){ 
+					var fileTransfer = child_process.exec( 'cp '+loc+'/'+file+'  '+wd+'/uploads/UserData/'+file );			
+					callback(wd+'/uploads/UserData/'+file);
+					};
+					
+	var fetchToRbin = function(loc , file , callback){ 
+					var fileTransfer = child_process.exec( 'cp '+loc+'/'+file+'  '+Rloc+'/'+file);
+					callback(Rloc+'/'+file);
+					};
+	
+	var RenameInRbin = function(fnameB , fnameA , callback){ 
+					var fileTransfer = child_process.exec( 'mv '+Rloc+'/'+fnameB+'  '+Rloc+'/'+fnameA);
+					callback(Rloc+'/'+fnameA);
+					};
+	var RenameInRepo = function(fnameB , fnameA , callback ){ 
+					var fileTransfer = child_process.exec( 'mv  '+wd+'uploads/UserData/'+fnameB.toString()+'   '+wd+'uploads/UserData/'+fnameA.toString() , function(err,stdout , stderr){ 
+						if (err) { callback('Error in running child process');};
+						if(stdout){ callback(wd+'uploads/UserData/'+fnameA.toString());};
+						if(stderr){ callback('Error in Renaming');};
+						});
+					};
+
+					
 		if(req.file){
 			res.writeHead(200, {'content-type':'text/html'});
 			fnameB = req.file.originalname;
