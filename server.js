@@ -117,16 +117,17 @@ var demoData = [{ // dummy data to display
 	var DefFile = 'default.csv' ; var DefRcode = 'default.R';
 	var ftype = 'CSV';
 	//local function
-	/*
+	
 	var fetchToRepo = function(loc , file , callback){ 
-					var fileTransfer = child_process.exec( 'cp '+loc+'/'+file+'  '+wd+'/uploads/UserData/'+file );			
+					child_process.exec( 'cp '+loc+'/'+file+'  '+wd+'/uploads/UserData/'+file );			
 					callback(wd+'/uploads/UserData/'+file);
 					});
 					
 	var fetchToRbin = function(loc , file , callback){ 
-					var fileTransfer = child_process.exec( 'cp '+loc+'/'+file+'  '+Rloc+'/'+file);
+					child_process.exec( 'cp '+loc+'/'+file+'  '+Rloc+'/'+file);
 					callback(Rloc+'/'+file);
 					};
+	/*
 	var RenameInRbin = function(fnameB , fnameA , callback){ 
 					var fileTransfer = child_process.exec( 'mv '+Rloc+'/'+fnameB+'  '+Rloc+'/'+fnameA);
 					callback(Rloc+'/'+fnameA);
