@@ -151,8 +151,10 @@ var demoData = [{ // dummy data to display
 
 					};
 		*/			
-	var Alert = function(Msg){
-			return '<script> alert("'+Msg+'");</script>';
+	var Alert = function(res , Msg, callback){
+			var scr = '<script> alert("'+Msg+'");</script>';
+			res.write(scr);
+			callback(scr);
 			};
 			
 	var  RProcess = function(Rfile , callback) { 
@@ -177,19 +179,20 @@ var demoData = [{ // dummy data to display
 	app.get('/info' , function(req,res) {
 			res.writeHead(200, {'content-type':'text/html'});
 			res.write('<script> alert("' + wd + '");</script>');		
-			res.write(Alert( Rloc));
+			Alert(res, Rloc);
 			res.end();
 			});	
 	 	
 	//fileUpload
 	app.post('/fileUpload',upload1, function (req, res ) {
 			res.writeHead(200, {'content-type':'text/html'});
-			res.write(Alert('HI');
+			Alert(res,'HI');
 			if(req.files){					
 					upload1( req , res, function (err){
 						if (err) {
-						res.write(Alert(req.file));
-						res.write(Alert("Error while uploading Files")+ Alert('window.location="http://jasan-maraiya.rhcloud.com/index'));
+						Alert(res,req.file);
+						Alert(res,"Error while uploading Files");
+						Alert(res,'window.location="http://jasan-maraiya.rhcloud.com/index"');
 						res.end();	
 						}
 						else{res.writeHead(200,{'content-type' : 'text/html'});
