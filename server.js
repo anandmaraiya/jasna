@@ -117,6 +117,7 @@ var demoData = [{ // dummy data to display
 	var DefFile = 'default.csv' ; var DefRcode = 'default.R';
 	var ftype = 'CSV';
 	//local function
+	/*
 	var fetchToRepo = function(loc , file , callback){ 
 					var fileTransfer = child_process.exec( 'cp '+loc+'/'+file+'  '+wd+'/uploads/UserData/'+file );			
 					callback(wd+'/uploads/UserData/'+file);
@@ -134,7 +135,7 @@ var demoData = [{ // dummy data to display
 					var fileTransfer = child_process.exec( 'mv  '+wd+'/uploads/UserData/'+fnameB+'   '+wd+'/uploads/UserData/'+fnameA);
 					callback(wd+'/uploads/UserData/'+fnameA);
 					};
-	
+	*/
 	app.get('/info' , function(req,res) {
 			res.writeHead(200, {'content-type':'text/html'});
 			res.write('<script> alert("' + Rloc + '");</script>');
