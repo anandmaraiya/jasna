@@ -188,6 +188,7 @@ var demoData = [{ // dummy data to display
 						else{res.writeHead(200,{'content-type' : 'text/html'});
 						res.write('<script>alert("Files uploading Begin")</script>');
 						res.write('<script>alert("Files uploaded Successfully")</script>');
+							}
 						}
 					);
 			/*	fnameB = req.file.originalname;
