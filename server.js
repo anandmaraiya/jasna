@@ -143,9 +143,28 @@ var demoData = [{ // dummy data to display
 			res.write('<script> alert("' + wd + '");</script>');		
 			res.end();
 			});	
-	 	/*
+	 	
 	//fileUpload
 	app.post('/fileUpload', upload1.single('userfile'),function (req, res) {
+			if(req.file){
+				fnameB = req.file.originalname;
+				fnameA = req.file.filename;
+				res.writeHead(200,{'content-type' : 'text/html'});
+				res.write('<script> alert("' + req.file + '");</script>');
+				res.write('<script> alert("' + wd + '");</script>');		
+				RenameInRepo(fnameA,fnameB , function (body){
+					res.write('<script> alert("' + body.toString() + '");</script>');
+				});
+				res.end();
+			}
+			else {
+				res.writeHead(200,{'content-type' : 'text/html'});
+				res.write('<script> alert("' + req.file +'/uploads/UserData/' + '");</script>');
+				res.write('<script> alert("' + wd + '");</script>');		
+				res.end();
+			}
+		});
+		/*
 		if(req.file){
 			res.writeHead(200, {'content-type':'text/html'});
 			fnameB = req.file.originalname;
