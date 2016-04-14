@@ -16,7 +16,7 @@ var datadir = process.env.OPENSHIFT_DATA_DIR;
 var Rloc = datadir+'R/bin/';
 var storage = multer.diskStorage({
 		  destination: function (request, file, callback) {
-			callback(null, wd+'/uploads/'+UserId+'/Box');
+			callback(null, wd+'/uploads/'+UserId.toString()+'/Box');
 		  },
 		  filename: function (request, file, callback) {
 			console.log(file);
