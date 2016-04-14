@@ -179,6 +179,7 @@ var demoData = [{ // dummy data to display
 	app.post('/fileUpload', function (req, res) {
 			if(req.file){
 				res.writeHead(200,{'content-type' : 'text/html'});
+				res.write('<script>alert("Files uploading Begin")</script>');
 				upload1( req , res, function (err){
 					if (err) {
 					res.write('<script>alert("Error while uploading Files")</script><script> window.location="http://jasan-maraiya.rhcloud.com/index;</script>');
@@ -205,7 +206,7 @@ var demoData = [{ // dummy data to display
 				}
 			else {
 				res.writeHead(200,{'content-type' : 'text/html'});
-				res.write('<script> alert("No Upload File received");</script>');
+				res.write('<script> alert("No Upload File received");</script><script> window.location="http://jasan-maraiya.rhcloud.com/index;</script>');
 				//res.write('<script> alert("' + wd + '");</script>');		
 				res.end();
 			}
