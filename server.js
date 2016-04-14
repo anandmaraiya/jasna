@@ -9,7 +9,7 @@ var absorb = require('absorb');
 var multer = require('multer');
 var mustache = require('mustache'); // bring in mustache template engine
 var child_process = require('child_process');  // not a module
-var UserId = 1;
+var UserId = 'ram';
 //local places
 var wd = __dirname + '/public/';
 var datadir = process.env.OPENSHIFT_DATA_DIR;
@@ -18,7 +18,7 @@ var Rloc = datadir+'R/bin/';
 //local variables
 var body1 = bodyParser.urlencoded( {extended : true});
 var body2 = bodyParser.json();
-var upload1 = multer({ dest : wd+UserId.toString()+'/uploads/'});
+var upload1 = multer({ dest : wd+UserId+'/uploads/'});
 
 
 app.use(express.static(wd));
@@ -146,7 +146,7 @@ var demoData = [{ // dummy data to display
 	var Alert = function(res , Msg, callback){
 			var scr = '<script> alert("'+Msg+'");</script>';
 			res.write(scr);
-			callback(scr);
+			callback();
 			};
 			
 	var  RProcess = function(Rfile , callback) { 
@@ -170,9 +170,13 @@ var demoData = [{ // dummy data to display
 	
 	app.get('/info' , function(req,res) {
 			res.writeHead(200, {'content-type':'text/html'});
-			Alert(res,wd);		
-			Alert(res, Rloc);
-			res.end();
+			Alert(res,wd
+				, function (){Alert(res, Rloc , function() 
+												{ res.end();
+												}
+									);
+							}
+					);
 			});	
 	 	
 	//fileUpload
@@ -180,7 +184,7 @@ var demoData = [{ // dummy data to display
 			res.writeHead(200, {'content-type':'text/html'});
 			Alert(res,'HI');
 			//Alert(res,req.file);
-			Alert(res,req.files);
+			//Alert(res,req.files);
 			if(req.file){					
 					upload1( req , res, function (err){
 						if (err) {
