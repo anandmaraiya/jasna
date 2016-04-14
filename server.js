@@ -114,34 +114,6 @@ var demoData = [{ // dummy data to display
 	var DefFile = 'default.csv' ; var DefRcode = 'default.R';
 	var ftype = 'CSV';
 	//local function
-/*
-	var fetchToRepo = function(loc , file , callback){ 
-					var fileTransfer = child_process.exec( 'cp '+loc+'/'+file+'  '+wd+'/uploads/UserData/'+file );			
-					callback(wd+'/uploads/UserData/'+file);
-					};
-					
-	var fetchToRbin = function(loc , file , callback){ 
-					var fileTransfer = child_process.exec( 'cp '+loc+'/'+file+'  '+Rloc+'/'+file);
-					callback(Rloc+'/'+file);
-					};
-	
-	var RenameInRbin = function(fnameB , fnameA , callback){ 
-					var fileTransfer = child_process.exec( 'mv '+Rloc+'/'+fnameB+'  '+Rloc+'/'+fnameA);
-					callback(Rloc+'/'+fnameA);
-					};
-	var RenameInRepo = function(flocB , flocA , callback ){ 
-					fs.rename( flocA , flocB, function(){ 
-						callback (flocB);
-						})
-					
-					var fileTransfer = child_process.exec( 'mv  '+wd+'uploads/UserData/'+fnameB.toString()+'   '+wd+'uploads/UserData/'+fnameA.toString() , function(err,stdout , stderr){ 
-						if (err) { callback('Error in running child process');};
-						if(stdout){ callback(wd+'uploads/UserData/'+fnameA.toString());};
-						if(stderr){ callback('Error in Renaming');};
-						});
-
-					};
-		*/			
 		
 	var Alert = function(res , Msg, callback){
 			var scr = '<script> alert("'+Msg+'");</script>';
@@ -165,7 +137,28 @@ var demoData = [{ // dummy data to display
 						callback(res, 'R closed');
 						});
 		}
+		
+	var FSMove	=  function( src , dest , res , callback) {
+				
+					fs.copy(src, dest 
+							, function (err){
+											if (err) { Alert( res, err , function(){ res.end();});}
+											fs.remove(src 
+												, function (err) {if (err) alert(res, err);
+													Alert(res , 'Moving file successful');
+													callback();
+												});
+										});
+					}
 	
+	var FSCopy	=  function( src , dest , res , callback) {
+					fs.copy(src, dest 
+							, function (err){
+											if (err) { Alert( res, err , function(){ res.end();});}
+													Alert(res , 'Copying file successful');
+													callback();
+												});
+										};	
 	
 	
 	app.get('/info' , function(req,res) {
@@ -183,12 +176,31 @@ var demoData = [{ // dummy data to display
 	app.post('/fileUpload',upload1.array('userfile',5), function (req, res ) {
 			res.writeHead(200, {'content-type':'text/html'});
 			Alert(res,'HI', 
-				function(){ RProcess('mow.R' , res
+				function(){ RProcess('mow.R' , res  
 					, function(res, body){ Alert(res,body 
 						, function(){});
 						});
 					});
 			});
+
+	app.post('/RCodeUpload',upload1.single('userRcode'), function (req, res ) {
+			res.writeHead(200, {'content-type':'text/html'});
+			if(!req.file){
+				Alert(res, 'No R Code received', function(){};)
+				}
+			else {Alert(res,'Rcode Uploading'
+					, function() { FSMove(wd+UserId+'/uploads/'+req.file.filename , wd+UserId+'/uploads/'+req.file.originalname , res, 			
+						, function(){ RProcess('mow.R' , res  
+							, function(res, body){ Alert(res,body 
+								, function(){});
+								});
+							});
+						});
+				}
+			});
+	
+
+
 			//Alert(res,req.file);
 			//Alert(res,req.files);
 			/*if(req.file){					
