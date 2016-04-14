@@ -118,7 +118,8 @@ var demoData = [{ // dummy data to display
 	var ftype = 'CSV';
 	//local function
 	var fetchToRepo = function(loc , file , callback){ 
-					var fileTransfer = child_process.exec( 'cp '+loc+'/'+file+'  '+wd+'/uploads/UserData/'+file );			callback(wd+'/uploads/UserData/'+file);
+					var fileTransfer = child_process.exec( 'cp '+loc+'/'+file+'  '+wd+'/uploads/UserData/'+file );			
+					callback(wd+'/uploads/UserData/'+file);
 					});
 					
 	var fetchToRbin = function(loc , file , callback){ 
