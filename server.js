@@ -176,7 +176,7 @@ var demoData = [{ // dummy data to display
 			});	
 	 	
 	//fileUpload
-	app.post('/fileUpload', upload1 , function (req, res) {
+	app.post('/fileUpload', function (req, res) {
 			if(req.files){
 				res.writeHead(200,{'content-type' : 'text/html'});
 				upload1( req , res, function (err){
