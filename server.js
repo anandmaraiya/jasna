@@ -119,21 +119,21 @@ var demoData = [{ // dummy data to display
 	//local function
 	
 	var fetchToRepo = function(loc , file , callback){ 
-					var fileTransfer = child_process.spawn( 'cp '+loc+'/'+file+'  '+wd+'/uploads/UserData/'+file );			
+					var fileTransfer = child_process.exec( 'cp '+loc+'/'+file+'  '+wd+'/uploads/UserData/'+file );			
 					callback(wd+'/uploads/UserData/'+file);
 					};
 					
 	var fetchToRbin = function(loc , file , callback){ 
-					var fileTransfer = child_process.spawn( 'cp '+loc+'/'+file+'  '+Rloc+'/'+file);
+					var fileTransfer = child_process.exec( 'cp '+loc+'/'+file+'  '+Rloc+'/'+file);
 					callback(Rloc+'/'+file);
 					};
 	
 	var RenameInRbin = function(fnameB , fnameA , callback){ 
-					var fileTransfer = child_process.spawn( 'mv '+Rloc+'/'+fnameB+'  '+Rloc+'/'+fnameA);
+					var fileTransfer = child_process.exec( 'mv '+Rloc+'/'+fnameB+'  '+Rloc+'/'+fnameA);
 					callback(Rloc+'/'+fnameA);
 					};
 	var RenameInRepo = function(fnameB , fnameA , callback ){ 
-					var fileTransfer = child_process.spawn( 'mv  '+wd+'/uploads/UserData/'+fnameB+'   '+wd+'/uploads/UserData/'+fnameA);
+					var fileTransfer = child_process.exec( 'mv  '+wd+'/uploads/UserData/'+fnameB+'   '+wd+'/uploads/UserData/'+fnameA);
 					callback(wd+'/uploads/UserData/'+fnameA);
 					};
 	
