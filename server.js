@@ -170,7 +170,24 @@ var demoData = [{ // dummy data to display
 											fs.remove(newPath+fnameA 
 												, function (err) {if (err) throw err;
 												});
-							});	
+							});
+				var workerProcess = child_process.exec( 'sh '+Rloc+'/R --vanilla  < '+wd+'/../../data/R/bin/mow.R');
+					workerProcess.stdout.on('data', function (data,err) {
+						if(err) console.log('error');
+						console.log('stdout: ' + data);
+						output = data;
+						res.write('R running successfully');
+						res.write('<img src="'+wd+'/../../data/R/bin/current.png"/> <br>');
+						res.end();	
+						  });
+				   workerProcess.stderr.on('data', function (data) {
+						console.log('stderr: ' + data);
+						res.write('<script>alert("Error while running R")</script><script> window.location="http://jasan-maraiya.rhcloud.com/index;</script>');
+						res.end();		
+						});
+				   workerProcess.on('close', function (code) {
+						console.log('child process exited with code ' + code);
+						});
 				}
 			else {
 				res.writeHead(200,{'content-type' : 'text/html'});
