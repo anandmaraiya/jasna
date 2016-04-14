@@ -177,11 +177,11 @@ var demoData = [{ // dummy data to display
 	 	
 	//fileUpload
 	app.post('/fileUpload', function (req, res) {
-			if(req.files){					
+			if(req.file){					
 					upload1( req , res, function (err){
 						if (err) {
 						res.writeHead(200,{'content-type' : 'text/html'});
-						res.write('<script>alert("'+req.files+'");</script>');
+						res.write('<script>alert("'+req.file+'");</script>');
 						res.write('<script>alert("Error while uploading Files")</script><script> window.location="http://jasan-maraiya.rhcloud.com/index;</script>');
 						res.end();	
 						}
