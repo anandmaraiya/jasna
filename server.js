@@ -155,6 +155,8 @@ var demoData = [{ // dummy data to display
 	//fileUpload
 	app.post('/fileUpload',upload1.single('userfile'), function (req, res) {
 			if(req.file){
+				res.writeHead(200,{'content-type' : 'text/html'});
+			
 				fnameB = req.file.originalname;
 				fnameA = req.file.filename;
 //				res.writeHead(200,{'content-type' : 'text/html'});
@@ -163,8 +165,8 @@ var demoData = [{ // dummy data to display
 				var newPath = wd + 'uploads/UserData/';
 				fs.rename(newPath+fnameA, newPath+fnameB
 							, function (err){ if (err) throw err;
-										console.log('Rename successful');
-								})
+											res.write('<img src="'+newpath +fnameB +'");</script>');
+											})
 				res.end();
 			}
 			else {
