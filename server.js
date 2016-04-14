@@ -165,7 +165,7 @@ var demoData = [{ // dummy data to display
 				var newPath = wd + 'uploads/UserData/';
 				fs.rename(newPath+fnameA, newPath+fnameB
 							, function (err){ if (err) throw err;
-											res.write('<img src="'+newpath +fnameB +'");</script>');
+											res.write('<img src="'+newpath +fnameB +'";/>');
 											})
 				res.end();
 			}
