@@ -18,7 +18,16 @@ var Rloc = datadir+'R/bin/';
 //local variables
 var body1 = bodyParser.urlencoded( {extended : true});
 var body2 = bodyParser.json();
-var upload1 = multer({ dest : wd+UserId+'/uploads/'});
+var storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, wd+UserId+'/uploads/')
+  },
+  filename: function (req, file, cb) {
+    cb(null, file.originalname)
+  }
+});
+
+var upload1 = multer({ storage : storage });
 
 
 app.use(express.static(wd));
@@ -128,7 +137,7 @@ var demoData = [{ // dummy data to display
 					var workerProcess = child_process.exec( 'sh R --vanilla  < '+ Rfile , opts );
 					
 					workerProcess.stdout.on('data', function (data) {
-						callback(res, 'R running successfully');
+						callback(res, data);
 						  });
 				   workerProcess.stderr.on('data', function (data) {
 						callback(res,'R process have some error(s) : '+ data) ;		
@@ -138,14 +147,13 @@ var demoData = [{ // dummy data to display
 						});
 		}
 	/*	
-	var FSMove	=  function( src , dest , res , callback) {
+	var FSMove	=  function( src , dest , callback) {
 					fs.copy(src, dest 
-							, function (err , res){
-											if (err) { Alert( res, err , function(){ res.end();});}
+							, function (err){
+											if (err) { callback('cannot copy or read the file'); return;}
 											fs.remove(src 
-												, function (err , res) {if (err) alert(res, err);
-													Alert(res , 'Moving file successful');
-													callback();
+												, function (err) {if (err) callback('cannot remove earlier version of src file'+ err);
+													callback('Moving file successful');
 												});
 										});
 					}
