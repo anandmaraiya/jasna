@@ -133,8 +133,10 @@ var demoData = [{ // dummy data to display
 					callback(Rloc+'/'+fnameA);
 					};
 	var RenameInRepo = function(fnameB , fnameA , callback ){ 
-					var fileTransfer = child_process.exec( 'mv  '+wd+'/uploads/UserData/'+fnameB+'   '+wd+'/uploads/UserData/'+fnameA, function(err,stdout , stderr){ 
-						callback(wd+'/uploads/UserData/'+fnameA);
+					var fileTransfer = child_process.exec( 'mv  '+wd+'/uploads/UserData/'+fnameB.toString()+'   '+wd+'/uploads/UserData/'+fnameA.toString() , function(err,stdout , stderr){ 
+						if (err) { callback('Error in running child process');};
+						if(stdout){ callback(wd+'/uploads/UserData/'+fnameA.toString());};
+						if(stderr){ callback('Error in Renaming');};
 						});
 					};
 	
