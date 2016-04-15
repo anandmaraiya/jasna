@@ -3,29 +3,34 @@
 //external modules
 var express = require('express');
 var app = express();
-var fs  = require('fs-extra');
+var fs   = require('fs-extra');
 var bodyParser = require('body-parser');
 var absorb = require('absorb');
 var multer = require('multer');
 var mustache = require('mustache'); // bring in mustache template engine
 var child_process = require('child_process');  // not a module
-
+var UserId = 'ram';
 //local places
 var wd = __dirname + '/public/';
 var datadir = process.env.OPENSHIFT_DATA_DIR;
 var Rloc = datadir+'R/bin/';
-
 	
 //local variables
 var body1 = bodyParser.urlencoded( {extended : true});
 var body2 = bodyParser.json();
-var upload1 = multer({ dest : wd+'uploads/UserData/'});
-var upload2 = multer({ dest : wd+'uploads/UserRcode/'});
+var storage1 = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, wd+UserId+'/uploads/');
+  },
+  filename: function (req, file, cb) {
+    cb(null, file.originalname);
+  }
+});
 
+var upload1 = multer({ storage : storage1 });
 
 
 app.use(express.static(wd));
-
 //Routes
 
 // Index
@@ -118,172 +123,91 @@ var demoData = [{ // dummy data to display
 	var DefFile = 'default.csv' ; var DefRcode = 'default.R';
 	var ftype = 'CSV';
 	//local function
-	
-	var fetchToRepo = function(loc , file , callback){ 
-					var fileTransfer = child_process.exec( 'cp '+loc+'/'+file+'  '+wd+'/uploads/UserData/'+file );			
-					callback(wd+'/uploads/UserData/'+file);
-					};
+		
+	var Alert = function(res , Msg, callback){
+			var scr = '<script> alert("'+Msg+'");</script>';
+			res.write(scr);
+			callback();
+			};
+			
+	var  RProcess = function(res , Rfile  , callback) { 
+					var opts = {
+					cwd: Rloc
+							};
+//					var workerProcess = child_process.exec( 'sh R --vanilla  < '+ Rfile , opts );
+					var workerProcess = child_process.exec( 'R.exe --vanilla  < '+ Rfile , opts );
 					
-	var fetchToRbin = function(loc , file , callback){ 
-					var fileTransfer = child_process.exec( 'cp '+loc+'/'+file+'  '+Rloc+'/'+file);
-					callback(Rloc+'/'+file);
-					};
+					workerProcess.stdout.on('data', function (data) {
+						callback(res, data);
+						  });
+				   workerProcess.stderr.on('data', function (data) {
+						callback(res,'R process have some error(s) : '+ data) ;		
+						});
+				   workerProcess.on('close', function (code) {
+						callback(res, 'R closed');
+						});
+		}
+	/*	
+	var FSMove	=  function( src , dest , callback) {
+					fs.copy(src, dest 
+							, function (err){
+											if (err) { callback('cannot copy or read the file'); return;}
+											fs.remove(src 
+												, function (err) {if (err) callback('cannot remove earlier version of src file'+ err);
+													callback('Moving file successful');
+												});
+										});
+					}
 	
-	var RenameInRbin = function(fnameB , fnameA , callback){ 
-					var fileTransfer = child_process.exec( 'mv '+Rloc+'/'+fnameB+'  '+Rloc+'/'+fnameA);
-					callback(Rloc+'/'+fnameA);
-					};
-	var RenameInRepo = function(flocB , flocA , callback ){ 
-					fs.rename( flocA , flocB, function(){ 
-						callback (flocB);
-						})
-					/*
-					var fileTransfer = child_process.exec( 'mv  '+wd+'uploads/UserData/'+fnameB.toString()+'   '+wd+'uploads/UserData/'+fnameA.toString() , function(err,stdout , stderr){ 
-						if (err) { callback('Error in running child process');};
-						if(stdout){ callback(wd+'uploads/UserData/'+fnameA.toString());};
-						if(stderr){ callback('Error in Renaming');};
-						});*/
-
-					};
+	var FSCopy	=  function( src , dest , res , callback) {
+					fs.copy(src, dest 
+							, function (err){
+											if (err) { Alert( res, err , function(){ res.end();});}
+													Alert(res , 'Copying file successful');
+													callback();
+												});
+										};	
+	*/
 	
 	app.get('/info' , function(req,res) {
 			res.writeHead(200, {'content-type':'text/html'});
-			res.write('<script> alert("' + Rloc + '");</script>');
-			res.write('<script> alert("' + wd + '");</script>');		
-			res.end();
+			Alert(res,wd
+				, function (){Alert(res, Rloc , function() 
+												{ res.end();
+												}
+									);
+							}
+					);
 			});	
 	 	
 	//fileUpload
-	app.post('/fileUpload',upload1.single('userfile'), function (req, res) {
-			if(req.file){
-				fnameB = req.file.originalname;
-				fnameA = req.file.filename;
-//				res.writeHead(200,{'content-type' : 'text/html'});
-				res.write('<script> alert("' + fnameA +' | '+fnameB +'");</script>');
-				res.write('<script> alert("' + wd + '");</script>');		
-				var newPath = wd + 'uploads/UserData/';
-				fs.copy(newPath+fnameA, newPath+fnameB
-							, function (err){ if (err) throw err; 
-											res.write('<script> alert ("File uploaded safely");</script>');
-											res.end();
-											fs.remove(newPath+fnameA 
-												, function (err) {if (err) throw err;
-												});
-							});
-			var workerProcess = child_process.exec( 'sh '+Rloc+'/R --vanilla  < '+wd+'../../data/R/bin/mow.R');
-			workerProcess.stdout.on('data', function (data,err) {
-				if(err) console.log('error');
-				console.log('stdout: ' + data);
-				output = data;
-				res.write('<p>R running successfully<p><br>');
-				res.write('<img src="'+wd+'/../../data/R/bin/current.png"/> <br>');
-				res.end();	
-				  });
-		   workerProcess.stderr.on('data', function (data) {
-				console.log('stderr: ' + data);
-				res.write('<script>alert("Error while running R")</script><script> window.location="http://jasan-maraiya.rhcloud.com/index;</script>');
-				res.end();		
-				});
-		   workerProcess.on('close', function (code) {
-				console.log('child process exited with code ' + code);
-				});
-			}
-			else {
-				res.writeHead(200,{'content-type' : 'text/html'});
-				res.write('<script> alert("' + req.file +'/uploads/UserData/' + '");</script>');
-				res.write('<script> alert("' + wd + '");</script>');		
-				res.end();
-			}
-		});
-		/*
-		if(req.file){
+	app.post('/fileUpload',upload1.array('userfile',5), function (req, res ) {
 			res.writeHead(200, {'content-type':'text/html'});
-			fnameB = req.file.originalname;
-			fnameA = req.file.filename;
-			RenameInRepo( fnameA , fnameB , function(body){
-				res.write('<script> alert("UploadFile Renamed back to ' + body.toString() + '");</script>');
-				});
-			fetchToRbin(wd+'/uploads/UserData',fnameB , function (body) {
-				res.write('<script> alert("UploadFile moved to ' + body.toString() + 'from '+wd+'/uploads/UserData/'+fnameB+'");</script>');
-				});
-			
-			var workerProcess = child_process.exec( 'sh '+Rloc+'/R --vanilla  < '+Rloc+'/'+'mow.R');
-			workerProcess.stdout.on('data', function (data,err) {
-				if(err) console.log('error');
-				console.log('stdout: ' + data);
-				output = data;
-				res.write('upload successful');
-				fetchToRepo(Rloc,'current.png', function(){});
-				res.write('<img src="/UserData/current.png'"/> <br>');
-				res.end();	
-				  });
-		   workerProcess.stderr.on('data', function (data) {
-				console.log('stderr: ' + data);
-				res.write('<script>alert("Error while running R")</script><script> window.location="http://jasan-maraiya.rhcloud.com/index;</script>');
-				res.end();		
-				});
-		   workerProcess.on('close', function (code) {
-				console.log('child process exited with code ' + code);
-				});
-			}
-	   else {
-			res.writeHead(200, {'content-type':'text/html'});
-			res.write('<script>alert("No datafile found for uploading")</script><script> window.location="http://jasan-maraiya.rhcloud.com/index";</script>');
-			res.end();		
-			}
-		});
-	
-	
-	//RCodeUpload		
-	app.post('/RCodeUpload', upload2.single('userRcode'),function (req, res) {
-		if(req.file){
-			fnameB = req.file.originalname;
-			fnameA = req.file.filename;
-			fs.rename( wd+'/uploads/UserRcode/'+fnameA ,wd+ '/uploads/UserRcode/'+fnameB, function (err) {
-		 
+			Alert(res,'HI', 
+				function(){ res, RProcess('mow.R'   
+					, function(res, body){ Alert(res,body 
+						, function(){});
+						});
+					});
+			});
+
+/*	
+	app.post('/RCodeUpload',upload1.array('userfile',5), function (req, res ) {
 		res.writeHead(200, {'content-type':'text/html'});
-		res.write('<script> alert("UploadFile Renamed back to ' + wd+'/uploads/UserRcode/'+fnameB + '");</script>');
-			
-			var child_process = require('child_process');
-			var fileTransfer = child_process.exec( 'cp '+wd+ '/uploads/UserRcode/'+fnameB+' '+Rloc+'/'+fnameB);
-			var workerProcess = child_process.exec( 'sh '+Rloc+'/R --vanilla  < '+Rloc+'/'+'mow.R' );
-
-			   workerProcess.stdout.on('data', function (data,err) {
-				  if(err) console.log('error');
-				  console.log('stdout: ' + data);
-				 // output = data;
-					fetchToRepo(Rloc,'current.png', function(body){ 
-					res.write('<img src="'+ body.toString()+'"/> <br>')});
-					res.end();	
-			   });
-			    workerProcess.stderr.on('data', function (data) {
-				  console.log('stderr: ' + data);
-					res.write('<script>alert("'+data+'");</script><script> window.location="http://jasan-maraiya.rhcloud.com/index";</script>');
-					res.end();		
-			   });
-
-			   workerProcess.on('close', function (code) {
-				  console.log('child process exited with code ' + code);
-			   });
-			  });
+		if(!req.file){
+			Alert(res, 'No R Code received', function(){};)
 			}
-	   else {
-			res.writeHead(200, {'content-type':'text/html'});
-			res.write('<script>alert("No datafile found for uploading"); window.location="http://jasan-maraiya.rhcloud.com/index";</script>');
-			res.end();
-	   }
-   });
-
-   
-/*  var newPath = wd + "/uploads/"+req.files.userfile.name;
-  fs.writeFile(newPath, data, function (err) {
-    console.log('Upload Successful');
-	res.redirect('/index');
-  });
-  */
-
-
-	
+		else {Alert(res,'Rcode Uploading'
+				, function() { FSMove(wd+UserId+'/uploads/'+req.file.filename , wd+UserId+'/uploads/'+req.file.originalname , res, 			
+					, function(){ RProcess('mow.R' , res  
+						, function(res, body){ Alert(res,body 
+							, function(){});
+							});
+						});
+					});
+			}
+		});
+	*/
 app.get("/*", function(req, res) {
 		//res.writeHead(200, {'content-type':'text/html'});        
 		res.redirect('/index');

@@ -18,16 +18,16 @@ var Rloc = datadir+'R/bin/';
 //local variables
 var body1 = bodyParser.urlencoded( {extended : true});
 var body2 = bodyParser.json();
-var storage = multer.diskStorage({
+var storage1 = multer.diskStorage({
   destination: function (req, file, cb) {
-    cb(null, wd+UserId+'/uploads/')
+    cb(null, wd+UserId+'/uploads/');
   },
   filename: function (req, file, cb) {
-    cb(null, file.originalname)
+    cb(null, file.originalname);
   }
 });
 
-var upload1 = multer({ storage : storage });
+var upload1 = multer({ storage : storage1 });
 
 
 app.use(express.static(wd));
@@ -130,7 +130,7 @@ var demoData = [{ // dummy data to display
 			callback();
 			};
 			
-	var  RProcess = function(Rfile , res , callback) { 
+	var  RProcess = function(res, Rfile  , callback) { 
 					var opts = {
 					cwd: Rloc
 							};
@@ -183,7 +183,7 @@ var demoData = [{ // dummy data to display
 	app.post('/fileUpload',upload1.array('userfile',5), function (req, res ) {
 			res.writeHead(200, {'content-type':'text/html'});
 			Alert(res,'HI', 
-				function(){ RProcess('mow.R' , res  
+				function(){ res ,RProcess('mow.R'   
 					, function(res, body){ Alert(res,body 
 						, function(){});
 						});
