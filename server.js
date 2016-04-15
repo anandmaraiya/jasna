@@ -122,26 +122,27 @@ var demoData = [{ // dummy data to display
 	var ftype = 'CSV';
 	//local function
 		
-	var Alert = function(res , Msg, callback){
+	var Alert = function(res , Msg, cb){
 			var scr = '<script> alert("'+Msg+'");</script>';
 			res.write(scr);
-			callback();
+			if (cb) cb();
 			};
 			
-	var  RProcess = function(res, Rfile  , callback) { 
+	var  RProcess = function(res , Rfile  , cb) { 
 					var opts = {
 					cwd: Rloc
 							};
-					var workerProcess = child_process.exec( 'sh R --vanilla  < '+ Rfile , opts );
+//					var workerProcess = child_process.exec( 'sh R --vanilla  < '+ Rfile , opts );
+					var workerProcess = child_process.exec( 'R.exe --vanilla  < '+ Rfile , opts );
 					
 					workerProcess.stdout.on('data', function (data) {
-						Alert(res, data);
+						Alert(res, data , function() {});
 						  });
 				   workerProcess.stderr.on('data', function (data) {
-						Alert(res,'R process have some error(s) : '+ data) ;		
+						Alert(res, data , function() {});
 						});
 				   workerProcess.on('close', function (code) {
-						Alert(res, 'R closed');
+						Alert(res, 'R process closed'+code , function() {});
 						});
 		}
 	/*	

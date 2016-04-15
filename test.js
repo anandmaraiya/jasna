@@ -13,7 +13,7 @@ var UserId = 'ram';
 //local places
 var wd = __dirname + '/public/';
 var datadir = process.env.OPENSHIFT_DATA_DIR;
-var Rloc = datadir+'R/bin/';
+var Rloc = 'C:/R/bin/';
 	
 //local variables
 var body1 = bodyParser.urlencoded( {extended : true});
@@ -122,10 +122,10 @@ var demoData = [{ // dummy data to display
 	var ftype = 'CSV';
 	//local function
 		
-	var Alert = function(res , Msg, callback){
+	var Alert = function(res , Msg, cb){
 			var scr = '<script> alert("'+Msg+'");</script>';
 			res.write(scr);
-			callback();
+			if (cb) cb();
 			};
 			
 	var  RProcess = function(res , Rfile  , cb) { 
@@ -136,13 +136,13 @@ var demoData = [{ // dummy data to display
 					var workerProcess = child_process.exec( 'R.exe --vanilla  < '+ Rfile , opts );
 					
 					workerProcess.stdout.on('data', function (data) {
-						cb(res, data);
+						Alert(res, data , function() {});
 						  });
-				   workerProcess.stderr.on('data', function ( cb  ,data) {
-						cb(res,'R process have some error(s) : '+ data) ;		
+				   workerProcess.stderr.on('data', function (data) {
+						Alert(res, data , function() {});
 						});
-				   workerProcess.on('close', function (cd ,code) {
-						cb(res, 'R closed');
+				   workerProcess.on('close', function (code) {
+						Alert(res, 'R process closed'+code , function() {});
 						});
 		}
 	/*	
@@ -185,7 +185,7 @@ var demoData = [{ // dummy data to display
 
 			res.writeHead(200, {'content-type':'text/html'});
 			Alert(res,'HI', 
-				function(){ res, RProcess('mow.R'   
+				function(){ RProcess(res ,'mow.R'   
 					, function(res, body){ Alert(res,body 
 						, function(){});
 						});
