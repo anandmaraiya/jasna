@@ -132,8 +132,8 @@ var demoData = [{ // dummy data to display
 					var opts = {
 					cwd: Rloc
 							};
-//					var workerProcess = child_process.exec( 'sh R --vanilla  < '+ Rfile , opts );
-					var workerProcess = child_process.exec( 'R.exe --vanilla  < '+ Rfile , opts );
+					var workerProcess = child_process.exec( 'sh R --vanilla  < '+ Rfile , opts );
+//					var workerProcess = child_process.exec( 'R.exe --vanilla  < '+ Rfile , opts );
 					
 					workerProcess.stdout.on('data', function (data) {
 						Alert(res, data , function() {});
