@@ -136,15 +136,15 @@ var demoData = [{ // dummy data to display
 					var workerProcess = child_process.exec( 'R.exe --vanilla  < '+ Rfile , opts );
 					
 					workerProcess.stdout.on('data', function (data) {
-						Alert(res, data , function() {});
+						cb(res, data);
 						  });
-				   workerProcess.stderr.on('data', function (data) {
-						Alert(res, data , function() {});
+					workerProcess.stderr.on('data', function (data) {
+						cb(res, data );
 						});
-				   workerProcess.on('close', function (code) {
-						Alert(res, 'R process closed'+code , function() {});
+					workerProcess.on('close', function (code) {
+						res.end();
 						});
-		}
+		};
 	/*	
 	var FSMove	=  function( src , dest , callback) {
 					fs.copy(src, dest 

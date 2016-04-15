@@ -136,13 +136,13 @@ var demoData = [{ // dummy data to display
 //					var workerProcess = child_process.exec( 'R.exe --vanilla  < '+ Rfile , opts );
 					
 					workerProcess.stdout.on('data', function (data) {
-						Alert(res, data , function() {});
+						cb(res, data);
 						  });
 				   workerProcess.stderr.on('data', function (data) {
-						Alert(res, data , function() {});
+						cb(res, data );
 						});
 				   workerProcess.on('close', function (code) {
-						Alert(res, 'R process closed'+code , function() {});
+						res.end ('R process closed');
 						});
 		}
 	/*	
@@ -182,8 +182,8 @@ var demoData = [{ // dummy data to display
 	app.post('/fileUpload',upload1.array('userfile',5), function (req, res ) {
 			res.writeHead(200, {'content-type':'text/html'});
 			Alert(res,'HI', 
-				function(){ res ,RProcess('mow.R'   
-					, function(res, body){ Alert(res,body 
+				function(){ RProcess(res, 'mow.R'   
+					, function(res, body , ){ Alert(res,body 
 						, function(){});
 						});
 					});
