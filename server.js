@@ -128,7 +128,7 @@ var demoData = [{ // dummy data to display
 			if (cb) cb();
 			};
 			
-	var  RProcess = function(res , Rfile  , cb) { 
+		var  RProcess = function(res , Rfile  , cb) { 
 					var opts = {
 					cwd: Rloc
 							};
@@ -138,14 +138,14 @@ var demoData = [{ // dummy data to display
 					workerProcess.stdout.on('data', function (data) {
 						cb(res, data);
 						  });
-				   workerProcess.stderr.on('data', function (data) {
+					workerProcess.stderr.on('data', function (data) {
 						cb(res, data );
 						});
-				   workerProcess.on('close', function (code) {
-						res.end ('R process closed');
+					workerProcess.on('close', function (code) {
+						res.end();
 						});
-		}
-	/*	
+		};
+/*	
 	var FSMove	=  function( src , dest , callback) {
 					fs.copy(src, dest 
 							, function (err){
@@ -180,14 +180,17 @@ var demoData = [{ // dummy data to display
 	 	
 	//fileUpload
 	app.post('/fileUpload',upload1.array('userfile',5), function (req, res ) {
+			
+
 			res.writeHead(200, {'content-type':'text/html'});
 			Alert(res,'HI', 
-				function(){ RProcess(res, 'mow.R'   
-					, function(res, body , ){ Alert(res,body 
+				function(){ RProcess(res ,'mow.R'   
+					, function(res, body){ Alert(res,body 
 						, function(){});
 						});
 					});
 			});
+
 /*
 	app.post('/RCodeUpload',upload1.single('userRcode'), function (req, res ) {
 			res.writeHead(200, {'content-type':'text/html'});
