@@ -19,9 +19,7 @@ var Rloc = datadir+'R/bin/';
 var body1 = bodyParser.urlencoded( {extended : true});
 var body2 = bodyParser.json();
 var storage1 = multer.diskStorage({
-  destination: function (req, file, cb) {
-    cb(null, wd+UserId+'/uploads/');
-  },
+  destination: wd+UserId+'/uploads/',
   filename: function (req, file, cb) {
     cb(null, file.originalname);
   }
@@ -130,7 +128,7 @@ var demoData = [{ // dummy data to display
 			callback();
 			};
 			
-	var  RProcess = function(res , Rfile  , callback) { 
+	var  RProcess = function(res , Rfile  , cb) { 
 					var opts = {
 					cwd: Rloc
 							};
@@ -138,13 +136,13 @@ var demoData = [{ // dummy data to display
 					var workerProcess = child_process.exec( 'R.exe --vanilla  < '+ Rfile , opts );
 					
 					workerProcess.stdout.on('data', function (data) {
-						callback(res, data);
+						cb(res, data);
 						  });
-				   workerProcess.stderr.on('data', function (data) {
-						callback(res,'R process have some error(s) : '+ data) ;		
+				   workerProcess.stderr.on('data', function ( cb  ,data) {
+						cb(res,'R process have some error(s) : '+ data) ;		
 						});
-				   workerProcess.on('close', function (code) {
-						callback(res, 'R closed');
+				   workerProcess.on('close', function (cd ,code) {
+						cb(res, 'R closed');
 						});
 		}
 	/*	
@@ -168,7 +166,7 @@ var demoData = [{ // dummy data to display
 												});
 										};	
 	*/
-	
+
 	app.get('/info' , function(req,res) {
 			res.writeHead(200, {'content-type':'text/html'});
 			Alert(res,wd
@@ -179,9 +177,12 @@ var demoData = [{ // dummy data to display
 							}
 					);
 			});	
-	 	
+
+ 	
 	//fileUpload
 	app.post('/fileUpload',upload1.array('userfile',5), function (req, res ) {
+			
+
 			res.writeHead(200, {'content-type':'text/html'});
 			Alert(res,'HI', 
 				function(){ res, RProcess('mow.R'   

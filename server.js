@@ -19,9 +19,7 @@ var Rloc = datadir+'R/bin/';
 var body1 = bodyParser.urlencoded( {extended : true});
 var body2 = bodyParser.json();
 var storage1 = multer.diskStorage({
-  destination: function (req, file, cb) {
-    cb(null, wd+UserId+'/uploads/');
-  },
+  destination: wd+UserId+'/uploads/',
   filename: function (req, file, cb) {
     cb(null, file.originalname);
   }
@@ -137,13 +135,13 @@ var demoData = [{ // dummy data to display
 					var workerProcess = child_process.exec( 'sh R --vanilla  < '+ Rfile , opts );
 					
 					workerProcess.stdout.on('data', function (data) {
-						callback(res, data);
+						Alert(res, data);
 						  });
 				   workerProcess.stderr.on('data', function (data) {
-						callback(res,'R process have some error(s) : '+ data) ;		
+						Alert(res,'R process have some error(s) : '+ data) ;		
 						});
 				   workerProcess.on('close', function (code) {
-						callback(res, 'R closed');
+						Alert(res, 'R closed');
 						});
 		}
 	/*	
