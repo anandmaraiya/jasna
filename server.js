@@ -207,6 +207,7 @@ var data1 = {	"title" : "JASAN",
 	
 	// get /info
 		app.get('/info' , function(req,res) {
+			res.writeHead(200, {'content-type':'text/html'});
 			Alert(res,wd
 				, function (){Alert(res, Rloc 
 								, function() 
@@ -218,6 +219,7 @@ var data1 = {	"title" : "JASAN",
  	 var err  = ''; 
 	//post /fileUpload
 	app.post('/fileUpload',upload1.array('userfile',5), function (req, res ) {
+			res.writeHead(200, {'content-type':'text/html'});
 			err= '';
 			console.log(req.files);
 			if( req.files.length == 0) { err = 'No files to upload'; console.log(err);}
