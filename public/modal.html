@@ -1,0 +1,19 @@
+
+<div id="modal">
+{{#modal}}
+	 <h4 class="w3-row s6"> <button onclick="document.getElementById('{{elId}}').style.display='block'" class="w3-blue-grey  w3-accordion w3-center w3-hover-dark-grey s6">  {{intro}} </button> 
+			<div id="{{elId}}" class="w3-modal">
+			  <div class="w3-modal-content">
+				<div class="w3-container w3-blue-grey">
+				  <header class="w3-container w3-yellow">
+				  <span onclick="document.getElementById('{{elId}}').style.display='none'" class="w3-closebtn">&times;</span>
+					<h4> {{intro}} </h4> </header>
+					{{#body}}
+					<p>{{msg}}</p>
+					{{/body}}
+					</div>
+			  </div>
+			</div>
+	</h4>
+{{/modal}}
+	</div>

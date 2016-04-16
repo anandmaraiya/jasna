@@ -9,11 +9,15 @@ var absorb = require('absorb');
 var multer = require('multer');
 var mustache = require('mustache'); // bring in mustache template engine
 var child_process = require('child_process');  // not a module
+var Ractive = require('ractive');
+	Ractive.defaults.debug = false;
+	Ractive.DEBUG = false;
+	//Ractive.DEBUG_PROMISES = false;
 var UserId = 'ram';
 //local places
 var wd = __dirname + '/public/';
 var datadir = process.env.OPENSHIFT_DATA_DIR;
-var Rloc = datadir+'R/bin/';
+var Rloc = datadir+'/R/bin/';
 	
 //local variables
 var body1 = bodyParser.urlencoded( {extended : true});
@@ -30,12 +34,19 @@ var upload1 = multer({ storage : storage1 });
 
 app.use(express.static(wd));
 //Routes
+// Create our Modal subclass
+
 
 // Index
 app.get('/index', function (req, res) {
 res.sendFile(wd+"/index.html");   
  });
-
+ 
+app.get('/intro', function (req,res){
+	var Modal1 =	new basicModal();
+	res.sendFile( Modal1.toHTML());	
+});
+ 
  // <!-- Api
  
  app.get('/api' , function(req,res){
@@ -73,47 +84,29 @@ res.sendFile(wd+"/index.html");
  // --> Api
  
  //mypage JSON data 
-var demoData = [{ // dummy data to display
-"name":"Steve Balmer",
-"company": "Microsoft",
-"systems": [{
-"os":"Windows XP"
-},{
-"os":"Vista"
-},{
-"os":"Windows 7"
-},{
-"os":"Windows 8"
-}]
-},{
-"name":"Steve Jobs",
-"company": "Apple",
-"systems": [{
-"os":"OSX Lion"
-},{
-"os":"OSX Leopard"
-},{
-"os":"IOS"
-}]
-},{
-"name":"Mark Z.",
-"company": "Facebook"
-}];
+var demoData =  { "title" : "JASAN",
+					"records" : [{ // dummy data to display
+								"name":"Steve Balmer",
+								"company" : "Microsoft",
+								"systems": [{
+											"os":"Windows XP"},{
+											"os":"Vista" },{
+											"os":"Windows 7" },{
+											"os":"Windows 8" }]
+								},{
+								"name" :"Steve Jobs",
+								"company": "Apple",
+								"systems" : [{
+										"os":"OSX Lion" },{
+										"os":"OSX Leopard" },{
+										"os":"IOS"}]
+								},{
+								 "name" :"Mark Z.",
+								 "company" : "Facebook"
+								}]
+				};
 
-//mypage 
- app.get('/mypage' , function  (req,res){
-	
-	var rData = {records : demoData};
-	 var page = fs.readFileSync(wd+'/mypage.html','utf8' );
-	 console.log(page);
-	 var html = mustache.to_html(page,rData);
-	
-	 res.send(html);
-	 res.end();
-	console.log('/mypage  loaded')	
- });
-	
-	
+
 	
 
 	//local vars
@@ -122,18 +115,20 @@ var demoData = [{ // dummy data to display
 	var ftype = 'CSV';
 	//local function
 		
+	// Alert on window
 	var Alert = function(res , Msg, cb){
 			var scr = '<script> alert("'+Msg+'");</script>';
 			res.write(scr);
 			if (cb) cb();
 			};
 			
-		var  RProcess = function(res , Rfile  , cb) { 
+	//R process 		
+	var  RProcess = function(res , Rfile  , cb) { 
 					var opts = {
 					cwd: Rloc
 							};
 					var workerProcess = child_process.exec( 'sh R --vanilla  < '+ Rfile , opts );
-//					var workerProcess = child_process.exec( 'R.exe --vanilla  < '+ Rfile , opts );
+//					var workerProcess = child_process.exec( 'Rscript.exe --vanilla  < '+ Rfile , opts );
 					
 					workerProcess.stdout.on('data', function (data) {
 						cb(res, data);
@@ -142,233 +137,127 @@ var demoData = [{ // dummy data to display
 						cb(res, data );
 						});
 					workerProcess.on('close', function (code) {
-						res.end();
+						cb(res,'close');
 						});
 		};
-/*	
-	var FSMove	=  function( src , dest , callback) {
-					fs.copy(src, dest 
-							, function (err){
-											if (err) { callback('cannot copy or read the file'); return;}
-											fs.remove(src 
-												, function (err) {if (err) callback('cannot remove earlier version of src file'+ err);
-													callback('Moving file successful');
-												});
-										});
-					}
-	
-	var FSCopy	=  function( src , dest , res , callback) {
-					fs.copy(src, dest 
-							, function (err){
-											if (err) { Alert( res, err , function(){ res.end();});}
-													Alert(res , 'Copying file successful');
-													callback();
-												});
-										};	
-	*/
-	
-	app.get('/info' , function(req,res) {
-			res.writeHead(200, {'content-type':'text/html'});
-			Alert(res,wd
-				, function (){Alert(res, Rloc , function() 
-												{ res.end();
-												}
-									);
-							}
-					);
-			});	
-	 	
-	//fileUpload
-	app.post('/fileUpload',upload1.array('userfile',5), function (req, res ) {
-			
 
-			res.writeHead(200, {'content-type':'text/html'});
-			Alert(res,'HI', 
-				function(){ RProcess(res ,'mow.R'   
+
+	//SQL Process??
+
+	
+var data1 = {	"title" : "JASAN",
+				"head" : { "intro" : "Welcome to JASAN",
+                         	"body" : "Analytics @ Anywhere" },
+				"foot" : {"intro" : "Footer",
+                         	"body" : "Copyright @ Anand Maraiya <anand.maraiya@gmail.com>"},
+				"modal" : [{ "intro"  : "Reports, Plots, Tables, Text, Html, Pdf",
+								"elId" : "mdlOutput",
+								"body" : [{"msg" : "First Message"},  {"msg" : "Second Message"}]			
+								}]		
+			};
+
+//mypage 
+ app.get('/mypage' , function  (req,res){
+			var head = new Ractive({
+				el : 'header',
+				template: function(){var tmpl = fs.readFileSync(wd+'/header.html','utf8' );
+								return tmpl;},
+				data : data1
+			});
+			var	foot = new Ractive({
+				el : 'footer',
+				template: function(){var tmpl = fs.readFileSync(wd+'/footer.html','utf8' );
+								return tmpl;},
+				data : data1
+			});
+			var	Modal = new Ractive({
+				el : 'modal',
+				template: function(){var tmpl = fs.readFileSync(wd+'/modal.html','utf8' );
+								return tmpl;},
+				data : data1
+			});
+			res.send(head.toHTML()+Modal.toHTML()+foot.toHTML());
+			 res.end();
+ });
+	
+
+	
+	//get /main
+		app.get('/userLab/:id' , function( req, res){
+				//var id = req.params.id;
+				//console.log(id);
+
+				var page = fs.readFileSync(wd+'/mypage.html','utf8' );
+				var ractive = new Ractive({
+					el : 'body',
+					template: page,
+					data : demoData
+						});			 
+				res.send(ractive.toHTML());
+				 res.end();
+			 });
+
+					/*			function(){ RProcess(res ,'mow.R'   
 					, function(res, body){ Alert(res,body 
-						, function(){});
+						, function(res,body){ if(body=='close') {res.end();}});
 						});
 					});
+		*/	
+
+	
+	// get /info
+		app.get('/info' , function(req,res) {
+			Alert(res,wd
+				, function (){Alert(res, Rloc 
+								, function() 
+									{ res.end();
+								});
+				});
+			});	
+
+ 	 var err  = ''; 
+	//post /fileUpload
+	app.post('/fileUpload',upload1.array('userfile',5), function (req, res ) {
+			err= '';
+			console.log(req.files);
+			if( req.files.length == 0) { err = 'No files to upload'; console.log(err);}
+			for ( var i= 0 ; i < req.files.length ; i++ ){
+					var file = req.files[i];
+					if(file.size > 10485760) { err =  req.file.originalname +' filesize exceeds 10 MB. Sorry, cant allow.'; console.log(err);  };
+					}
+				if(err != '' ) { Alert(res, err); console.log(err); res.end('<script> window.location="/index";</script>');}
+				else {
+				Alert( res, 'File(s) uploaded successfully'
+				, function () { res.write('<script> window.location="/userLab/'+UserId+'";</script>') ;
+				console.log('ready to redirect');
+				res.end();
+				});
+				}
 			});
 
-/*
-	app.post('/RCodeUpload',upload1.single('userRcode'), function (req, res ) {
-			res.writeHead(200, {'content-type':'text/html'});
-			if(!req.file){
-				Alert(res, 'No R Code received', function(){};)
-				}
-			else {Alert(res,'Rcode Uploading'
-					, function() { FSMove(wd+UserId+'/uploads/'+req.file.filename , wd+UserId+'/uploads/'+req.file.originalname , res, 			
-						, function(){ RProcess('mow.R' , res  
-							, function(res, body){ Alert(res,body 
-								, function(){});
-								});
+
+			
+			/*	
+	app.post('/RCodeUpload',upload1.array('userfile',5), function (req, res ) {
+		res.writeHead(200, {'content-type':'text/html'});
+		if(!req.file){
+			Alert(res, 'No R Code received', function(){};)
+			}
+		else {Alert(res,'Rcode Uploading'
+				, function() { FSMove(wd+UserId+'/uploads/'+req.file.filename , wd+UserId+'/uploads/'+req.file.originalname , res, 			
+					, function(){ RProcess('mow.R' , res  
+						, function(res, body){ Alert(res,body 
+							, function(){});
 							});
 						});
-				}
-			});
-	
-
-
-			//Alert(res,req.file);
-			//Alert(res,req.files);
-			/*if(req.file){					
-					upload1( req , res, function (err){
-						if (err) {
-						Alert(res,req.file);
-						Alert(res,"Error while uploading Files");
-						Alert(res,'window.location="http://jasan-maraiya.rhcloud.com/index"');
-						res.end();	
-						}
-						else{res.writeHead(200,{'content-type' : 'text/html'});
-						res.write('<script>alert("Files uploading Begin")</script>');
-						res.write('<script>alert("Files uploaded Successfully")</script>');
-							}
-						}
-					);
-			/*	fnameB = req.file.originalname;
-				fnameA = req.file.filename;
-//				res.writeHead(200,{'content-type' : 'text/html'});
-				res.write('<script> alert("' + fnameA +' | '+fnameB +'");</script>');
-				res.write('<script> alert("' + wd + '");</script>');		
-				var newPath = wd + 'uploads/UserData/';
-				fs.copy(newPath+fnameA, newPath+fnameB
-							, function (err){ 
-											res.write('<img src="/uploads/UserData/' +fnameB +'" />');
-											res.end();
-											fs.remove(newPath+fnameA 
-												, function (err) {if (err) throw err;
-												});
-							});	
-									
-				}
-			else {
-				res.write('<script> alert("No Upload File received");</script> <script> window.location="http://jasan-maraiya.rhcloud.com/index"</script>');
-				//res.write('<script> alert("' + wd + '");</script>');		
-				res.end();
-				}
-		});
-		*/
-		
-		/*
-
-	//local function
-	
-	var fetchToRepo = function(loc , file , callback){ 
-					var fileTransfer = child_process.exec( 'cp '+loc+'/'+file+'  '+wd+'/uploads/UserData/'+file );			
-					callback(wd+'/uploads/UserData/'+file);
-					};
-					
-	var fetchToRbin = function(loc , file , callback){ 
-					var fileTransfer = child_process.exec( 'cp '+loc+'/'+file+'  '+Rloc+'/'+file);
-					callback(Rloc+'/'+file);
-					};
-	
-	var RenameInRbin = function(fnameB , fnameA , callback){ 
-					var fileTransfer = child_process.exec( 'mv '+Rloc+'/'+fnameB+'  '+Rloc+'/'+fnameA);
-					callback(Rloc+'/'+fnameA);
-					};
-	var RenameInRepo = function(fnameB , fnameA , callback ){ 
-					var fileTransfer = child_process.exec( 'mv  '+wd+'uploads/UserData/'+fnameB.toString()+'   '+wd+'uploads/UserData/'+fnameA.toString() , function(err,stdout , stderr){ 
-						if (err) { callback('Error in running child process');};
-						if(stdout){ callback(wd+'uploads/UserData/'+fnameA.toString());};
-						if(stderr){ callback('Error in Renaming');};
-						});
-					};
-
-					
-		if(req.file){
-			res.writeHead(200, {'content-type':'text/html'});
-			fnameB = req.file.originalname;
-			fnameA = req.file.filename;
-			RenameInRepo( fnameA , fnameB , function(body){
-				res.write('<script> alert("UploadFile Renamed back to ' + body.toString() + '");</script>');
-				});
-			fetchToRbin(wd+'/uploads/UserData',fnameB , function (body) {
-				res.write('<script> alert("UploadFile moved to ' + body.toString() + 'from '+wd+'/uploads/UserData/'+fnameB+'");</script>');
-				});
-			
-			var workerProcess = child_process.exec( 'sh '+Rloc+'/R --vanilla  < '+Rloc+'/'+'mow.R');
-			workerProcess.stdout.on('data', function (data,err) {
-				if(err) console.log('error');
-				console.log('stdout: ' + data);
-				output = data;
-				res.write('upload successful');
-				fetchToRepo(Rloc,'current.png', function(){});
-				res.write('<img src="/UserData/current.png'"/> <br>');
-				res.end();	
-				  });
-		   workerProcess.stderr.on('data', function (data) {
-				console.log('stderr: ' + data);
-				res.write('<script>alert("Error while running R")</script><script> window.location="http://jasan-maraiya.rhcloud.com/index;</script>');
-				res.end();		
-				});
-		   workerProcess.on('close', function (code) {
-				console.log('child process exited with code ' + code);
-				});
-			}
-	   else {
-			res.writeHead(200, {'content-type':'text/html'});
-			res.write('<script>alert("No datafile found for uploading")</script><script> window.location="http://jasan-maraiya.rhcloud.com/index";</script>');
-			res.end();		
+					});
 			}
 		});
-	
-	
-	//RCodeUpload		
-	app.post('/RCodeUpload', upload2.single('userRcode'),function (req, res) {
-		if(req.file){
-			fnameB = req.file.originalname;
-			fnameA = req.file.filename;
-			fs.rename( wd+'/uploads/UserRcode/'+fnameA ,wd+ '/uploads/UserRcode/'+fnameB, function (err) {
-		 
-		res.writeHead(200, {'content-type':'text/html'});
-		res.write('<script> alert("UploadFile Renamed back to ' + wd+'/uploads/UserRcode/'+fnameB + '");</script>');
-			
-			var child_process = require('child_process');
-			var fileTransfer = child_process.exec( 'cp '+wd+ '/uploads/UserRcode/'+fnameB+' '+Rloc+'/'+fnameB);
-			var workerProcess = child_process.exec( 'sh '+Rloc+'/R --vanilla  < '+Rloc+'/'+'mow.R' );
-
-			   workerProcess.stdout.on('data', function (data,err) {
-				  if(err) console.log('error');
-				  console.log('stdout: ' + data);
-				 // output = data;
-					fetchToRepo(Rloc,'current.png', function(body){ 
-					res.write('<img src="'+ body.toString()+'"/> <br>')});
-					res.end();	
-			   });
-			    workerProcess.stderr.on('data', function (data) {
-				  console.log('stderr: ' + data);
-					res.write('<script>alert("'+data+'");</script><script> window.location="http://jasan-maraiya.rhcloud.com/index";</script>');
-					res.end();		
-			   });
-
-			   workerProcess.on('close', function (code) {
-				  console.log('child process exited with code ' + code);
-			   });
-			  });
-			}
-	   else {
-			res.writeHead(200, {'content-type':'text/html'});
-			res.write('<script>alert("No datafile found for uploading"); window.location="http://jasan-maraiya.rhcloud.com/index";</script>');
-			res.end();
-	   }
-   });
-
-   
-/*  var newPath = wd + "/uploads/"+req.files.userfile.name;
-  fs.writeFile(newPath, data, function (err) {
-    console.log('Upload Successful');
-	res.redirect('/index');
-  });
-  */
-
-
-	
+	*/
 app.get("/*", function(req, res) {
-		res.writeHead(200, {'content-type':'text/html'});        
+		//res.writeHead(200, {'content-type':'text/html'});        
 		res.redirect('/index');
-	 res.end();
+		res.end();
 		});
 
 //http.listen(port,function(){console.log("App Started")});

@@ -9,6 +9,10 @@ var absorb = require('absorb');
 var multer = require('multer');
 var mustache = require('mustache'); // bring in mustache template engine
 var child_process = require('child_process');  // not a module
+var Ractive = require('ractive');
+	Ractive.defaults.debug = false;
+	Ractive.DEBUG = false;
+	//Ractive.DEBUG_PROMISES = false;
 var UserId = 'ram';
 //local places
 var wd = __dirname + '/public/';
@@ -30,12 +34,19 @@ var upload1 = multer({ storage : storage1 });
 
 app.use(express.static(wd));
 //Routes
+// Create our Modal subclass
+
 
 // Index
 app.get('/index', function (req, res) {
 res.sendFile(wd+"/index.html");   
  });
-
+ 
+app.get('/intro', function (req,res){
+	var Modal1 =	new basicModal();
+	res.sendFile( Modal1.toHTML());	
+});
+ 
  // <!-- Api
  
  app.get('/api' , function(req,res){
@@ -73,47 +84,29 @@ res.sendFile(wd+"/index.html");
  // --> Api
  
  //mypage JSON data 
-var demoData = [{ // dummy data to display
-"name":"Steve Balmer",
-"company": "Microsoft",
-"systems": [{
-"os":"Windows XP"
-},{
-"os":"Vista"
-},{
-"os":"Windows 7"
-},{
-"os":"Windows 8"
-}]
-},{
-"name":"Steve Jobs",
-"company": "Apple",
-"systems": [{
-"os":"OSX Lion"
-},{
-"os":"OSX Leopard"
-},{
-"os":"IOS"
-}]
-},{
-"name":"Mark Z.",
-"company": "Facebook"
-}];
+var demoData =  { "title" : "JASAN",
+					"records" : [{ // dummy data to display
+								"name":"Steve Balmer",
+								"company" : "Microsoft",
+								"systems": [{
+											"os":"Windows XP"},{
+											"os":"Vista" },{
+											"os":"Windows 7" },{
+											"os":"Windows 8" }]
+								},{
+								"name" :"Steve Jobs",
+								"company": "Apple",
+								"systems" : [{
+										"os":"OSX Lion" },{
+										"os":"OSX Leopard" },{
+										"os":"IOS"}]
+								},{
+								 "name" :"Mark Z.",
+								 "company" : "Facebook"
+								}]
+				};
 
-//mypage 
- app.get('/mypage' , function  (req,res){
-	
-	var rData = {records : demoData};
-	 var page = fs.readFileSync(wd+'/mypage.html','utf8' );
-	 console.log(page);
-	 var html = mustache.to_html(page,rData);
-	
-	 res.send(html);
-	 res.end();
-	console.log('/mypage  loaded')	
- });
-	
-	
+
 	
 
 	//local vars
@@ -122,18 +115,20 @@ var demoData = [{ // dummy data to display
 	var ftype = 'CSV';
 	//local function
 		
+	// Alert on window
 	var Alert = function(res , Msg, cb){
 			var scr = '<script> alert("'+Msg+'");</script>';
 			res.write(scr);
 			if (cb) cb();
 			};
 			
+	//R process 		
 	var  RProcess = function(res , Rfile  , cb) { 
 					var opts = {
 					cwd: Rloc
 							};
 //					var workerProcess = child_process.exec( 'sh R --vanilla  < '+ Rfile , opts );
-					var workerProcess = child_process.exec( 'R.exe --vanilla  < '+ Rfile , opts );
+					var workerProcess = child_process.exec( 'Rscript.exe --vanilla  < '+ Rfile , opts );
 					
 					workerProcess.stdout.on('data', function (data) {
 						cb(res, data);
@@ -142,57 +137,107 @@ var demoData = [{ // dummy data to display
 						cb(res, data );
 						});
 					workerProcess.on('close', function (code) {
-						res.end();
+						cb(res,'close');
 						});
 		};
-	/*	
-	var FSMove	=  function( src , dest , callback) {
-					fs.copy(src, dest 
-							, function (err){
-											if (err) { callback('cannot copy or read the file'); return;}
-											fs.remove(src 
-												, function (err) {if (err) callback('cannot remove earlier version of src file'+ err);
-													callback('Moving file successful');
-												});
-										});
-					}
+
+
+	//SQL Process??
+
 	
-	var FSCopy	=  function( src , dest , res , callback) {
-					fs.copy(src, dest 
-							, function (err){
-											if (err) { Alert( res, err , function(){ res.end();});}
-													Alert(res , 'Copying file successful');
-													callback();
-												});
-										};	
-	*/
+var data1 = {	"title" : "JASAN",
+				"head" : { "intro" : "Welcome to JASAN",
+                         	"body" : "Analytics @ Anywhere" },
+				"foot" : {"intro" : "Footer",
+                         	"body" : "Copyright @ Anand Maraiya <anand.maraiya@gmail.com>"},
+				"modal" : [{ "intro"  : "Reports, Plots, Tables, Text, Html, Pdf",
+								"elId" : "mdlOutput",
+								"body" : [{"msg" : "First Message"},  {"msg" : "Second Message"}]			
+								}]		
+			};
 
-	app.get('/info' , function(req,res) {
-			res.writeHead(200, {'content-type':'text/html'});
-			Alert(res,wd
-				, function (){Alert(res, Rloc , function() 
-												{ res.end();
-												}
-									);
-							}
-					);
-			});	
+//mypage 
+ app.get('/mypage' , function  (req,res){
+			var head = new Ractive({
+				el : 'header',
+				template: function(){var tmpl = fs.readFileSync(wd+'/header.html','utf8' );
+								return tmpl;},
+				data : data1
+			});
+			var	foot = new Ractive({
+				el : 'footer',
+				template: function(){var tmpl = fs.readFileSync(wd+'/footer.html','utf8' );
+								return tmpl;},
+				data : data1
+			});
+			var	Modal = new Ractive({
+				el : 'modal',
+				template: function(){var tmpl = fs.readFileSync(wd+'/modal.html','utf8' );
+								return tmpl;},
+				data : data1
+			});
+			res.send(head.toHTML()+Modal.toHTML()+foot.toHTML());
+			 res.end();
+ });
+	
 
- 	
-	//fileUpload
-	app.post('/fileUpload',upload1.array('userfile',5), function (req, res ) {
-			
+	
+	//get /main
+		app.get('/userLab/:id' , function( req, res){
+				//var id = req.params.id;
+				//console.log(id);
 
-			res.writeHead(200, {'content-type':'text/html'});
-			Alert(res,'HI', 
-				function(){ RProcess(res ,'mow.R'   
+				var page = fs.readFileSync(wd+'/mypage.html','utf8' );
+				var ractive = new Ractive({
+					el : 'body',
+					template: page,
+					data : demoData
+						});			 
+				res.send(ractive.toHTML());
+				 res.end();
+			 });
+
+					/*			function(){ RProcess(res ,'mow.R'   
 					, function(res, body){ Alert(res,body 
-						, function(){});
+						, function(res,body){ if(body=='close') {res.end();}});
 						});
 					});
+		*/	
+
+	
+	// get /info
+		app.get('/info' , function(req,res) {
+			Alert(res,wd
+				, function (){Alert(res, Rloc 
+								, function() 
+									{ res.end();
+								});
+				});
+			});	
+
+ 	 var err  = ''; 
+	//post /fileUpload
+	app.post('/fileUpload',upload1.array('userfile',5), function (req, res ) {
+			err= '';
+			console.log(req.files);
+			if( req.files.length == 0) { err = 'No files to upload'; console.log(err);}
+			for ( var i= 0 ; i < req.files.length ; i++ ){
+					var file = req.files[i];
+					if(file.size > 10485760) { err =  req.file.originalname +' filesize exceeds 10 MB. Sorry, cant allow.'; console.log(err);  };
+					}
+				if(err != '' ) { Alert(res, err); console.log(err); res.end('<script> window.location="/index";</script>');}
+				else {
+				Alert( res, 'File(s) uploaded successfully'
+				, function () { res.write('<script> window.location="/userLab/'+UserId+'";</script>') ;
+				console.log('ready to redirect');
+				res.end();
+				});
+				}
 			});
 
-/*	
+
+			
+			/*	
 	app.post('/RCodeUpload',upload1.array('userfile',5), function (req, res ) {
 		res.writeHead(200, {'content-type':'text/html'});
 		if(!req.file){
