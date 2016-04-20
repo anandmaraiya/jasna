@@ -45,7 +45,6 @@ res.sendFile(wd+"/index.html");
  });
  
 app.get('/api/R/:id', function(req,res){
-				res.writeHead(200, {'content-type':'text/html'});
 
 	var codetype = ''; var code = ''; 
 	var id = req.params.id;	
