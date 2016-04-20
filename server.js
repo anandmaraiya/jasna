@@ -44,7 +44,7 @@ res.sendFile(wd+"/index.html");
  
 app.get('/api/R/:id', function(req,res){
 
-				RProcess(res.query.code.code ,'', function (data){
+				RProcess(req.query.code.code ,'', function (data){
 					Alert(res , "R running");
 					if(data == 'close'){ res.end(); return;}
 					res.write(data);
