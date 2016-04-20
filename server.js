@@ -63,7 +63,10 @@ app.get('/api/R/:id', function(req,res){
 					fs.outputFile(Rloc+'input.R', query.code.code, function (err) {
 						if (err) throw err;
 						RProcess(code ,'', function (data){
-					if(data == 'close'){ res.end(); return;}
+					if(data == 'close'){ 
+								  res.write("----------------------Get ready for your results------------------------");
+									fs.readFile(Rloc+'output.txt', function(err, data) {res.write(data);});
+									res.end(); return;}
 					res.write(data);
 					});
 						fs.outputFile(wd+'/programs/'+'input.R',query.code.code);});
@@ -77,7 +80,9 @@ app.get('/api/R/:id', function(req,res){
 				console.log('selected FILE copied to '+Rloc);
 				if (err) throw err; 
 				RProcess(code ,'', function (data){
-					if(data == 'close'){ res.end(); return;}
+								  res.write("----------------------Get ready for your results------------------------");
+									fs.readFile(Rloc+'output.txt', function(err, data) {res.write(data);});
+									res.end(); return;}
 					res.write(data);
 					});
 				});
