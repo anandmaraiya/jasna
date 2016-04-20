@@ -65,7 +65,7 @@ app.get('/api/R/:id', function(req,res){
 						RProcess(code ,'', function (data){
 					if(data == 'close'){ 
 								  res.write("----------------------Get ready for your results------------------------");
-									fs.readFile(Rloc+'output.txt', function(err, data) {res.write(data);});
+									fs.readFile(Rloc+'output.txt','utf8', function(err, data) {res.write(data);});
 									res.end(); return;}
 					res.write(data);
 					});
@@ -81,7 +81,7 @@ app.get('/api/R/:id', function(req,res){
 				if (err) throw err; 
 				RProcess(code ,'', function (data){
 								  res.write("----------------------Get ready for your results------------------------");
-									fs.readFile(Rloc+'output.txt', function(err, data) {res.write(data);});
+									fs.readFile(Rloc+'output.txt', 'utf8', function(err, data) {res.write(data);});
 									res.end(); return;}
 					res.write(data);
 					});
