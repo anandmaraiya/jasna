@@ -17,7 +17,7 @@ var UserId = 'ram';
 //local places
 var wd = __dirname + '/public/';
 var datadir = process.env.OPENSHIFT_DATA_DIR;
-var Rloc = datadir+'/R/bin/';
+var Rloc = __dirname+ '/../data/R/bin/';
 	
 //local variables
 var body1 = bodyParser.urlencoded( {extended : true});
