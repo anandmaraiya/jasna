@@ -28,8 +28,8 @@ var storage1 = multer.diskStorage({
     cb(null, file.originalname);
   }
 });
-
-var upload1 = multer({ storage : storage1 });
+var limits = {fileSize : 1*1024};
+var upload1 = multer({ storage : storage1 , limits : limits });
 
 
 app.use(express.static(wd));
@@ -42,10 +42,50 @@ app.get('/index', function (req, res) {
 res.sendFile(wd+"/index.html");   
  });
  
-app.get('/intro', function (req,res){
-	var Modal1 =	new basicModal();
-	res.sendFile( Modal1.toHTML());	
+app.get('/api/R/:id', function(req,res){
+	var codetype = ''; var code = ''; 
+	var id = req.params.id;	
+	var query = req.query;
+	if( id != 'ram'){ throw 'Error : "ID = '+id+'" is not present';}
+	
+	var sendJson  = {id : req.params.id};
+	//sendJson['query'] = query;
+	if(query.code == null){ throw 'Error : No infomation about code is available in the query';}
+	console.log(wd);
+	console.log(Rloc);
+	switch(query.code.type){
+	case 'STRING':  	console.log('selected STRING');
+					code = 'input.R';
+					codetype = query.code.type;
+					fs.outputFile(Rloc+'input.R', query.code.code, function (err) {
+						if (err) throw err;
+						RProcess(code ,'', function (data){
+					if(data == 'close'){ return;}
+					res.write(data);
+					});
+						fs.outputFile(wd+'/programs/'+'input.R',query.code.code);});
+			break;  
+  
+	case 'FILE':  console.log('selected FILE');
+					codetype = query.code.type;
+				code = query.code.code;
+				fs.copy(wd+id+'/programs/'+query.code.code, Rloc+query.code.code, 
+					function (err) {
+				console.log('selected FILE copied to '+Rloc);
+				if (err) throw err; 
+				RProcess(code ,'', function (data){
+					if(data == 'close'){ res.end(); return;}
+					res.write(data);
+					});
+				});
+	break;
+	default:  throw 'Error : No information about type of code . Please supply "STRING" or  "FILE"';
+	}
+	console.log(code);
+	
+
 });
+
  
  // <!-- Api
  
@@ -123,7 +163,7 @@ var demoData =  { "title" : "JASAN",
 			};
 			
 	//R process 		
-	var  RProcess = function(res , Rfile  , cb) { 
+	var  RProcess = function(Rfile , file  , cb) { 
 					var opts = {
 					cwd: Rloc
 							};
@@ -131,13 +171,13 @@ var demoData =  { "title" : "JASAN",
 //					var workerProcess = child_process.exec( 'Rscript.exe --vanilla  < '+ Rfile , opts );
 					
 					workerProcess.stdout.on('data', function (data) {
-						cb(res, data);
+						cb(data);
 						  });
 					workerProcess.stderr.on('data', function (data) {
-						cb(res, data );
+						cb( data );
 						});
 					workerProcess.on('close', function (code) {
-						cb(res,'close');
+						cb('close');
 						});
 		};
 

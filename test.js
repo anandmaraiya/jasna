@@ -28,9 +28,8 @@ var storage1 = multer.diskStorage({
     cb(null, file.originalname);
   }
 });
-
-var upload1 = multer({ storage : storage1 });
-
+var limits = {fileSize : 1*1024};
+var upload1 = multer({ storage : storage1 , limits : limits });
 
 app.use(express.static(wd));
 //Routes
