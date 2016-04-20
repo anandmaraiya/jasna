@@ -33,6 +33,8 @@ var upload1 = multer({ storage : storage1 , limits : limits });
 
 
 app.use(express.static(wd));
+app.use(body1);
+app.use(body2);
 //Routes
 // Create our Modal subclass
 
@@ -50,7 +52,7 @@ app.get('/api/R/:id', function(req,res){
 					res.write(data);
 					});
 				//});
-
+		});
 
 /*	var codetype = ''; var code = ''; 
 	var id = req.params.id;	
@@ -92,7 +94,7 @@ app.get('/api/R/:id', function(req,res){
 	}
 	console.log(code);
 */
-	});
+	
 
  
  // <!-- Api
