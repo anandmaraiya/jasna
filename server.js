@@ -17,7 +17,7 @@ var UserId = 'ram';
 //local places
 var wd = __dirname + '/public/';
 var datadir = process.env.OPENSHIFT_DATA_DIR;
-var Rloc = __dirname+ '/../data/R/bin/';
+var Rloc = datadir+'/R/bin/';
 	
 //local variables
 var body1 = bodyParser.urlencoded( {extended : true});
@@ -43,7 +43,15 @@ res.sendFile(wd+"/index.html");
  });
  
 app.get('/api/R/:id', function(req,res){
-	var codetype = ''; var code = ''; 
+
+				RProcess(res.query.code.code ,'', function (data){
+					if(data == 'close'){ res.end(); return;}
+					res.write(data);
+					});
+				});
+
+
+/*	var codetype = ''; var code = ''; 
 	var id = req.params.id;	
 	var query = req.query;
 	if( id != 'ram'){ throw 'Error : "ID = '+id+'" is not present';}
@@ -60,7 +68,7 @@ app.get('/api/R/:id', function(req,res){
 					fs.outputFile(Rloc+'input.R', query.code.code, function (err) {
 						if (err) throw err;
 						RProcess(code ,'', function (data){
-					if(data == 'close'){ return;}
+					if(data == 'close'){ res.end(); return;}
 					res.write(data);
 					});
 						fs.outputFile(wd+'/programs/'+'input.R',query.code.code);});
@@ -78,13 +86,12 @@ app.get('/api/R/:id', function(req,res){
 					res.write(data);
 					});
 				});
-	break;
+				break;
 	default:  throw 'Error : No information about type of code . Please supply "STRING" or  "FILE"';
 	}
 	console.log(code);
-	
-
-});
+*/
+	});
 
  
  // <!-- Api
