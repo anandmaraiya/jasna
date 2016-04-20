@@ -96,7 +96,7 @@ app.get('/api/R/:id', function(req,res){
 
  
  // <!-- Api
- 
+ /*
  app.get('/api' , function(req,res){
 	 res.json({ message : 'Hello world'})
  });
@@ -128,7 +128,7 @@ app.get('/api/R/:id', function(req,res){
  app.delete('/api' , function(req,res){
 	 res.json({ message : 'Hello world'})
  });
-
+*/
  // --> Api
  
  //mypage JSON data 
