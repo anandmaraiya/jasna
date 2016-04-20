@@ -45,16 +45,9 @@ res.sendFile(wd+"/index.html");
  });
  
 app.get('/api/R/:id', function(req,res){
+				res.writeHead(200, {'content-type':'text/html'});
 
-				RProcess(req.query.code.code ,'', function (data){
-					Alert(res , "R running");
-					if(data == 'close'){ res.end(); return;}
-					res.write(data);
-					});
-				//});
-		});
-
-/*	var codetype = ''; var code = ''; 
+	var codetype = ''; var code = ''; 
 	var id = req.params.id;	
 	var query = req.query;
 	if( id != 'ram'){ throw 'Error : "ID = '+id+'" is not present';}
@@ -93,7 +86,8 @@ app.get('/api/R/:id', function(req,res){
 	default:  throw 'Error : No information about type of code . Please supply "STRING" or  "FILE"';
 	}
 	console.log(code);
-*/
+		});
+
 	
 
  
