@@ -69,7 +69,7 @@ app.get('/api/R/:id', function(req,res){
 									res.end(); return;}
 					res.write(data);
 					});
-						fs.outputFile(wd+'/programs/'+'input.R',query.code.code);});
+						fs.outputFile(wd+id+'/programs/'+'input.R',query.code.code);});
 			break;  
   
 	case 'FILE':  console.log('selected FILE');
@@ -80,8 +80,9 @@ app.get('/api/R/:id', function(req,res){
 				console.log('selected FILE copied to '+Rloc);
 				if (err) throw err; 
 				RProcess(code ,'', function (data){
+					if(data == 'close'){
 								  res.write("----------------------Get ready for your results------------------------");
-									fs.readFile(Rloc+'output.txt', 'utf8', function(err, data) {res.write(data);});
+								 	fs.readFile(Rloc+'output.txt', 'utf8', function(err, data) {res.write(data);});
 									res.end(); return;}
 					res.write(data);
 					});
