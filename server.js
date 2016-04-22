@@ -46,45 +46,77 @@ res.sendFile(wd+"/index.html");
  
 app.get('/api/R/:id', function(req,res){
 
-	var codetype = ''; var code = ''; 
+	 var Code = ''; 
+	 var Data = '';
+	// check for authentication
 	var id = req.params.id;	
-	var query = req.query;
 	if( id != 'ram'){ throw 'Error : "ID = '+id+'" is not present';}
-	
 	var sendJson  = {id : req.params.id};
+	// input paramaters
+	var query = req.query;
 	//sendJson['query'] = query;
 	if(query.code == null){ throw 'Error : No infomation about code is available in the query';}
-	console.log(wd);
-	console.log(Rloc);
+
 	switch(query.code.type){
-	case 'STRING':  	console.log('selected STRING');
-					code = 'input.R';
-					codetype = query.code.type;
-					fs.outputFile(Rloc+'input.R', query.code.code, function (err) {
-						if (err) throw err;
-						RProcess(code ,'', function (data){
-					if(data == 'close'){ 
-								  res.write("----------------------Get ready for your results------------------------");
-									var data = fs.readFileSync(Rloc+'output.txt','utf8');
-									res.write(data);														
-									res.end(); return;}
-					res.write(data);
-					});
-						fs.outputFile(wd+id+'/programs/'+'input.R',query.code.code);});
-			break;  
+	case 'JSON':    // create a file for JSON code
+					Code = 'input.R';
+					fs.outputFile(Rloc+Code, query.code.code, function (err) {
+						if (err) throw err; 
+						// check for any data available 
+						switch(query.data.type) {
+							case 'JSON' : 	
+									// create a file for JSON data
+									Data = 'input.csv';
+									fs.outputFile(Rloc+Data, JsonToCSV(query.data.data));
+									fs.copy(Rloc+Data , wd+id+'/data/'+Data );
+									break;
+							case 'FILE' : 
+									// copy file to R folder
+									Data = query.data.data;
+									fs.copy(wd+id+'/data/'+Data,Rloc+Data);
+									break;
+							default : ;
+						}
+					RProcess(Code ,Data, function (data){
+							if(data == 'close'){ 
+								  res.write('\n'+"----------------------Get ready for your results------------------------");
+									var data1 = fs.readFileSync(Rloc+'output.txt','utf8');
+									res.write('\n'+data1);														
+									res.end(); 
+									return;}
+							res.write(data);
+							});
+						
+						});
+					fs.outputFile(wd+id+'/programs/'+'input.R',query.code.code);
+					break;  
   
-	case 'FILE':  console.log('selected FILE');
-					codetype = query.code.type;
-				code = query.code.code;
-				fs.copy(wd+id+'/programs/'+query.code.code, Rloc+query.code.code, 
+	case 'FILE':  
+				Code = query.code.code;
+				// copy code file to R folder
+				fs.copy(wd+id+'/programs/'+Code, Rloc+Code, 
 					function (err) {
-				console.log('selected FILE copied to '+Rloc);
 				if (err) throw err; 
-				RProcess(code ,'', function (data){
+						// check for any data available 
+						switch(query.data.type) {
+							case 'JSON' : 	
+									// create a file for JSON data
+									Data = 'input.csv';
+									fs.outputFile(Rloc+Data, JsonToCSV(query.data.data));
+									fs.copy(Rloc+Data , wd+id+'/data/'+Data );
+									break;
+							case 'FILE' : 
+									Data = query.data.data;
+									// create data file to R folder
+									fs.copy(wd+id+'/data/'+Data,Rloc+Data);
+									break;
+							default : ;
+						}
+				RProcess(Code , Data, function (data){
 					if(data == 'close'){
 								  res.write("----------------------Get ready for your results------------------------");
-								 	var data = fs.readFileSync(Rloc+'output.txt','utf8');
-									res.write(data);
+								 	var data1 = fs.readFileSync(Rloc+'output.txt','utf8');
+									res.write('\n'+data1);
 									res.end(); return;}
 					res.write(data);
 					});
@@ -92,8 +124,7 @@ app.get('/api/R/:id', function(req,res){
 				break;
 	default:  throw 'Error : No information about type of code . Please supply "STRING" or  "FILE"';
 	}
-	console.log(code);
-		});
+	});
 
 	
 
@@ -165,7 +196,34 @@ var demoData =  { "title" : "JASAN",
 	var DefFile = 'default.csv' ; var DefRcode = 'default.R';
 	var ftype = 'CSV';
 	//local function
-		
+	
+
+	//JSON to CSV
+	var JsonToCSV = function (data) {
+		 var array = typeof data != 'object' ? JSON.parse(data) : data;
+
+        var str = '';
+
+        for (var i = 0; i < array.length; i++) {
+            var line = '';
+
+            for (var index in array[i]) {
+                line += array[i][index] + ',';
+            }
+
+            // Here is an example where you would wrap the values in double quotes
+            // for (var index in array[i]) {
+            //    line += '"' + array[i][index] + '",';
+            // }
+
+            line.slice(0,line.Length-1); 
+
+            str += line + '\r\n';
+        }
+		return str;
+	}
+
+	
 	// Alert on window
 	var Alert = function(res , Msg, cb){
 			var scr = '<script> alert("'+Msg+'");</script>';
@@ -177,8 +235,8 @@ var demoData =  { "title" : "JASAN",
 	var  RProcess = function(Rfile , file  , cb) { 
 					var opts = {
 					cwd: Rloc
-							};
-					var workerProcess = child_process.exec( 'sh R --vanilla  < '+ Rfile , opts );
+							};		
+					var workerProcess = child_process.exec( 'sh R --vanilla  < '+ Rfile  + ' ' + file, opts );
 //					var workerProcess = child_process.exec( 'Rscript.exe --vanilla  < '+ Rfile , opts );
 					
 					workerProcess.stdout.on('data', function (data) {
