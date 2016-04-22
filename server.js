@@ -48,6 +48,7 @@ app.get('/api/R/:id', function(req,res){
 
 	 var Code = ''; 
 	 var Data = '';
+	 
 	// check for authentication
 	var id = req.params.id;	
 	if( id != 'ram'){ throw 'Error : "ID = '+id+'" is not present';}
@@ -65,6 +66,7 @@ app.get('/api/R/:id', function(req,res){
 				Data = 'input.csv';
 				fs.outputFile(Rloc+Data, JsonToCSV(query.data.data));
 				fs.copy(Rloc+Data , wd+id+'/data/'+Data );
+				//Alert(res, 'file copied');
 				break;
 		case 'FILE' : 
 				// copy file to R folder
@@ -78,6 +80,7 @@ app.get('/api/R/:id', function(req,res){
 	case 'JSON':    // create a file for JSON code
 					Code = 'input.R';
 					fs.outputFileSync(Rloc+Code, query.code.code);
+					
 					RProcess(Code ,Data, function (data){
 							if(data == 'close'){ 
 								  res.write('\n'+"----------------------Get ready for your results------------------------");
@@ -217,7 +220,7 @@ var demoData =  { "title" : "JASAN",
 					var opts = {
 					cwd: Rloc
 							};		
-					var workerProcess = child_process.exec( 'sh R --vanilla  < '+ Rfile  + ' ' + file, opts );
+					var workerProcess = child_process.exec( 'sh R --vanilla  < '+ Rfile +' --args '+ file, opts );
 //					var workerProcess = child_process.exec( 'Rscript.exe --vanilla  < '+ Rfile , opts );
 					
 					workerProcess.stdout.on('data', function (data) {
