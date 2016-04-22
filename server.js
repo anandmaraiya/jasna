@@ -56,27 +56,28 @@ app.get('/api/R/:id', function(req,res){
 	var query = req.query;
 	//sendJson['query'] = query;
 	if(query.code == null){ throw 'Error : No infomation about code is available in the query';}
-
+	
+	if(query.data != null) {
+		// check for any data available 
+	switch(query.data.type) {
+		case 'JSON' : 	
+				// create a file for JSON data
+				Data = 'input.csv';
+				fs.outputFile(Rloc+Data, JsonToCSV(query.data.data));
+				fs.copy(Rloc+Data , wd+id+'/data/'+Data );
+				break;
+		case 'FILE' : 
+				// copy file to R folder
+				Data = query.data.data;
+				fs.copy(wd+id+'/data/'+Data,Rloc+Data);
+				break;
+		default : ;
+			}
+	}
 	switch(query.code.type){
 	case 'JSON':    // create a file for JSON code
 					Code = 'input.R';
-					fs.outputFile(Rloc+Code, query.code.code, function (err) {
-						if (err) throw err; 
-						// check for any data available 
-						switch(query.data.type) {
-							case 'JSON' : 	
-									// create a file for JSON data
-									Data = 'input.csv';
-									fs.outputFile(Rloc+Data, JsonToCSV(query.data.data));
-									fs.copy(Rloc+Data , wd+id+'/data/'+Data );
-									break;
-							case 'FILE' : 
-									// copy file to R folder
-									Data = query.data.data;
-									fs.copy(wd+id+'/data/'+Data,Rloc+Data);
-									break;
-							default : ;
-						}
+					fs.outputFileSync(Rloc+Code, query.code.code);
 					RProcess(Code ,Data, function (data){
 							if(data == 'close'){ 
 								  res.write('\n'+"----------------------Get ready for your results------------------------");
@@ -86,32 +87,13 @@ app.get('/api/R/:id', function(req,res){
 									return;}
 							res.write(data);
 							});
-						
-						});
-					fs.outputFile(wd+id+'/programs/'+'input.R',query.code.code);
+					fs.outputFileSync(wd+id+'/programs/'+'input.R',query.code.code);
 					break;  
   
 	case 'FILE':  
 				Code = query.code.code;
 				// copy code file to R folder
-				fs.copy(wd+id+'/programs/'+Code, Rloc+Code, 
-					function (err) {
-				if (err) throw err; 
-						// check for any data available 
-						switch(query.data.type) {
-							case 'JSON' : 	
-									// create a file for JSON data
-									Data = 'input.csv';
-									fs.outputFile(Rloc+Data, JsonToCSV(query.data.data));
-									fs.copy(Rloc+Data , wd+id+'/data/'+Data );
-									break;
-							case 'FILE' : 
-									Data = query.data.data;
-									// create data file to R folder
-									fs.copy(wd+id+'/data/'+Data,Rloc+Data);
-									break;
-							default : ;
-						}
+				fs.copySync(wd+id+'/programs/'+Code, Rloc+Code); 
 				RProcess(Code , Data, function (data){
 					if(data == 'close'){
 								  res.write("----------------------Get ready for your results------------------------");
@@ -120,10 +102,9 @@ app.get('/api/R/:id', function(req,res){
 									res.end(); return;}
 					res.write(data);
 					});
-				});
 				break;
 	default:  throw 'Error : No information about type of code . Please supply "STRING" or  "FILE"';
-	}
+		}
 	});
 
 	
