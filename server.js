@@ -79,7 +79,9 @@ app.get('/api/R/:id', function(req,res){
 	switch(query.code.type){
 	case 'JSON':    // create a file for JSON code
 					Code = 'input.R';
-					fs.outputFileSync(Rloc+Code, query.code.code);
+					console.log(query.code.code);
+					str = 'input=parse(text="'+query.code.code+'")\ninput\neval(input)';
+					fs.outputFile(Rloc+Code, str);
 					
 					RProcess(Code ,Data, function (data){
 							if(data == 'close'){ 
@@ -90,7 +92,7 @@ app.get('/api/R/:id', function(req,res){
 									return;}
 							res.write(data);
 							});
-					fs.outputFileSync(wd+id+'/programs/'+'input.R',query.code.code);
+					fs.outputFile(wd+id+'/programs/'+'input.R',query.code.code);
 					break;  
   
 	case 'FILE':  
