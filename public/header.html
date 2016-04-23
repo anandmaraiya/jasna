@@ -18,10 +18,10 @@ html,body,h1,h2,h3,h4,h5 {font-family: "Raleway", sans-serif}
 
 </head>
 
-<body > 
+<body class="w3-teal"> 
 
 
- <div id="menu" class="w3-sidenav w3-hide w3-card-8 w3-blue-grey s4" style="z-index:3; "  ><br>
+ <div id="menu" class="w3-sidenav w3-card-8 w3-blue-grey s4" style="z-index:3;" ><br>
   <div class="w3-container">
     <span onclick="this.parentNode.parentNode.style.display= 'none'" class="w3-right w3-closenav w3-jumbo w3-padding">
       <i class="fa fa-times"></i>
@@ -47,7 +47,7 @@ html,body,h1,h2,h3,h4,h5 {font-family: "Raleway", sans-serif}
 <div class="w3-container w3-blue-grey w3-row s6" id= "header">
   <span class="w3-opennav w3-xlarge w3-left w3-border w3-card-4 w3-padding-8 w3-margin-16" onclick= "document.body.childNodes[0].style.display= 'block'">☰</span>
   {{#head}}
-  <h2 class="w3-center">{{head.intro}}</h2>
+  <a href="/index"><h2 class="w3-center">{{head.intro}}</h2></a>
   <h4 class="w3-center">{{head.body}}</h4>
   <hr>
   {{/head}}

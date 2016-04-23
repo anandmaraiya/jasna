@@ -39,10 +39,108 @@ app.use(body2);
 // Create our Modal subclass
 
 
+
+// Create our Modal subclass
+
+	
+var headJson = {	"title" : "JASAN",
+				"head" : { "intro" : "Welcome to JASAN", "body" : "Analytics @ Anywhere" }};
+var	footJson= {			"foot" : {"intro" : "Footer", "body" : "Copyright @ Anand Maraiya <anand.maraiya@gmail.com>"}};
+var modal = {				"modal" : { "intro"  : "Reports, Plots, Tables, Text, Html, Pdf",
+								"elId" : "mdlOutput",
+								"body" : [{"msg" : "First Message"},  {"msg" : "Second Message"}]			
+								},		
+				"codewindow" : { "intro"  : "Write your code here",
+								"elId" : "code",
+								"content" : "",
+								"show" : ""			
+								},
+				"result" : { "intro"  : "Here is your results from code",
+								"elId" : "result",
+								"content" : "",
+								"show" : ""			
+								}
+							};
+
+
+
 // Index
 app.get('/index', function (req, res) {
-res.sendFile(wd+"/index.html");   
- });
+			var head = new Ractive({
+				el : 'header',
+				template: function(){var tmpl = fs.readFileSync(wd+'/header.html','utf8' );
+								return tmpl;},
+				data : headJson
+			});
+			var	foot = new Ractive({
+				el : 'footer',
+				template: function(){var tmpl = fs.readFileSync(wd+'/footer.html','utf8' );
+								return tmpl;},
+				data : footJson
+			});
+			var	index = new Ractive({
+				el : 'index',
+				template: function(){var tmpl = fs.readFileSync(wd+'/index.html','utf8' );
+								return tmpl;},
+				data : {}
+			});
+			res.send(head.toHTML()+index.toHTML() +foot.toHTML());
+			 res.end();
+			 });
+ 
+ 
+// Home
+app.get('/home', function (req, res) {
+			var head = new Ractive({
+				el : 'header',
+				template: function(){var tmpl = fs.readFileSync(wd+'/header.html','utf8' );
+								return tmpl;},
+				data : headJson
+			});
+			var	foot = new Ractive({
+				el : 'footer',
+				template: function(){var tmpl = fs.readFileSync(wd+'/footer.html','utf8' );
+								return tmpl;},
+				data : footJson
+			});
+			var	home = new Ractive({
+				el : 'home',
+				template: function(){var tmpl = fs.readFileSync(wd+'/home.html','utf8' );
+								return tmpl;},
+				data : {}
+			});
+			res.send(head.toHTML()+home.toHTML() +foot.toHTML());
+			 res.end();
+			 });
+
+
+// UserLogin
+app.get('/UserLogin', function (req, res) {
+			var head = new Ractive({
+				el : 'header',
+				template: function(){var tmpl = fs.readFileSync(wd+'/header.html','utf8' );
+								return tmpl;},
+				data : headJson
+			});
+			var	foot = new Ractive({
+				el : 'footer',
+				template: function(){var tmpl = fs.readFileSync(wd+'/footer.html','utf8' );
+								return tmpl;},
+				data : footJson
+			});
+			var	userLogin = new Ractive({
+				el : 'userLogin',
+				template: function(){var tmpl = fs.readFileSync(wd+'/userlogin.html','utf8' );
+								return tmpl;},
+				data : {}
+			});
+			res.send(head.toHTML()+userLogin.toHTML() +foot.toHTML());
+			 res.end();
+			 });
+ 
+			 
+			 
+			 
  
 app.get('/api/R/:id', function(req,res){
 
@@ -57,7 +155,13 @@ app.get('/api/R/:id', function(req,res){
 	var query = req.query;
 	//sendJson['query'] = query;
 	if(query.code == null){ throw 'Error : No infomation about code is available in the query';}
-	
+	console.log(query);
+	console.log(wd);
+	console.log(Rloc);
+	var strR = '';
+	res.writeHead(200, {'content-type':'text/html'});
+	res.write('<link rel="stylesheet" href="/css/w3.css">');
+	res.write('<body class="w3-teal">');
 	if(query.data != null) {
 		// check for any data available 
 	switch(query.data.type) {
@@ -66,6 +170,7 @@ app.get('/api/R/:id', function(req,res){
 				Data = 'input.csv';
 				fs.outputFile(Rloc+Data, JsonToCSV(query.data.data));
 				fs.copy(Rloc+Data , wd+id+'/data/'+Data );
+				strR = 'args = commandArgs(trailingOnly=TRUE)\n'
 				//Alert(res, 'file copied');
 				break;
 		case 'FILE' : 
@@ -80,17 +185,17 @@ app.get('/api/R/:id', function(req,res){
 	case 'JSON':    // create a file for JSON code
 					Code = 'input.R';
 					console.log(query.code.code);
-					str = 'input=parse(text="'+query.code.code+'")\ninput\neval(input)';
+					str = 'outputText = "output.txt"\noutputPng  = "output.png"\nunlink(outputText)\nsink(file = outputText, append= FALSE , type=c("output","message"),split=FALSE)\ninput=parse(text="'+query.code.code+'")\neval(input)';
 					fs.outputFile(Rloc+Code, str);
-					
 					RProcess(Code ,Data, function (data){
 							if(data == 'close'){ 
-								  res.write('\n'+"----------------------Get ready for your results------------------------");
+								  res.write('<div class="w3-container w3-section w3-row w3-card-8">-------------------Get ready for your results----------------------<br>');
 									var data1 = fs.readFileSync(Rloc+'output.txt','utf8');
-									res.write('\n'+data1);														
+									res.write('<br>'+data1+'</div></body>');														
 									res.end(); 
 									return;}
-							res.write(data);
+							res.write(data+'<br>');
+							
 							});
 					fs.outputFile(wd+id+'/programs/'+'input.R',query.code.code);
 					break;  
@@ -98,21 +203,23 @@ app.get('/api/R/:id', function(req,res){
 	case 'FILE':  
 				Code = query.code.code;
 				// copy code file to R folder
-				fs.copySync(wd+id+'/programs/'+Code, Rloc+Code); 
+				fs.copy(wd+id+'/programs/'+Code, Rloc+Code,function(err){
+					if (err) {throw err};
 				RProcess(Code , Data, function (data){
 					if(data == 'close'){
-								  res.write("----------------------Get ready for your results------------------------");
-								 	var data1 = fs.readFileSync(Rloc+'output.txt','utf8');
-									res.write('\n'+data1);
-									res.end(); return;}
-					res.write(data);
+								  res.write('<div class="w3-container w3-section w3-row w3-card-8">-------------------Get ready for your results----------------------<br>');
+									var data1 = fs.readFileSync(Rloc+'output.txt','utf8');
+									res.write('<br>'+data1+'</div></body>');														
+									res.end(); 
+									return;}
+							res.write(data+'<br>');
 					});
+				});
 				break;
 	default:  throw 'Error : No information about type of code . Please supply "STRING" or  "FILE"';
 		}
 	});
 
-	
 
  
  // <!-- Api
@@ -152,40 +259,7 @@ app.get('/api/R/:id', function(req,res){
  // --> Api
  
  //mypage JSON data 
-var demoData =  { "title" : "JASAN",
-					"records" : [{ // dummy data to display
-								"name":"Steve Balmer",
-								"company" : "Microsoft",
-								"systems": [{
-											"os":"Windows XP"},{
-											"os":"Vista" },{
-											"os":"Windows 7" },{
-											"os":"Windows 8" }]
-								},{
-								"name" :"Steve Jobs",
-								"company": "Apple",
-								"systems" : [{
-										"os":"OSX Lion" },{
-										"os":"OSX Leopard" },{
-										"os":"IOS"}]
-								},{
-								 "name" :"Mark Z.",
-								 "company" : "Facebook"
-								}]
-				};
-
-
-	
-
-	//local vars
-	var fnameA ='' ; var fnameB = '';
-	var DefFile = 'default.csv' ; var DefRcode = 'default.R';
-	var ftype = 'CSV';
-	//local function
-	
-
-	//JSON to CSV
-	var JsonToCSV = function (data) {
+var JsonToCSV = function (data) {
 		 var array = typeof data != 'object' ? JSON.parse(data) : data;
 
         var str = '';
@@ -222,8 +296,8 @@ var demoData =  { "title" : "JASAN",
 					var opts = {
 					cwd: Rloc
 							};		
-					var workerProcess = child_process.exec( 'sh R --vanilla  < '+ Rfile +' --args '+ file, opts );
-//					var workerProcess = child_process.exec( 'Rscript.exe --vanilla  < '+ Rfile , opts );
+//					var workerProcess = child_process.exec( 'sh R --vanilla  < '+ Rfile +' --args '+ file, opts );
+					var workerProcess = child_process.exec( 'R.exe --vanilla < '+ Rfile  +' ' + file, opts );
 					
 					workerProcess.stdout.on('data', function (data) {
 						cb(data);
@@ -235,21 +309,21 @@ var demoData =  { "title" : "JASAN",
 						cb('close');
 						});
 		};
-
-
-	//SQL Process??
-
+		
+ app.get('/api/anomaly/:id', function(req,res){
+	var id = req.params.id;	
+	var query = req.query;
+	if( id != 'ram'){ throw 'Error : "ID = '+id+'" is not present';}
 	
-var data1 = {	"title" : "JASAN",
-				"head" : { "intro" : "Welcome to JASAN",
-                         	"body" : "Analytics @ Anywhere" },
-				"foot" : {"intro" : "Footer",
-                         	"body" : "Copyright @ Anand Maraiya <anand.maraiya@gmail.com>"},
-				"modal" : [{ "intro"  : "Reports, Plots, Tables, Text, Html, Pdf",
-								"elId" : "mdlOutput",
-								"body" : [{"msg" : "First Message"},  {"msg" : "Second Message"}]			
-								}]		
-			};
+	var sendJson  = {id : req.params.id};
+	sendJson['query'] = query;
+	if(query.data == null){ throw 'Error : No infomation about data is available in the query';}
+	res.json(sendJson);
+	
+	console.log(query.data.json);
+	res.end();
+});
+ 
 
 //mypage 
  app.get('/mypage' , function  (req,res){

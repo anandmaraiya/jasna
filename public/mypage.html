@@ -11,8 +11,16 @@
 	 <div class = "w3-col w3-half w3-padding w3-border " > 
 		<div id='tl' class="w3-teal w3-border w3-padding" >
 		<h1 class="w3-center"> Result Window </h1>
-		{{#results}}
-		<div  > </div>
+		{{#records}}
+		<ul>
+			<li>Company: {{company}}</li>
+			<li>Due in charge: {{name}}</li>
+			<ul>
+				{{#systems}}
+					<li>{{os}}</li>
+				{{/systems}}
+			</ul>
+		</ul>
 		{{/records}}
 		</div>
 		<div id='bl' class="w3-green w3-border w3-padding">

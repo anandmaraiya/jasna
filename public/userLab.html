@@ -1,0 +1,33 @@
+
+<script src="/js/p5.js">
+</script>
+<script>
+    function setup() {
+		var h = document.getElementById('Result').style.height;
+		var w = document.getElementById('Result').style.width;
+		console.log(w + "|"+ h);
+		var f3 = function(s) { 
+		return Number(s.substring(0,3));}
+		console.log(f3(w) + '|' + f3(h));
+        var myCanvas = createCanvas(f3(w)*0.9, f3(h)*0.9);
+        myCanvas.parent('Result');
+    }
+
+    function draw() {
+        if (mouseIsPressed) {
+            fill(0);
+        } else {
+            fill(255);
+        }
+        ellipse(mouseX, mouseY, 80, 80);
+    }
+</script>
+
+<div id='myContainer' class="w3-col w3-container w3-teal">
+<div id = 'Folder' class="w3-container w3-row w3-blue-grey w3-border w3-accordion w3-quarter">
+</div>
+<div id = 'Result' class="w3-container w3-row w3-blue-grey w3-border w3-accordion w3-half" >
+</div>
+<div id = 'Code' class="w3-container w3-row w3-blue-grey w3-border w3-accordion w3-quarter">
+</div>
+</div>

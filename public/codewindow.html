@@ -1,10 +1,67 @@
-<div class="w3-container w3-center w3-blue-grey w3-center " id="footer">
+<!doctype html>
+<html>
+  <head>
+    <title>Toptal Search</title>
+    <!-- LOAD BOOTSTRAP FROM THE CDN -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+  </head>
+  <body>
+
+    <!-- SOME BASIC STATIC CONTENT -->
+    <div class="container">
+      <h1>Toptal Search</h1>
+    </div>
+
+    <!-- LOAD THE JAVASCRIPT LIBRARIES WE NEED -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/3.9.3/lodash.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ractive/0.7.3/ractive.min.js"></script>
+
+    <!-- LOAD THE DATA -->
+    <script src="https://rawgit.com/emirotin/toptal-blog-ractive/master/data.js"></script>
+
+    <!-- LOAD OUR SCRIPT -->
+    <script src="script.js"></script>
+ 
+
+<script>
+var codeEnter = function (){
+			var code = document.getElementById("codeWin").value ; 
+			console.log(code);
+			document.getElementById("resultWin").value = code;
+			}
+
+ </script>
+<div class="w3-container w3-row" id="userLab">
+
+<div class="w3-section w3-center w3-blue-grey w3-half w3-border w3-col"  id="codewindow">
+{{#codewindow}}
+<h4> 
+<!-- insert modal template -->
+<span >{{intro}} </span> <hr>
+<form id={{elId}}  method="POST" action="/userLab/ram/code" >
+<textarea  class="w3-container w3-teal" id="codeWin"   placeholder="Try your 'Hello World' from here" style="height : 200px ; width : 80%;"></textarea>
+ <hr>
+ <button onclick="codeEnter()" type = "submit" class="w3-btn w3-card w3-teal w3-small w3-border"> Run (Save) </button>
+</form>
+
+{{#show}}
+{{/show}}
+ </h4>
+{{/codewindow}}
+</div>
+
+<div class="w3-section w3-center w3-blue-grey w3-half w3-border w3-col"  id="result">
+{{#result}}
+<h4> 
+<!-- insert modal template -->
+<span >{{intro}} </span> <hr>
+<div id={{elId}} >
+<textarea class="w3-container w3-teal" id="resultWin" value='{{content}}' style="height : 200px ; width : 80%;"></textarea>
 <hr>
-{{#foot}}
-<h4>
-{{foot.intro}} <br>
-{{foot.body}}
-<hr>
-</h4>
-{{/foot}}
+ <span class="w3-btn w3-card w3-teal w3-small w3-border" onclick="saveCode()"> Save Results </span>
+</div>
+ </h4>
+ {{/result}}
+</div>
+
 </div>

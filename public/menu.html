@@ -1,0 +1,32 @@
+<script>
+// Script to open and close sidenav
+function w3_toggle(){
+    var menu = document.getElementsByClassName("w3-sidenav")[0];
+	if(menu.style.display == "block") { menu.style.display = "none";}
+    else { menu.style.display = "block";}
+}
+ </script>
+ 
+ <div class="w3-sidenav w3-card-8 w3-blue-grey s4" style="z-index:3; display : none;" id="menu"><br>
+  <div class="w3-container">
+    <a href="#" onclick="w3_toggle()" class="w3-right w3-jumbo w3-padding" id="closeMenu">
+      <i class="fa fa-times"></i>
+    </a>
+    <img src="/img/current.png" style="width:45%;" class="w3-round"/><br>
+	<hr>
+	<h4 class="w3-padding-0 w3-center "><b>Hello User</b></h4>
+	<hr>
+ </div>
+  <a href="#" class="w3-padding">HOME</a> 
+  <a href="#" class="w3-padding">ABOUT</a> 
+  <a href="#" class="w3-padding">PORTFOLIO</a> 
+  <a href="#" class="w3-padding">SHOP</a>
+  <a href="#" class="w3-padding">CONTACT</a>
+  <div class="w3-section w3-padding-top w3-center w3-large">
+    <a href="#" class="w3-hover-indigo w3-show-inline-block"><i class="fa fa-facebook-official"></i></a>
+    <a href="#" class="w3-hover-red w3-show-inline-block"><i class="fa fa-pinterest-p"></i></a>
+    <a href="#" class="w3-hover-light-blue w3-show-inline-block"><i class="fa fa-twitter"></i></a>
+    <a href="#" class="w3-hover-grey w3-show-inline-block"><i class="fa fa-flickr"></i></a>
+    <a href="#" class="w3-hover-indigo w3-show-inline-block"><i class="fa fa-linkedin"></i></a>
+  </div>
+</div>
