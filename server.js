@@ -296,8 +296,8 @@ var JsonToCSV = function (data) {
 					var opts = {
 					cwd: Rloc
 							};		
-//					var workerProcess = child_process.exec( 'sh R --vanilla  < '+ Rfile +' --args '+ file, opts );
-					var workerProcess = child_process.exec( 'R.exe --vanilla < '+ Rfile  +' ' + file, opts );
+					var workerProcess = child_process.exec( 'sh R --vanilla  < '+ Rfile +' --args '+ file, opts );
+//					var workerProcess = child_process.exec( 'R.exe --vanilla < '+ Rfile  +' ' + file, opts );
 					
 					workerProcess.stdout.on('data', function (data) {
 						cb(data);
