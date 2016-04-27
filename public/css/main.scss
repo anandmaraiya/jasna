@@ -2,8 +2,7 @@
 @import "lib/bootstrap/bootstrap";
 @import "lib/bootstrap-social";
 @import "lib/font-awesome/font-awesome";
-
-@import "themes/default/default";
+@import "themes/modern/modern";
 
 // Scaffolding
 // -------------------------
@@ -14,7 +13,7 @@ html {
 }
 
 body {
-  padding-top: 60px;
+  padding-top: 30px;
   margin-bottom: 75px;
 }
 
