@@ -1,6 +1,5 @@
 var _ = require('lodash');
 var passport = require('passport');
-var request = require('request');
 var LocalStrategy = require('passport-local').Strategy;
 var User = require('../models/User');
 
