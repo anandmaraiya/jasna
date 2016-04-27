@@ -78,7 +78,7 @@ app.use(session({
   saveUninitialized: true,
   secret: process.env.SESSION_SECRET,
   store: new MongoStore({
-    url: process.env.MONGODB || process.env.MONGOLAB_URI,
+    url: process.env.OPENSHIFT_MONGODB_DB_URL || process.env.MONGODB,
     autoReconnect: true
   })
 }));
