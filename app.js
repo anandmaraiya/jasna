@@ -51,7 +51,7 @@ var app = express();
 /**
  * Connect to MongoDB.
  */
-mongoose.connect(process.env.MONGODB || process.env.MONGOLAB_URI);
+mongoose.connect(process.env.OPENSHIFT_MONGODB_DB_URL || process.env.OPENSHIFT_MONGODB_DB_URL);
 mongoose.connection.on('error', function() {
   console.log('MongoDB Connection Error. Please make sure that MongoDB is running.');
   process.exit(1);
