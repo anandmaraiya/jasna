@@ -1,0 +1,566 @@
+extends layout
+
+block content
+  section#logo-section.text-center
+      .container
+        .row
+          .col-md-12
+            .logo.text-center
+              h1(style='color : #000;') JASAN
+              span Analytics @ Anywhere
+  
+  .mainbody-section.text-center
+    .container
+      .row
+        .col-md-3
+          .menu-item.blue
+            a(href='#feature-modal', data-toggle='modal')
+              i.fa.fa-magic
+              p Features
+          .menu-item.color
+            a(href='#service-modal', data-toggle='modal')
+              i.fa.fa-briefcase
+              p Services
+          .menu-item.light-red
+            a(href='/docs')
+              i.fa.fa-comment-o
+              p Docs 
+        .col-md-6
+          // Start Carousel Section
+          .home-slider
+            #carousel-example-generic.carousel.slide(data-ride='carousel', style='padding-bottom: 30px;')
+              // Indicators
+              ol.carousel-indicators
+                li.active(data-target='#carousel-example-generic', data-slide-to='0')
+                li(data-target='#carousel-example-generic', data-slide-to='1')
+                li(data-target='#carousel-example-generic', data-slide-to='2')
+              // Wrapper for slides
+              .carousel-inner
+                .item.active
+                  img.img-responsive(src='images/about-03.jpg', alt='')
+                .item
+                  img.img-responsive(src='images/about-02.jpg', alt='')
+                .item
+                  img.img-responsive(src='images/about-01.jpg', alt='')
+          // Start Carousel Section
+          .row
+            .col-md-6
+              .menu-item.green.response
+                a(href='/visuals')
+                  i.fa.fa-file-photo-o
+                  p Visualizations
+            .col-md-6
+              .menu-item.color.response-2
+                a(href='/docs/APIs')
+                  i.fa.fa-code
+                  p APIs
+        .col-md-3
+          .menu-item.light-red
+            a(href='/contact')
+              i.fa.fa-envelope-o
+              p Contact
+          .menu-item.green
+            a(href='#team-modal', data-toggle='modal')
+              i.fa.fa-users
+              p Team
+          .menu-item.blue
+            a(href='#about-modal', data-toggle='modal')
+              i.fa.fa-user
+              p About Us
+
+    #feature-modal.section-modal.modal.fade(tabindex='-1', role='dialog', aria-hidden='true')
+      .modal-content
+        .close-modal(data-dismiss='modal')
+          .lr
+            .rl
+        .container
+          .row
+            .section-title.text-center
+              h3 Our Awesome Features
+              p Complete Solution for Analytics @ Anywhere   
+          .row
+            .col-md-3.col-sm-6.col-xs-12
+              .feature
+                i.fa.fa-area-chart
+                .feature-content
+                  h4 Anomaly detection on R statiscal
+                  p
+                    | We provide time series data anomaly detection via APIs using world class algorithm in R.User can use their own R code also for anomaly detection. 
+                    a(href='/docs/anomaly', target='_blank')  See examples.
+            // /.col-md-3
+            .col-md-3.col-sm-6.col-xs-12
+              .feature
+                i.fa.fa-file-code-o
+                .feature-content
+                  h4 Explore on SQL , R or JS
+                  p
+                    | No need to install R , SQL to play with your data. We provide Web & API solutions to help you code directly on R , SQL or JS. One can query their data warehouse directly or upload data in their inbox.
+                    a(href='/docs/explore', target='_blank')  See examples.
+            // /.col-md-3
+            .col-md-3.col-sm-6.col-xs-12
+              .feature
+                i.fa.fa-picture-o
+                .feature-content
+                  h4 Visualize using JavaScript (JS)
+                  p
+                    | Interactive visuals in JavaScript can make the data talk. These visuals can be used into 
+                    a(href='/docs/JSppt' , target='_blank') web-PPTs. 
+                    |  We provide a market place with free & premium JS visuals.
+                    a(href='/visuals', target='_blank')  Check out some cool visuals. 
+            // /.col-md-3
+            .col-md-3.col-sm-6.col-xs-12
+              .feature
+                i.fa.fa-inbox
+                .feature-content
+                  h4 User Inbox
+                  p
+                    | Users have their personal repository with Data , Programs or Visuals folder. This repository can be accessed through our APIs too, performing analysis or making 
+                    a(href='/docs/JSppt' , target='_blank') web-PPTs 
+                    |  on the go.
+                    a(href='/signup', target='_blank')  Sign Up  
+            // /.col-md-3
+            .col-md-3.col-sm-6.col-xs-12
+              .feature
+                i.fa.fa-refresh
+                .feature-content
+                  h4 Connect to Data Warehouse
+                  p
+                    | Subscribers can connect to their data warehouse using R or SQL, just need to pre-configure data requirement and use this config as a variable for querying or exploring data.
+                    a(href='/docs/connect' , target='_blank') Configure DB
+            // /.col-md-3
+            .col-md-3.col-sm-6.col-xs-12
+              .feature
+                i.fa.fa-cube
+                .feature-content
+                  h4 Make Web-PPTs
+                  p
+                    | Awesome Visuals require more than just MS PPTs. Cool Visuals with JS can directly be used for web-PPTs. We provide numerous template to create such web-PPTs available through a web-link.
+                    a(href='/docs/JSppt' , target='_blank')  Explore Web-PPTs
+            // /.col-md-3
+            .col-md-3.col-sm-6.col-xs-12
+              .feature
+                i.fa.fa-css3
+                .feature-content
+                  h4 Customized Web Apps
+                  p
+                    | <br> Coming Soon
+            // /.col-md-3
+            .col-md-3.col-sm-6.col-xs-12
+              .feature
+                i.fa.fa-android
+                .feature-content
+                  h4 Customized Android Apps
+                  p
+                    |  <br> Coming Soon
+           // End Feature Section
+    
+        // Start Portfolio Section
+    #portfolio-modal.section-modal.modal.fade(tabindex='-1', role='dialog', aria-hidden='true')
+      .modal-content
+        .close-modal(data-dismiss='modal')
+          .lr
+            .rl
+        .container
+          .row
+            .section-title.text-center
+              h3 Data Visualizations
+              p Interactive visuals  &  Simple Charts 
+          .row
+            .col-md-4
+              .portfolio-item
+                img.img-responsive(src='images/portfolio/1.png', alt='...')
+                .portfolio-details.text-center
+                  h4 Bar Chart
+                  a(href='#')
+                    i.fa.fa-link
+    #about-modal.section-modal.modal.fade(tabindex='-1', role='dialog', aria-hidden='true')
+      .modal-content
+        .close-modal(data-dismiss='modal')
+          .lr
+            .rl
+        .container
+          .row
+            .section-title.text-center
+              h3 About Us
+              p Duis aute irure dolor in reprehenderit in voluptate
+          .row
+            .col-md-12
+              .about-text
+                p
+                  | Contrary to popular belief, Lorem Ipsum is not simply random text. It has roots in a piece of classical Latin literature from 45 BC, making it over 2000 years old. Richard McClintock, a Latin professor at Hampden-Sydney College in Virginia, looked up one of the more obscure Latin words, consectetur, from a Lorem Ipsum passage, and going through the cites of the word in classical literature, discovered the undoubtable source. At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium voluptatum deleniti atque corrupti quos dolores et quas molestias excepturi sint occaecati cupiditate non provident. It has roots in a piece of classical Latin literature from 45 BC
+                .row
+                  .col-md-4.col-sm-6
+                    ul
+                      li
+                        i.fa.fa-check-square
+                        | Sed ut perspiciatis unde omnis iste natus
+                      li
+                        i.fa.fa-check-square
+                        | Nor again is there anyone who loves
+                      li
+                        i.fa.fa-check-square-o
+                        | At vero eos et accusamus et iusto odio
+                      li
+                        i.fa.fa-check-square-o
+                        | Et harum quidem rerum facilis
+                  .col-md-4.col-sm-6
+                    ul
+                      li
+                        i.fa.fa-check-square
+                        | Nor again is there anyone who loves
+                      li
+                        i.fa.fa-check-square
+                        | Nor again is there anyone who loves
+                      li
+                        i.fa.fa-check-square-o
+                        | Et harum quidem rerum facilis
+                      li
+                        i.fa.fa-check-square-o
+                        | At vero eos et accusamus et iusto odio
+                  .col-md-4.col-sm-6
+                    ul
+                      li
+                        i.fa.fa-check-square
+                        | Nor again is there anyone who loves
+                      li
+                        i.fa.fa-check-square
+                        | Nor again is there anyone who loves
+                      li
+                        i.fa.fa-check-square-o
+                        | Et harum quidem rerum facilis
+                      li
+                        i.fa.fa-check-square-o
+                        | At vero eos et accusamus et iusto odio
+                // /.row
+          // /.row
+          .row
+            .col-md-6.col-sm-6
+              .skill-shortcode
+                // Progress Bar
+                .skill
+                  p Web Design
+                  .progress
+                    .progress-bar(role='progressbar', data-percentage='60')
+                      span.progress-bar-span 60%
+                      span.sr-only 60% Complete
+                // Progress Bar
+                .skill
+                  p HTML & CSS
+                  .progress
+                    .progress-bar(role='progressbar', data-percentage='95')
+                      span.progress-bar-span 95%
+                      span.sr-only 95% Complete
+                // Progress Bar
+                .skill
+                  p Wordpress
+                  .progress
+                    .progress-bar(role='progressbar', data-percentage='80')
+                      span.progress-bar-span 80%
+                      span.sr-only 80% Complete
+                // Progress Bar
+                .skill
+                  p Joomla
+                  .progress
+                    .progress-bar(role='progressbar', data-percentage='100')
+                      span.progress-bar-span 100%
+                      span.sr-only 100% Complete
+                // Progress Bar
+                .skill
+                  p Extension
+                  .progress
+                    .progress-bar(role='progressbar', data-percentage='70')
+                      span.progress-bar-span 70%
+                      span.sr-only 70% Complete
+            .col-md-6
+              .custom-tab
+                ul.nav.nav-tabs.nav-justified(role='tablist')
+                  li.active
+                    a(href='#tab-1', role='tab', data-toggle='tab') Our Mission
+                  li
+                    a(href='#tab-2', role='tab', data-toggle='tab') Our Vission
+                  li
+                    a(href='#tab-3', role='tab', data-toggle='tab') Company History
+                .tab-content
+                  #tab-1.tab-pane.active
+                    p
+                      | At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium voluptatum deleniti atque corrupti quos dolores et quas molestias excepturi sint occaecati cupiditate non provident, similique sunt in culpa qui officia deserunt mollitia animi, id est laborum et dolorum fuga. Et harum quidem rerum facilis est et expedita distinctio.
+                    p
+                      | At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium voluptatum deleniti atque corrupti quos dolores et quas molestias excepturi sint occaecati cupiditate non provident, similique sunt in culpa qui officia deserunt mollitia animi, id est laborum et dolorum fuga. Et harum quidem rerum facilis est et expedita distinctio. At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium voluptatum deleniti atque corrupti quos dolores et quas molestias excepturi sint occaecati cupiditate non provident.
+                  #tab-2.tab-pane
+                    p
+                      | Nam libero tempore, cum soluta nobis est eligendi optio cumque nihil impedit quo minus id quod maxime placeat facere possimus, omnis voluptas assumenda est, omnis dolor repellendus.
+                    p
+                      | At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium voluptatum deleniti atque corrupti quos dolores et quas molestias excepturi sint occaecati cupiditate non provident, similique sunt in culpa qui officia deserunt mollitia animi, id est laborum et dolorum fuga. Et harum quidem rerum facilis est et expedita distinctio. At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium voluptatum deleniti atque corrupti quos dolores et quas molestias excepturi sint occaecati cupiditate non provident.
+                  #tab-3.tab-pane
+                    p
+                      | Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt.
+                    p
+                      | At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium voluptatum deleniti atque corrupti quos dolores et quas molestias excepturi sint occaecati cupiditate non provident, similique sunt in culpa qui officia deserunt mollitia animi, id est laborum et dolorum fuga. Et harum quidem rerum facilis est et expedita distinctio. At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium voluptatum deleniti atque corrupti quos dolores et quas molestias excepturi sint occaecati cupiditate non provident.
+                // /.tab-content
+    #service-modal.section-modal.modal.fade(tabindex='-1', role='dialog', aria-hidden='true')
+      .modal-content
+        .close-modal(data-dismiss='modal')
+          .lr
+            .rl
+        .container
+          .row
+            .section-title.text-center
+              h3 Our Services
+              p Duis aute irure dolor in reprehenderit in voluptate
+          .row
+            .col-md-4.col-sm-6.col-xs-12
+              .feature-2
+                .media
+                  i.fa.fa-magic.pull-left
+                  .media-body
+                    h4.media-heading Web Design
+                    p
+                      | Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Lorem ipsum dolor. reprehenderit
+            // /.col-md-4
+            .col-md-4.col-sm-6.col-xs-12
+              .feature-2
+                .media
+                  i.fa.fa-css3.pull-left
+                  .media-body
+                    h4.media-heading HTML5 & CSS3
+                    p
+                      | Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Lorem ipsum dolor. reprehenderit
+            // /.col-md-4
+            .col-md-4.col-sm-6.col-xs-12
+              .feature-2
+                .media
+                  i.fa.fa-wordpress.pull-left
+                  .media-body
+                    h4.media-heading Wordpress Theme
+                    p
+                      | Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Lorem ipsum dolor. reprehenderit
+            // /.col-md-4
+            .col-md-4.col-sm-6.col-xs-12
+              .feature-2
+                .media
+                  i.fa.fa-plug.pull-left
+                  .media-body
+                    h4.media-heading Wordpress Plugin
+                    p
+                      | Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Lorem ipsum dolor. reprehenderit
+            // /.col-md-4
+            .col-md-4.col-sm-6.col-xs-12
+              .feature-2
+                .media
+                  i.fa.fa-joomla.pull-left
+                  .media-body
+                    h4.media-heading Joomla Template
+                    p
+                      | Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Lorem ipsum dolor. reprehenderit
+            // /.col-md-4
+            .col-md-4.col-sm-6.col-xs-12
+              .feature-2
+                .media
+                  i.fa.fa-cube.pull-left
+                  .media-body
+                    h4.media-heading Joomla Extension
+                    p
+                      | Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Lorem ipsum dolor. reprehenderit
+            // /.col-md-4
+          // /.row
+        .pricing-section
+          .container
+            .row
+              .col-md-3.col-sm-6
+                .pricing-table
+                  .plan-name
+                    h3 Free
+                  .plan-price
+                    .price-value
+                      | $49
+                      span .00
+                    .interval per month
+                  .plan-list
+                    ul
+                      li 40 GB Storage
+                      li 40GB Transfer
+                      li 10 Domains
+                      li 20 Projects
+                      li Free installation
+                  .plan-signup
+                    a.btn-system.btn-small(href='#') Sign Up Now
+              .col-md-3.col-sm-6
+                .pricing-table
+                  .plan-name
+                    h3 Standard
+                  .plan-price
+                    .price-value
+                      | $49
+                      span .00
+                    .interval per month
+                  .plan-list
+                    ul
+                      li 40 GB Storage
+                      li 40GB Transfer
+                      li 10 Domains
+                      li 20 Projects
+                      li Free installation
+                  .plan-signup
+                    a.btn-system.btn-small(href='#') Sign Up Now
+              .col-md-3.col-sm-6
+                .pricing-table
+                  .plan-name
+                    h3 Premium
+                  .plan-price
+                    .price-value
+                      | $49
+                      span .00
+                    .interval per month
+                  .plan-list
+                    ul
+                      li 40 GB Storage
+                      li 40GB Transfer
+                      li 10 Domains
+                      li 20 Projects
+                      li Free installation
+                  .plan-signup
+                    a.btn-system.btn-small(href='#') Sign Up Now
+              .col-md-3.col-sm-6
+                .pricing-table
+                  .plan-name
+                    h3 Professional
+                  .plan-price
+                    .price-value
+                      | $49
+                      span .00
+                    .interval per month
+                  .plan-list
+                    ul
+                      li 40 GB Storage
+                      li 40GB Transfer
+                      li 10 Domains
+                      li 20 Projects
+                      li Free installation
+                  .plan-signup
+                    a.btn-system.btn-small(href='#') Sign Up Now
+    // End Service Section
+    #team-modal.section-modal.modal.fade(tabindex='-1', role='dialog', aria-hidden='true')
+      .modal-content
+        .close-modal(data-dismiss='modal')
+          .lr
+            .rl
+        .container
+          .row
+            .section-title.text-center
+              h3 Our Expert Team
+              p Duis aute irure dolor in reprehenderit in voluptate
+          .row
+            .col-md-3.col-sm-6
+              .team-member
+                img.img-responsive(src='images/team/manage-1.png', alt='')
+                .team-details
+                  h4 John Doe
+                  .designation Senior Web Developer
+                  ul(style='text-align: center;')
+                    li
+                      a(href='#')
+                        i.fa.fa-facebook
+                    li
+                      a(href='#')
+                        i.fa.fa-twitter
+                    li
+                      a(href='#')
+                        i.fa.fa-linkedin
+                    li
+                      a(href='#')
+                        i.fa.fa-dribbble
+                    li
+                      a(href='#')
+                        i.fa.fa-google-plus
+            .col-md-3.col-sm-6
+              .team-member
+                img.img-responsive(src='images/team/manage-2.png', alt='')
+                .team-details
+                  h4 John Doe
+                  .designation Senior Web Developer
+                  ul(style='text-align: center;')
+                    li
+                      a(href='#')
+                        i.fa.fa-facebook
+                    li
+                      a(href='#')
+                        i.fa.fa-twitter
+                    li
+                      a(href='#')
+                        i.fa.fa-linkedin
+                    li
+                      a(href='#')
+                        i.fa.fa-dribbble
+                    li
+                      a(href='#')
+                        i.fa.fa-google-plus
+            .col-md-3.col-sm-6
+              .team-member
+                img.img-responsive(src='images/team/manage-3.png', alt='')
+                .team-details
+                  h4 John Doe
+                  .designation Senior Web Developer
+                  ul(style='text-align: center;')
+                    li
+                      a(href='#')
+                        i.fa.fa-facebook
+                    li
+                      a(href='#')
+                        i.fa.fa-twitter
+                    li
+                      a(href='#')
+                        i.fa.fa-linkedin
+                    li
+                      a(href='#')
+                        i.fa.fa-dribbble
+                    li
+                      a(href='#')
+                        i.fa.fa-google-plus
+            .col-md-3.col-sm-6
+              .team-member
+                img.img-responsive(src='images/team/manage-4.png', alt='')
+                .team-details
+                  h4 John Doe
+                  .designation Senior Web Developer
+                  ul(style='text-align: center;')
+                    li
+                      a(href='#')
+                        i.fa.fa-facebook
+                    li
+                      a(href='#')
+                        i.fa.fa-twitter
+                    li
+                      a(href='#')
+                        i.fa.fa-linkedin
+                    li
+                      a(href='#')
+                        i.fa.fa-dribbble
+                    li
+                      a(href='#')
+                        i.fa.fa-google-plus
+
+
+  h1 Hackathon Starter
+  p.lead A boilerplate for Node.js web applications.
+  hr
+  .row
+    .col-sm-6
+      h2 Heading
+      p Donec id elit non mi porta gravida at eget metus. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus. Etiam porta sem malesuada magna mollis euismod. Donec sed odio dui.
+      p
+        a.btn.btn-default(href='#', role='button') View details »
+    .col-sm-6
+      h2 Heading
+      p Donec id elit non mi porta gravida at eget metus. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus. Etiam porta sem malesuada magna mollis euismod. Donec sed odio dui.
+      p
+        a.btn.btn-default(href='#', role='button') View details »
+    .col-sm-6
+      h2 Heading
+      p Donec id elit non mi porta gravida at eget metus. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus. Etiam porta sem malesuada magna mollis euismod. Donec sed odio dui.
+      p
+        a.btn.btn-default(href='#', role='button') View details »
+    .col-sm-6
+      h2 Heading
+      p Donec id elit non mi porta gravida at eget metus. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus. Etiam porta sem malesuada magna mollis euismod. Donec sed odio dui.
+      p
+        a.btn.btn-default(href='#', role='button') View details »
