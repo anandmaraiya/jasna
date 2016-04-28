@@ -6,7 +6,7 @@
     "url": "https://github.com/anandmaraiya/hackathon-starter.git"
   },
   "scripts": {
-    "start": "node app.js",
+    "start": "node app.js" ,
     "test": "mocha --reporter spec --timeout 5000"
   },
   "dependencies": {
