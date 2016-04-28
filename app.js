@@ -3,6 +3,7 @@
  * Module dependencies.
  */
 var express = require('express');
+var fs = require('fs-extra');
 var compress = require('compression');
 var session = require('express-session');
 var bodyParser = require('body-parser');
@@ -20,6 +21,19 @@ var sass = require('node-sass-middleware');
 var multer = require('multer');
 var upload = multer({ dest: path.join(__dirname, 'uploads') });
 
+var connection_string = '127.0.0.1:27017/YOUR_APP_NAME';
+if(process.env.OPENSHIFT_MONGODB_DB_PASSWORD){
+  connection_string = 'mongodb://'+process.env.OPENSHIFT_MONGODB_DB_USERNAME + ":" +
+  process.env.OPENSHIFT_MONGODB_DB_PASSWORD + "@" +
+  process.env.OPENSHIFT_MONGODB_DB_HOST + ':' +
+  process.env.OPENSHIFT_MONGODB_DB_PORT + '/' +
+  process.env.OPENSHIFT_APP_NAME;
+}
+var MONGODB= connection_string;
+var MONGOLAB_URI='mongodb://localhost:27017/test';
+
+var SESSION_SECRET='@*)!!(**';
+console.log(MONGODB);
 
 /**
  * Load environment variables from .env file, where API keys and passwords are configured.
@@ -52,7 +66,7 @@ var app = express();
 /**
  * Connect to MongoDB.
  */
-mongoose.connect(process.env.OPENSHIFT_MONGODB_DB_URL || process.env.MONGODB);
+mongoose.connect(MONGODB, function(){ console.log('Mongo Connected');});
 mongoose.connection.on('error', function() {
   console.log('MongoDB Connection Error. Please make sure that MongoDB is running.');
   process.exit(1);
@@ -79,7 +93,7 @@ app.use(session({
   saveUninitialized: true,
   secret: process.env.SESSION_SECRET,
   store: new MongoStore({
-    url: process.env.OPENSHIFT_MONGODB_DB_URL || process.env.MONGODB,
+    url: MONGODB,
     autoReconnect: true
   })
 }));
@@ -187,9 +201,6 @@ var SampleApp = function() {
         if (typeof self.zcache === "undefined") {
             self.zcache = { 'index.html': '' };
         }
-
-        //  Local cache for static content.
-        self.zcache['index.html'] = fs.readFileSync('./public/index.html');
     };
   
 

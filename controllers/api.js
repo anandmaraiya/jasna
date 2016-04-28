@@ -17,9 +17,10 @@ var fs = require('fs-extra');
 var validator;
 var request;
 
-var wd =  '/./public/users/';
-var datadir = 'C:/'
+var wd = __dirname + '/public/';
+var datadir = process.env.OPENSHIFT_DATA_DIR;
 var Rloc = datadir+'R/bin/';
+
 
 var RProcess = function(Rfile , file  , cb) { 
           var opts = {
